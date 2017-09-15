@@ -10,8 +10,13 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import com.facebook.AccessToken;
+import com.facebook.FacebookSdk;
+
+import static com.facebook.internal.CallbackManagerImpl.RequestCodeOffset.Login;
 
 /**
  * Created by Tarun on 17-Aug-17.
@@ -22,6 +27,7 @@ public class InClub extends AppCompatActivity {
     static boolean login;
     static FragmentManager fmag;
     static FragmentTransaction ft;
+    static ViewPager viewpgr;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -29,10 +35,13 @@ public class InClub extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.inclub_main);
 
+        FacebookSdk.sdkInitialize(getApplicationContext());
+        login_checker();
+
         Intent in2 = getIntent();
         activity_name(in2.getFlags());
 
-        ViewPager viewpgr = (ViewPager) findViewById(R.id.viewpg);
+        viewpgr = (ViewPager) findViewById(R.id.viewpg);
         MyPagerAdap adap = new MyPagerAdap(getSupportFragmentManager());
         viewpgr.setAdapter(adap);
 
@@ -45,7 +54,8 @@ public class InClub extends AppCompatActivity {
             Log.v("Access Token---",AccessToken.getCurrentAccessToken().toString());
         }
 
-        
+
+
         /*
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
@@ -56,6 +66,13 @@ public class InClub extends AppCompatActivity {
 
         ft.commit();
         */
+    }
+    public static void login_checker(){
+        login = AccessToken.getCurrentAccessToken()!=null;
+        Log.v("login---",String.valueOf(login));
+        if(AccessToken.getCurrentAccessToken()!=null){
+            Log.v("Access Token---",AccessToken.getCurrentAccessToken().toString());
+        }
     }
     public void activity_name(int flag){
         if(flag==0)
@@ -70,5 +87,21 @@ public class InClub extends AppCompatActivity {
             setTitle("Phoenix");
         if(flag==5)
             setTitle("Sundarban");
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.inclub_menu,menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId()==R.id.settings_button){
+            Intent settings_intent = new Intent(getApplicationContext(),Settings.class);
+            startActivity(settings_intent);
+        }
+
+        return true;
     }
 }

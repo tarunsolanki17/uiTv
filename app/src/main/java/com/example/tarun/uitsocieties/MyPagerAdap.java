@@ -4,6 +4,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
+import static com.example.tarun.uitsocieties.InClub.login;
+
 /**
  * Created by Tarun on 17-Aug-17.
  */
@@ -23,16 +25,23 @@ public class MyPagerAdap extends FragmentStatePagerAdapter {
     public Fragment getItem(int position) {
         if(position==0)
             return new AboutFrag();
-        else if(position==1)
-            return new UpdatesFrag();
-        else if(position==2)
-            return new EventsFrag();
-        else if(position==3)
-            return new PhotosFrag();
-        else if(position==4)
-            return new VideosFrag();
-        else
-        return null;
+        if(login){
+            if(position==1)
+                return new UpdatesFrag();
+            else if(position==2)
+                return new EventsFrag();
+            else if(position==3)
+                return new PhotosFrag();
+            else if(position==4)
+                return new VideosFrag();
+            else return null;
+        }
+        else{
+            if (position >= 1&&position<=4)
+                return new LoginFrag();
+            else
+                return null;
+        }
     }
 
     @Override
@@ -48,5 +57,10 @@ public class MyPagerAdap extends FragmentStatePagerAdapter {
         else if(position==4)
             return "Videos";
         else return null;
+    }
+
+    @Override
+    public int getItemPosition(Object object) {
+        return POSITION_NONE;
     }
 }

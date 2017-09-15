@@ -40,7 +40,7 @@ public class PhotoParcel implements Parcelable {
         public PhotoParcel[] newArray(int i) {
             return new PhotoParcel[0];
         }
-    }
+    };
     @Override
     public int describeContents() {
         return 0;

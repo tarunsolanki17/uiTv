@@ -7,6 +7,8 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -27,6 +29,8 @@ import org.w3c.dom.Text;
 import java.util.ArrayList;
 
 import static android.view.View.GONE;
+import static com.example.tarun.uitsocieties.InClub.ft;
+import static com.example.tarun.uitsocieties.InClub.login;
 
 
 /**
@@ -37,6 +41,9 @@ public class PhotosFrag extends Fragment implements MyRecycPhotoAdapter.MyPhotoC
     ArrayList<Integer> photos;
     TextView no_internet, no_data;
     RecyclerView photo_recyc_view;
+    FragmentManager fragmentManager;
+    FragmentTransaction fragmentTransaction;
+
     public PhotosFrag() {
         // Required empty public constructor
     }
@@ -45,7 +52,13 @@ public class PhotosFrag extends Fragment implements MyRecycPhotoAdapter.MyPhotoC
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-//        getActivity().getSystemService("")
+//        if(login){
+//
+//        }
+//        else{
+//
+//        }
+
         // TODO --> LOOK FOR INTERNET CONNECTION
         // TODO --> LOOK FOR DATA AVAILABLE
 
@@ -129,4 +142,17 @@ public class PhotosFrag extends Fragment implements MyRecycPhotoAdapter.MyPhotoC
         request.setParameters(parameters);
         request.executeAsync();
     }
+
+//    public static void fragReplacer(){
+//        login = AccessToken.getCurrentAccessToken()!=null;
+//
+//        if(login){
+//            ft.replace(R.id.frame,new AboutFrag());
+//            Log.v("Replacing----","Login with ABOUT");
+//        }
+//        if(!login){
+//            ft.replace(R.id.frame,new LoginFrag2());
+//            Log.v("Replacing----","About with LOGIN");
+//        }
+//    }
 }
