@@ -41,7 +41,7 @@ public class LoginFrag extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+                             final Bundle savedInstanceState) {
 
         final View main_view = inflater.inflate(R.layout.fragment_login, container, false);
 
@@ -97,5 +97,11 @@ public class LoginFrag extends Fragment {
         Toast.makeText(getContext(), "Logged in", Toast.LENGTH_SHORT).show();
         login_checker();
         viewpgr.getAdapter().notifyDataSetChanged();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt("Login",1);
     }
 }

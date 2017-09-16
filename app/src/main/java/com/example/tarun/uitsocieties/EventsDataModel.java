@@ -14,6 +14,10 @@ public class EventsDataModel implements Parcelable{
     private String event_name;
     private String start_date;
     private String end_date;
+    private String month;
+    private String date;
+    private String day;
+    private String time;
     private String place_name;
     private String city;
     private Double latitude;
@@ -21,10 +25,14 @@ public class EventsDataModel implements Parcelable{
     private String descp;
     private String cover_url;
 
-    public EventsDataModel(String event_name, String start_date, String end_date, String place_name, String city, Double latitude, Double longitude, String descp, String cover_url) {
+    public EventsDataModel(String event_name, String start_date, String end_date, String month, String date, String day, String time, String place_name, String city, Double latitude, Double longitude, String descp, String cover_url) {
         this.event_name = event_name;
         this.start_date = start_date;
         this.end_date = end_date;
+        this.month = month;
+        this.date = date;
+        this.day = day;
+        this.time = time;
         this.place_name = place_name;
         this.city = city;
         this.latitude = latitude;
@@ -32,11 +40,16 @@ public class EventsDataModel implements Parcelable{
         this.descp = descp;
         this.cover_url = cover_url;
     }
+
     public EventsDataModel(Parcel input){
         Log.v("Constructor args Par---","Running");
         event_name = input.readString();
         start_date = input.readString();
         end_date = input.readString();
+        month = input.readString();
+        date = input.readString();
+        day = input.readString();
+        time = input.readString();
         place_name = input.readString();
         city = input.readString();
         latitude = input.readDouble();
@@ -56,6 +69,10 @@ public class EventsDataModel implements Parcelable{
         parcel.writeString(event_name);
         parcel.writeString(start_date);
         parcel.writeString(end_date);
+        parcel.writeString(month);
+        parcel.writeString(date);
+        parcel.writeString(day);
+        parcel.writeString(time);
         parcel.writeString(place_name);
         parcel.writeString(city);
         parcel.writeDouble(latitude);
@@ -75,4 +92,56 @@ public class EventsDataModel implements Parcelable{
             return new EventsDataModel[size];
         }
     };
+
+    public String getEvent_name() {
+        return event_name;
+    }
+
+    public String getStart_date() {
+        return start_date;
+    }
+
+    public String getEnd_date() {
+        return end_date;
+    }
+
+    public String getMonth() {
+        return month;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public String getDay() {
+        return day;
+    }
+
+    public String getTime() {
+        return time;
+    }
+
+    public String getPlace_name() {
+        return place_name;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public Double getLatitude() {
+        return latitude;
+    }
+
+    public Double getLongitude() {
+        return longitude;
+    }
+
+    public String getDescp() {
+        return descp;
+    }
+
+    public String getCover_url() {
+        return cover_url;
+    }
 }
