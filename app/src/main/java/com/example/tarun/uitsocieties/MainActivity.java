@@ -22,6 +22,14 @@ import java.util.ArrayList;
 
 import static android.R.attr.width;
 import static android.icu.lang.UCharacter.GraphemeClusterBreak.V;
+import com.example.tarun.uitsocieties.ClubContract;
+
+import static com.example.tarun.uitsocieties.ClubContract.COHERENT;
+import static com.example.tarun.uitsocieties.ClubContract.E_CELL;
+import static com.example.tarun.uitsocieties.ClubContract.GREEEN_ARMY;
+import static com.example.tarun.uitsocieties.ClubContract.INSYNC;
+import static com.example.tarun.uitsocieties.ClubContract.PHOENIX;
+import static com.example.tarun.uitsocieties.ClubContract.SUNDARBAN;
 import static com.example.tarun.uitsocieties.R.id.tv;
 
 public class MainActivity extends AppCompatActivity implements Runnable{
@@ -46,12 +54,12 @@ public class MainActivity extends AppCompatActivity implements Runnable{
         ArrayList<Data1> club_data = new ArrayList<>();
 
 //        TODO --> ADD THE PHOTOS WITH DIFFERENT DPIs
-        club_data.add(new Data1(R.drawable.coherent,"Coherent"));
-        club_data.add(new Data1(R.drawable.ecell,"E-cell"));
-        club_data.add(new Data1(R.drawable.green_army,"Green Army"));
-        club_data.add(new Data1(R.drawable.insync,"Insync"));
-        club_data.add(new Data1(R.drawable.phoenix,"Phoenix"));
-        club_data.add(new Data1(R.drawable.sundarban,"Sundarban"));
+        club_data.add(new Data1(R.drawable.coherent,"Coherent",COHERENT));
+        club_data.add(new Data1(R.drawable.ecell,"E-cell",E_CELL));
+        club_data.add(new Data1(R.drawable.green_army,"Green Army",GREEEN_ARMY));
+        club_data.add(new Data1(R.drawable.insync,"Insync",INSYNC));
+        club_data.add(new Data1(R.drawable.phoenix,"Phoenix",PHOENIX));
+        club_data.add(new Data1(R.drawable.sundarban,"Sundarban",SUNDARBAN));
 
         MyArrayAdap madap = new MyArrayAdap(this,R.layout.image_layout,club_data);
         GridView gridv = (GridView) findViewById(R.id.gridview);

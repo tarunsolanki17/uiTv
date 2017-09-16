@@ -28,6 +28,7 @@ public class InClub extends AppCompatActivity {
     static FragmentManager fmag;
     static FragmentTransaction ft;
     static ViewPager viewpgr;
+    public static String club_id;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -35,11 +36,12 @@ public class InClub extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.inclub_main);
 
-        FacebookSdk.sdkInitialize(getApplicationContext());
         login_checker();
 
         Intent in2 = getIntent();
         activity_name(in2.getFlags());
+        club_id = in2.getStringExtra("CLUB_ID");
+        Log.v("Clubid----",club_id);
 
         viewpgr = (ViewPager) findViewById(R.id.viewpg);
         MyPagerAdap adap = new MyPagerAdap(getSupportFragmentManager());

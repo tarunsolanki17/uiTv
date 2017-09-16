@@ -54,7 +54,7 @@ public class MyArrayAdap extends ArrayAdapter<Data1> {
             gridItemView = LayoutInflater.from(getContext()).inflate(R.layout.image_layout,parent,false);
         }
 
-        Data1 curr_item = getItem(position);
+        final Data1 curr_item = getItem(position);
 
         RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(width/2,width/2);
 
@@ -77,6 +77,7 @@ public class MyArrayAdap extends ArrayAdapter<Data1> {
 
                 Intent in = new Intent(con,InClub.class);
                 in.setFlags(position);
+                in.putExtra("CLUB_ID",curr_item.getClub_id());
 //                Uri uri = Uri.parse(String.valueOf(position));
 //                in.setData(uri);
                 con.startActivity(in);
