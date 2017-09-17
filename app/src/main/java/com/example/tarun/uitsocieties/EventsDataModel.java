@@ -14,6 +14,7 @@ public class EventsDataModel implements Parcelable{
     private String event_name;
     private String start_date;
     private String end_date;
+    private String updated_date;
     private String month;
     private String date;
     private String day;
@@ -24,6 +25,8 @@ public class EventsDataModel implements Parcelable{
     private Double longitude;
     private String descp;
     private String cover_url;
+    //  TODO --> ADD THE FACEBOOK LINK TO THE URL
+    private String facebook_link;
 
     public EventsDataModel(String event_name, String start_date, String end_date, String month, String date, String day, String time, String place_name, String city, Double latitude, Double longitude, String descp, String cover_url) {
         this.event_name = event_name;

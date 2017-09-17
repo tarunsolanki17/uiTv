@@ -73,8 +73,6 @@ public class MyArrayAdap extends ArrayAdapter<Data1> {
             @Override
             public void onClick(View view) {
 
-                //TODO -->  PASS THE CLUB NUMBER HERE TO THE NEXT ACTIVITY
-
                 Intent in = new Intent(con,InClub.class);
                 in.setFlags(position);
                 in.putExtra("CLUB_ID",curr_item.getClub_id());

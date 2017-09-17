@@ -103,6 +103,7 @@ public class InClub extends AppCompatActivity {
             Intent settings_intent = new Intent(getApplicationContext(),Settings.class);
             startActivity(settings_intent);
         }
+        //  TODO --> ADD A REFRESH BUTTON
 
         return true;
     }

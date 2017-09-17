@@ -7,6 +7,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -67,6 +68,8 @@ public class EventsFrag extends Fragment {
     ProgressBar pbar;
     TextView no_internet;
     TextView no_data;
+    SwipeRefreshLayout swipe;
+    boolean isConnected;
 
     public EventsFrag() {
         // Required empty public constructor
@@ -79,29 +82,32 @@ public class EventsFrag extends Fragment {
 
         View events_view = inflater.inflate(R.layout.fragment_events, container, false);
 
-        listView = (ListView) events_view.findViewById(R.id.listview);
-        pbar = (ProgressBar) events_view.findViewById(R.id.progress_bar);
+        listView = events_view.findViewById(R.id.listview);
+        pbar = events_view.findViewById(R.id.progress_bar);
         no_internet = events_view.findViewById(R.id.no_internet);
         no_data = events_view.findViewById(R.id.no_data);
+        swipe = events_view.findViewById(R.id.swipe);
 
-        ConnectivityManager cm = (ConnectivityManager) getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo ninfo = cm.getActiveNetworkInfo();
-        boolean isConnected = ninfo != null && ninfo.isConnectedOrConnecting();
+        swipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                swipe.setRefreshing(true);
+                if(isConnectedFunc())
+                    eventJSONRequest();
+                swipe.setRefreshing(false);
+            }
+        });
 
-        if(!isConnected){
-//            TODO --> IMAGE WITH TEXT IN NO INTERNET
-//            TODO --> REFRESH BUTTON
-            pbar.setVisibility(GONE);
-            no_data.setVisibility(GONE);
-            listView.setVisibility(GONE);
-            no_internet.setVisibility(VISIBLE);
-        }
-        else {
-            no_internet.setVisibility(GONE);
-            no_data.setVisibility(GONE);
+//        if(isConnectedFunc()){
+//
+//        }
+//        else
+            if(isConnectedFunc()){
+
             if(savedInstanceState!=null&&savedInstanceState.getInt("Login")==1)
                 savedInstanceState = null;
-            if (savedInstanceState != null/*&&!savedInstanceState.getParcelableArrayList("events_parcel").isEmpty()*/) {
+
+            if (savedInstanceState != null) {
                 events_data = savedInstanceState.getParcelableArrayList("events_parcel");
                 if(events_data.isEmpty()||events_data==null){
                     //  TODO --> REMOVE NULL POINTER EXCEPTION IN isEmpty()
@@ -115,16 +121,15 @@ public class EventsFrag extends Fragment {
                     listView.setVisibility(VISIBLE);
                     onDataFetched();
                 }
-                Log.v("Condition---", "true");
-            } else {
+
+            }
+            else {
                 login_checker();
                 if(login) {
                     eventJSONRequest();
                 }
             }
         }
-
-
 
         return events_view;
     }
@@ -187,7 +192,7 @@ public class EventsFrag extends Fragment {
                         month = new SimpleDateFormat("MMM").format(d);
                         date = new SimpleDateFormat("dd").format(d);
                         day = new SimpleDateFormat("EEE").format(d);
-                        time = new SimpleDateFormat("HH:mm").format(d);
+                        time = new SimpleDateFormat("h:mm a").format(d);
 
                     }
                     if(curr_event.has(END_TIME)&&!curr_event.isNull(END_TIME)){
@@ -239,11 +244,13 @@ public class EventsFrag extends Fragment {
                 }
                 Toast.makeText(getContext(),data.length()+" events fetched",Toast.LENGTH_SHORT).show();
                 if(data.length()==0){
+                    no_internet.setVisibility(GONE);
                     pbar.setVisibility(GONE);
                     listView.setVisibility(GONE);
                     no_data.setVisibility(VISIBLE);
                 }
                 else{
+                    no_internet.setVisibility(GONE);
                     pbar.setVisibility(GONE);
                     no_data.setVisibility(GONE);
                     listView.setVisibility(VISIBLE);
@@ -255,6 +262,25 @@ public class EventsFrag extends Fragment {
         }
     return events;
     }
+    public boolean isConnectedFunc(){
+        ConnectivityManager cm = (ConnectivityManager) getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo ninfo = cm.getActiveNetworkInfo();
+        isConnected = ninfo != null && ninfo.isConnectedOrConnecting();
+
+        if(!isConnected){
+//            TODO --> IMAGE WITH TEXT IN NO INTERNET
+            pbar.setVisibility(GONE);
+            no_data.setVisibility(GONE);
+            listView.setVisibility(GONE);
+            no_internet.setVisibility(VISIBLE);
+            return false;
+        }
+        else {
+            no_internet.setVisibility(GONE);
+            no_data.setVisibility(GONE);
+            return true;
+        }
+    }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
@@ -265,4 +291,5 @@ public class EventsFrag extends Fragment {
         eventsAdapter = new EventsListAdapter(getContext(),events_data);
         listView.setAdapter(eventsAdapter);
     }
+
 }

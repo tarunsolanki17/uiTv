@@ -45,6 +45,8 @@ public class EventsListAdapter extends ArrayAdapter<EventsDataModel> {
 
         EventsDataModel curr_obj = getItem(position);
 
+        //  TODO --> ADD TEXT VIEW FOR "PAST EVENTS" AND "UPCOMING EVENTS"
+
         try {
             name.setText(curr_obj.getEvent_name());
             month.setText(curr_obj.getMonth());
@@ -59,6 +61,12 @@ public class EventsListAdapter extends ArrayAdapter<EventsDataModel> {
             Log.v("Exception---",e.toString());
         }
 
+        eventListItemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //  TODO -->  DETAILED EVENTS ACTIVITY
+            }
+        });
         return eventListItemView;
     }
 }

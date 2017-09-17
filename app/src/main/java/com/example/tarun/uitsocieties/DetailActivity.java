@@ -57,7 +57,6 @@ public class DetailActivity extends AppCompatActivity {
 
         viewPager.setAdapter(photoPagerAdapter);
         viewPager.setCurrentItem(current_pos);
-        // TODO --> PLACE THE CORRECT IMAGE AS THE FIRST FRAGMENT
 
     }
 

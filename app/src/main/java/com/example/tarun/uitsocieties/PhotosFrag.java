@@ -82,6 +82,7 @@ public class PhotosFrag extends Fragment implements MyRecycPhotoAdapter.MyPhotoC
         photos.add(R.drawable.family_mother);
         photos.add(R.drawable.green_army);
         photos.add(R.drawable.family_father);
+
 //        photos.add(R.drawable.a);
 //        photos.add(R.drawable.d);
 //        photos.clear();
