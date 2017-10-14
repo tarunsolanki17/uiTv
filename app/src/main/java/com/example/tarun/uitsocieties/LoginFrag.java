@@ -25,6 +25,7 @@ import java.util.Arrays;
 
 import static com.example.tarun.uitsocieties.InClub.login_checker;
 import static com.example.tarun.uitsocieties.InClub.viewpgr;
+import static com.example.tarun.uitsocieties.R.id.loginbutt2;
 
 
 /**
@@ -44,6 +45,8 @@ public class LoginFrag extends Fragment {
                              final Bundle savedInstanceState) {
 
         final View main_view = inflater.inflate(R.layout.fragment_login, container, false);
+
+        //  TODO  --> ADD "NO INTERNET CONNCETION" AND SWIPE TO REFRESH BUTTON
 
         LinearLayout loginbutt2 = (LinearLayout) main_view.findViewById(R.id.loginbutt2);
         loginbutt2.setOnClickListener(new View.OnClickListener(){

@@ -1,5 +1,9 @@
 package com.example.tarun.uitsocieties;
 
+import java.util.ArrayList;
+
+import static android.graphics.Color.GREEN;
+
 /**
  * Created by Tarun on 15-Sep-17.
  */
@@ -12,7 +16,11 @@ public class ClubContract  {
     public static final String PHOENIX = "562423343851594";
     public static final String SUNDARBAN = "1014248005370111";
 
+    public static final String[] CLUB_NAMES = {"COHERENT","E_CELL","GREEN_ARMY","INSYNC","PHOENIX","SUNDARBAN"};
+    public static final String[] CLUB_IDS = {COHERENT,E_CELL,GREEEN_ARMY,INSYNC,PHOENIX,SUNDARBAN};
+
     public class EventsConstants{
+        public static final String ID = "id";
         public static final String NAME = "name";
         public static final String START_TIME = "start_time";
         public static final String END_TIME = "end_time";

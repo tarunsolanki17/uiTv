@@ -30,7 +30,12 @@
             android:label=""
             android:configChanges="orientation|keyboardHidden|screenSize"
             />
-
+        <activity android:name=".EventsDetailedActivity"
+            android:parentActivityName=".InClub">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".InClub"/>
+        </activity>
         <!--*********************FACEBOOK INTEGRATION************************-->
 
         <meta-data android:name="com.facebook.sdk.ApplicationId"
@@ -51,8 +56,27 @@
             </intent-filter>
         </activity>
 
+    <!--*******************JobService****************************-->
+        <service android:name=".FetchingJobService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE"/>
+            </intent-filter>
+        </service>
+        <!--******************Static Broadcast Receiver*********************-->
+        <receiver android:name=".EventsFrag$NotificationBroadCastReceiver"
+            android:enabled="true">
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
+                <action android:name="android.net.wifi.WIFI_STATE_CHANGED"/>
+                <action android:name="android.net.wifi.STATE_CHANGE"/>
+
+            </intent-filter>
+        </receiver>
 
     </application>
+
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
 </manifest>

@@ -1,6 +1,7 @@
 package com.example.tarun.uitsocieties;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -29,7 +30,7 @@ public class EventsListAdapter extends ArrayAdapter<EventsDataModel> {
 
     @NonNull
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
         View eventListItemView = convertView;
         if(eventListItemView==null){
             eventListItemView = LayoutInflater.from(con).inflate(R.layout.event_list_item,parent,false);
@@ -64,6 +65,10 @@ public class EventsListAdapter extends ArrayAdapter<EventsDataModel> {
         eventListItemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Intent in = new Intent(con,EventsDetailedActivity.class);
+                in.putParcelableArrayListExtra("events_parcel",events_data);
+                in.putExtra("Event Position",position);
+                con.startActivity(in);
                 //  TODO -->  DETAILED EVENTS ACTIVITY
             }
         });

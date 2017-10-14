@@ -113,7 +113,7 @@ public class PhotosFrag extends Fragment implements MyRecycPhotoAdapter.MyPhotoC
 
             photo_recyc_view.setLayoutManager(layoutManager);
             photo_recyc_view.setHasFixedSize(true);
-            photo_recyc_view.setAdapter(photo_adap);
+//            photo_recyc_view.setAdapter(photo_adap);
         }
 
         return view;

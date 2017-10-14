@@ -1,12 +1,24 @@
 package com.example.tarun.uitsocieties;
 
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.TaskStackBuilder;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -25,6 +37,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.w3c.dom.Text;
 
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -32,6 +45,7 @@ import java.util.Date;
 import static android.R.attr.data;
 import static android.R.attr.end;
 import static android.R.attr.finishOnCloseSystemDialogs;
+import static android.R.attr.switchMinWidth;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 import static com.example.tarun.uitsocieties.ClubContract.EventsConstants.CITY;
@@ -45,10 +59,12 @@ import static com.example.tarun.uitsocieties.ClubContract.EventsConstants.NAME;
 import static com.example.tarun.uitsocieties.ClubContract.EventsConstants.PLACE;
 import static com.example.tarun.uitsocieties.ClubContract.EventsConstants.SOURCE_URL;
 import static com.example.tarun.uitsocieties.ClubContract.EventsConstants.START_TIME;
+import static com.example.tarun.uitsocieties.ClubContract.INSYNC;
 import static com.example.tarun.uitsocieties.InClub.club_id;
 import static com.example.tarun.uitsocieties.InClub.login;
 import static com.example.tarun.uitsocieties.InClub.login_checker;
 import static com.example.tarun.uitsocieties.R.drawable.c;
+import static com.example.tarun.uitsocieties.R.id.date_time;
 import static com.example.tarun.uitsocieties.R.id.photo_recyc_view;
 import static com.facebook.login.widget.ProfilePictureView.TAG;
 import static java.util.Objects.isNull;
@@ -98,10 +114,6 @@ public class EventsFrag extends Fragment {
             }
         });
 
-//        if(isConnectedFunc()){
-//
-//        }
-//        else
             if(isConnectedFunc()){
 
             if(savedInstanceState!=null&&savedInstanceState.getInt("Login")==1)
@@ -121,7 +133,6 @@ public class EventsFrag extends Fragment {
                     listView.setVisibility(VISIBLE);
                     onDataFetched();
                 }
-
             }
             else {
                 login_checker();
@@ -135,6 +146,7 @@ public class EventsFrag extends Fragment {
     }
 
     public void eventJSONRequest(){
+        //  TODO --> PUT A LIMIT TO THE ESTABLISHMENT OF THE CONNECTION OF AROUND 10-15 SECS
         GraphRequest request = GraphRequest.newGraphPathRequest(
                 AccessToken.getCurrentAccessToken(),
                 "/"+ club_id +"/events",
@@ -166,6 +178,7 @@ public class EventsFrag extends Fragment {
                     String event_name = "";
                     String start_date = "";
                     String end_date = "";
+                    String year = "";
                     String month = "";
                     String date = "";
                     String day = "";
@@ -189,6 +202,7 @@ public class EventsFrag extends Fragment {
                         Date d = incoming.parse(start_date);
 
                         start_date = new SimpleDateFormat(" EEEE, dd MMMM yyyy", java.util.Locale.getDefault()).format(d);
+                        year = new SimpleDateFormat("yyyy").format(d);
                         month = new SimpleDateFormat("MMM").format(d);
                         date = new SimpleDateFormat("dd").format(d);
                         day = new SimpleDateFormat("EEE").format(d);
@@ -237,9 +251,8 @@ public class EventsFrag extends Fragment {
                             cover_source = cover_obj.getString(SOURCE_URL);
                         }
                     }
-                    Log.v("N---","");
 
-                    events.add(new EventsDataModel(event_name, start_date, end_date, month, date, day, time, place_name, city, latitude, longitude, descp, cover_source));
+                    events.add(new EventsDataModel(event_name, start_date, end_date, year,month, date, day, time, place_name, city, latitude, longitude, descp, cover_source));
 
                 }
                 Toast.makeText(getContext(),data.length()+" events fetched",Toast.LENGTH_SHORT).show();
@@ -291,5 +304,110 @@ public class EventsFrag extends Fragment {
         eventsAdapter = new EventsListAdapter(getContext(),events_data);
         listView.setAdapter(eventsAdapter);
     }
+    public static void eventNotification(Context con, final ArrayList<EventsDataModel> new_events, String club_name, String clubID, int index){
+        EventsDataModel new_event = new_events.get(index);
+        String date_time = "on " + new_event.getDate() + " " + new_event.getMonth() + " at " + new_event.getTime();
 
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(con)
+                //  TODO --> SET SMALL ICON AS THE LOGO OF THE APP
+                .setSmallIcon(R.drawable.ic_drink_notification)
+                //  TODO --> SET LARGE ICON ACCORDING TO THE CLUB LOGO
+                .setLargeIcon(largeIcon(con))
+                .setContentTitle(new_event.getEvent_name())
+                .setContentText("New event by " + club_name + " " + date_time)
+                .setColor(ContextCompat.getColor(con,R.color.colorPrimary))
+                .setContentIntent(contentIntent(con,new_event,clubID,index,club_name))
+                .setDefaults(Notification.DEFAULT_ALL)
+                .setTicker("New Event by " + club_name)
+                .setAutoCancel(true);
+
+        if(new_event.getCover_url().isEmpty()||new_event.getCover_url()==null){
+            builder.setStyle(new NotificationCompat.BigTextStyle().bigText(new_event.getDescp()));
+        }
+        else{
+            Bitmap image = null;
+            try{
+                URL cover_url = new URL(new_event.getCover_url());
+                image = BitmapFactory.decodeStream(cover_url.openConnection().getInputStream());
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+            if(image!=null)
+            builder.setStyle(new NotificationCompat.BigPictureStyle().bigPicture(image));
+        }
+        //  TODO --> PROVIDE INDIVIDUAL NOTIFICATIONS FOR EACH CLUB IF NEW EVENTS OF MORE THAN TWO CLUBS ARISE
+        //  TODO --> CREATE A SMALL ICON
+        //  TODO --> CREATE A LARGE ICON
+
+        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.JELLY_BEAN){
+            builder.setPriority(Notification.PRIORITY_HIGH);
+        }
+
+
+
+        NotificationManager notificationManager = (NotificationManager) con.getSystemService(con.NOTIFICATION_SERVICE);
+        Log.v("Notification---:","Issue");
+        notificationManager.notify(1,builder.build());
+    }
+    public static Bitmap largeIcon(Context con){
+        Resources resources = con.getResources();
+        return BitmapFactory.decodeResource(resources, R.drawable.ic_local_drink_black_24px);
+
+    }
+    public static PendingIntent contentIntent(Context con, EventsDataModel new_event, String clubID, int index, String clubName){
+
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(con);
+
+        Intent detailedEvent = new Intent(con,EventsDetailedActivity.class);
+        detailedEvent.putExtra("CLUB_ID",clubID);
+        detailedEvent.putExtra("Notification",true);
+        detailedEvent.putExtra("New Event Parcel",new_event);
+
+        Intent eventsFrag = new Intent(con,InClub.class);
+        //  TODO --> SET CORRECT FLAG FOR CLUBS
+        eventsFrag.addFlags(getFlags(clubName));
+        eventsFrag.putExtra("CLUB_ID",clubID);
+        eventsFrag.putExtra("Notif_intent",true);
+
+        Intent mainAct = new Intent(con,MainActivity.class);
+
+        stackBuilder.addNextIntentWithParentStack(mainAct);
+        stackBuilder.addNextIntent(eventsFrag);
+        stackBuilder.addNextIntent(detailedEvent);
+
+//
+//        Intent in = new Intent(con,EventsDetailedActivity.class);
+//        //  TODO --> SET CORRECT FLAGS AND IDS FOR CORRECT CLUB
+//        //  TODO --> ADD THE BACKSTACK
+//        in.putExtra("CLUB_ID",clubID);
+//        in.putExtra("Notification",true);
+//        in.putExtra("New Event Parcel",new_event);
+//        Bundle new_event_data = new Bundle();
+//        new_event_data.putParcelable("new_event",new_event);
+//        in.putExtra("new_event_model",new_event);
+//        PendingIntent pendingIntent = PendingIntent.getActivity(con,index,in,PendingIntent.FLAG_ONE_SHOT);
+        PendingIntent pendingIntent = stackBuilder.getPendingIntent(index,PendingIntent.FLAG_ONE_SHOT);
+        return pendingIntent;
+    }
+    private static int getFlags(String clubName){
+        switch(clubName){
+            case "COHERENT" : return 0;
+            case "E_CELL" : return 1;
+            case "GREEN_ARMY" : return 2;
+            case "INSYNC" : return 3;
+            case "PHOENIX" : return 4;
+            case "SUNDARBAN" : return 5;
+        }
+        return -1;
+    }
+    public static class NotificationBroadCastReceiver extends BroadcastReceiver{
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.v("BCast Receiver---","Running");
+            if(AccessToken.getCurrentAccessToken()!=null)
+                FetchJobScheduler.scheduleFetching(context);
+        }
+    }
 }

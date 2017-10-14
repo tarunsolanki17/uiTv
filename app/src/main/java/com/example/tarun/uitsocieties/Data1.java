@@ -11,7 +11,7 @@ public class Data1 {
 
     int img_res_Id;
     String club_name;
-    String club_id;
+    public String club_id;
 
     public Data1(int res,String name,String id){
         img_res_Id = res;

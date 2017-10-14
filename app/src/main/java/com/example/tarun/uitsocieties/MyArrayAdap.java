@@ -75,9 +75,9 @@ public class MyArrayAdap extends ArrayAdapter<Data1> {
 
                 Intent in = new Intent(con,InClub.class);
                 in.setFlags(position);
+                Log.v("Position---",String.valueOf(position));
                 in.putExtra("CLUB_ID",curr_item.getClub_id());
-//                Uri uri = Uri.parse(String.valueOf(position));
-//                in.setData(uri);
+
                 con.startActivity(in);
             }
         });

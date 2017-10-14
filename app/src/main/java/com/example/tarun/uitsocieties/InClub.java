@@ -40,12 +40,17 @@ public class InClub extends AppCompatActivity {
 
         Intent in2 = getIntent();
         activity_name(in2.getFlags());
+        boolean notif_intent = in2.getBooleanExtra("Notif_intent",false);
+
         club_id = in2.getStringExtra("CLUB_ID");
+        if(club_id!=null)
         Log.v("Clubid----",club_id);
 
         viewpgr = (ViewPager) findViewById(R.id.viewpg);
         MyPagerAdap adap = new MyPagerAdap(getSupportFragmentManager());
         viewpgr.setAdapter(adap);
+        if(notif_intent)
+            viewpgr.setCurrentItem(2);      /**     SET POSITION TO EVENTS FRAGMENT   */
 
         TabLayout tablay = (TabLayout) findViewById(R.id.tabl);
         tablay.setupWithViewPager(viewpgr);
@@ -103,7 +108,6 @@ public class InClub extends AppCompatActivity {
             Intent settings_intent = new Intent(getApplicationContext(),Settings.class);
             startActivity(settings_intent);
         }
-        //  TODO --> ADD A REFRESH BUTTON
 
         return true;
     }

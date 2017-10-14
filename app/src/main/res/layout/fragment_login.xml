@@ -60,4 +60,6 @@ Please login to continue."
         android:textAlignment="center"
         android:textSize="20sp"/>
 
+    <!--TODO ->> ADD "NO INTERNET CONNECTION" TEXT VIEW-->
+
 </RelativeLayout>

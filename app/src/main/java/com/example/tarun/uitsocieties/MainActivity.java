@@ -18,11 +18,18 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 
 import static android.R.attr.width;
 import static android.icu.lang.UCharacter.GraphemeClusterBreak.V;
 import com.example.tarun.uitsocieties.ClubContract;
+import com.facebook.AccessToken;
 
 import static com.example.tarun.uitsocieties.ClubContract.COHERENT;
 import static com.example.tarun.uitsocieties.ClubContract.E_CELL;
@@ -30,6 +37,7 @@ import static com.example.tarun.uitsocieties.ClubContract.GREEEN_ARMY;
 import static com.example.tarun.uitsocieties.ClubContract.INSYNC;
 import static com.example.tarun.uitsocieties.ClubContract.PHOENIX;
 import static com.example.tarun.uitsocieties.ClubContract.SUNDARBAN;
+import static com.example.tarun.uitsocieties.InClub.login;
 import static com.example.tarun.uitsocieties.R.id.tv;
 
 public class MainActivity extends AppCompatActivity implements Runnable{
@@ -38,6 +46,9 @@ public class MainActivity extends AppCompatActivity implements Runnable{
 
     public static int width;
 
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setTheme(R.style.AppTheme);
@@ -45,11 +56,6 @@ public class MainActivity extends AppCompatActivity implements Runnable{
         setContentView(R.layout.activity_main);
 
         new MyWidthThread().start();
-//        DisplayMetrics metrics = new DisplayMetrics();
-//        WindowManager wm = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
-//        wm.getDefaultDisplay().getMetrics(metrics);
-//        width = metrics.widthPixels;
-//        Log.v("Width---",""+width);
 
         ArrayList<Data1> club_data = new ArrayList<>();
 
@@ -65,76 +71,7 @@ public class MainActivity extends AppCompatActivity implements Runnable{
         GridView gridv = (GridView) findViewById(R.id.gridview);
         gridv.setAdapter(madap);
 
-
-
-/*        DisplayMetrics metrics = new DisplayMetrics();
-        WindowManager wm = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
-        wm.getDefaultDisplay().getMetrics(metrics);
-        int width = metrics.widthPixels;
-        int height = metrics.heightPixels;
-        Log.v("---Width---",""+width);
-
-
-        ImageView imgvar = (ImageView) findViewById(R.id.imgv);
-        int img_base = imgvar.getBottom();
-        Log.v("---Base---",""+img_base);
-        imgvar.setLayoutParams(new RelativeLayout.LayoutParams(width/2,width/2));
-        imgvar.setImageResource(R.drawable.d);
-        imgvar.setBaselineAlignBottom(true);
-        int bott = imgvar.getBottom();
-        Log.v("---bott---",""+bott);
-
-
-        TextView tvar = (TextView) findViewById(tv);
-        tvar.setText("Hello here");
-//        float text_size = tvar.getTextSize();
-//        Log.v("---Ht---",""+text_size);
-        tvar.setLayoutParams(new RelativeLayout.LayoutParams(width/2, ViewGroup.LayoutParams.WRAP_CONTENT));
-        ViewGroup.LayoutParams lparams = tvar.getLayoutParams();
-        int ht = lparams.height;
-
-        Log.v("---Ht---",""+ht);
-//        tvar.setX(0);
-//        tvar.setY((width/2)-50);
-
-*/
-
-/*        ArrayList<Integer> images = new ArrayList<>();
-        images.add(R.drawable.family_son);
-        images.add(R.drawable.family_daughter);
-        images.add(R.drawable.family_father);
-        images.add(R.drawable.family_mother);
-        images.add(R.drawable.family_grandfather);
-        images.add(R.drawable.family_grandmother);
-
-        MyArrayAdap madap = new MyArrayAdap(this,0);
-
-
-        GridView gv = (GridView) findViewById(R.id.gridview);
-        gv.setAdapter(madap);
-*/
-
-
-/*        Log.v("---Width---",""+width);
-
-        RelativeLayout imglay = (RelativeLayout) findViewById(R.id.Rellay);
-
-        RelativeLayout.LayoutParams lparams = new RelativeLayout.LayoutParams(width,height);
-        lparams.setMargins(0,0,0,0);
-
-        ImageView imgv = new ImageView(getApplicationContext());
-        TextView tv = new TextView(getApplicationContext());
-
-        tv.setLayoutParams(lparams);
-
-        imglay.addView(imgv,width/2,width/2);
-        imglay.addView(tv);
-
-        imgv.setImageResource(R.drawable.color_black);
-        tv.setText("Hey Here!!");
-
-        setContentView(R.layout.image_layout);
-*/
+        readFile();
     }
 
     public class MyWidthThread extends Thread{
@@ -155,5 +92,38 @@ public class MainActivity extends AppCompatActivity implements Runnable{
         WindowManager wm = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
         wm.getDefaultDisplay().getMetrics(metrics);
         width = metrics.widthPixels;
+    }
+
+    public void readFile(){
+        File eventids = new File(getFilesDir(),"event_ids_file");
+        InputStream inStream;
+        try {
+            Log.v("readFile---","Running");
+            Log.v("Length---",String.valueOf(eventids.length()));
+            inStream = openFileInput(eventids.getName());
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inStream));
+
+            String line;
+            String newline = "";
+//            int c=0;
+            while ((line = bufferedReader.readLine())!=null){
+                Log.v("Line----",line);
+//                String[] old_id = line.split(" ");
+//                Log.v("old_id----",old_id[0] + " " + old_id[1]);
+            }
+            bufferedReader.close();
+            inStream.close();
+        }
+        catch (Exception e) {
+            Log.v("Exception---","Caught");
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if(AccessToken.getCurrentAccessToken()!=null)
+            FetchJobScheduler.scheduleFetching(this);
     }
 }
