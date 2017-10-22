@@ -1,53 +1,43 @@
 package com.example.tarun.uitsocieties;
 
 import android.content.Context;
-import android.os.AsyncTask;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.Layout;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.view.WindowManager;
-import android.widget.ArrayAdapter;
 import android.widget.GridView;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 
-import static android.R.attr.width;
-import static android.icu.lang.UCharacter.GraphemeClusterBreak.V;
-import com.example.tarun.uitsocieties.ClubContract;
 import com.facebook.AccessToken;
 
+import static com.example.tarun.uitsocieties.ClubContract.ACM_RGPV;
 import static com.example.tarun.uitsocieties.ClubContract.COHERENT;
 import static com.example.tarun.uitsocieties.ClubContract.E_CELL;
-import static com.example.tarun.uitsocieties.ClubContract.GREEEN_ARMY;
+import static com.example.tarun.uitsocieties.ClubContract.GREEN_ARMY;
+import static com.example.tarun.uitsocieties.ClubContract.HACKER_EARTH;
 import static com.example.tarun.uitsocieties.ClubContract.INSYNC;
+import static com.example.tarun.uitsocieties.ClubContract.I_SPEAK_AALAY;
+import static com.example.tarun.uitsocieties.ClubContract.MAHASANGRAM;
 import static com.example.tarun.uitsocieties.ClubContract.PHOENIX;
+import static com.example.tarun.uitsocieties.ClubContract.SHANKHNAAD;
 import static com.example.tarun.uitsocieties.ClubContract.SUNDARBAN;
-import static com.example.tarun.uitsocieties.InClub.login;
-import static com.example.tarun.uitsocieties.R.id.tv;
+import static com.example.tarun.uitsocieties.ClubContract.TECHNOPHILIC;
+import static com.example.tarun.uitsocieties.ClubContract.TEDX_RGPV;
 
 public class MainActivity extends AppCompatActivity implements Runnable{
 
     /**********************  GLOBAL VARIABLES  ********************************/
 
     public static int width;
-
-
-
+    public RecyclerView mainRecyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,16 +50,27 @@ public class MainActivity extends AppCompatActivity implements Runnable{
         ArrayList<Data1> club_data = new ArrayList<>();
 
 //        TODO --> ADD THE PHOTOS WITH DIFFERENT DPIs
-        club_data.add(new Data1(R.drawable.coherent,"Coherent",COHERENT));
-        club_data.add(new Data1(R.drawable.ecell,"E-cell",E_CELL));
-        club_data.add(new Data1(R.drawable.green_army,"Green Army",GREEEN_ARMY));
-        club_data.add(new Data1(R.drawable.insync,"Insync",INSYNC));
-        club_data.add(new Data1(R.drawable.phoenix,"Phoenix",PHOENIX));
-        club_data.add(new Data1(R.drawable.sundarban,"Sundarban",SUNDARBAN));
+        club_data.add(new Data1(R.drawable.acm,"ACM Student Chapter RGPV",ACM_RGPV,1));
+        club_data.add(new Data1(R.drawable.coherent,"Coherent",COHERENT,2));
+        club_data.add(new Data1(R.drawable.ecell,"E-cell",E_CELL,3));
+        club_data.add(new Data1(R.drawable.green_army,"Green Army",GREEN_ARMY,4));
+        club_data.add(new Data1(R.drawable.hacker_earth,"Hacker Earth",HACKER_EARTH,5));
+        club_data.add(new Data1(R.drawable.insync,"Insync",INSYNC,6));
+        club_data.add(new Data1(R.drawable.ispeakaalay,"I Speak Aalay",I_SPEAK_AALAY,7));
+        club_data.add(new Data1(R.drawable.mahasangram,"Mahasangram",MAHASANGRAM,8));
+        club_data.add(new Data1(R.drawable.phoenix,"Phoenix",PHOENIX,9));
+        club_data.add(new Data1(R.drawable.shankhnaad,"शंखनाद",SHANKHNAAD,10));
+        club_data.add(new Data1(R.drawable.sundarban,"Sundarban",SUNDARBAN,11));
+        club_data.add(new Data1(R.drawable.technophilic,"Technophilic",TECHNOPHILIC,12));
+        club_data.add(new Data1(R.drawable.tedxrgpv,"TEDx RGPV",TEDX_RGPV,13));
 
-        MyArrayAdap madap = new MyArrayAdap(this,R.layout.image_layout,club_data);
-        GridView gridv = (GridView) findViewById(R.id.gridview);
-        gridv.setAdapter(madap);
+        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(this,2);
+        mainRecyclerView = (RecyclerView) findViewById(R.id.main_recyc_view);
+        mainRecyclerView.setHasFixedSize(true);
+        mainRecyclerView.setLayoutManager(layoutManager);
+
+        MyArrayAdap mainAdap = new MyArrayAdap(this,club_data);
+        mainRecyclerView.setAdapter(mainAdap);
 
         readFile();
     }

@@ -36,7 +36,7 @@ import static com.example.tarun.uitsocieties.ClubContract.CLUB_IDS;
 import static com.example.tarun.uitsocieties.ClubContract.CLUB_NAMES;
 import static com.example.tarun.uitsocieties.ClubContract.E_CELL;
 import static com.example.tarun.uitsocieties.ClubContract.EventsConstants.ID;
-import static com.example.tarun.uitsocieties.ClubContract.GREEEN_ARMY;
+import static com.example.tarun.uitsocieties.ClubContract.GREEN_ARMY;
 import static com.example.tarun.uitsocieties.ClubContract.INSYNC;
 import static com.example.tarun.uitsocieties.ClubContract.PHOENIX;
 import static com.example.tarun.uitsocieties.ClubContract.SUNDARBAN;
@@ -329,7 +329,7 @@ public class FetchingJobService extends JobService {
             return E_CELL;
         }
         else if(clubName.equals("GREEN_ARMY")){
-            return GREEEN_ARMY;
+            return GREEN_ARMY;
         }
         else if(clubName.equals("INSYNC")){
             return INSYNC;

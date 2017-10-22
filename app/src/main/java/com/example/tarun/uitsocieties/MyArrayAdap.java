@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,9 +22,13 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
+
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.R.attr.data;
 import static android.os.Build.VERSION_CODES.M;
 import static com.example.tarun.uitsocieties.MainActivity.width;
 
@@ -33,94 +38,61 @@ import static com.example.tarun.uitsocieties.MainActivity.width;
 
 /**********************  ARRAY ADAPTER FOR CLUB LOGOS GRID LAYOUT  ********************/
 
-public class MyArrayAdap extends ArrayAdapter<Data1> {
+public class MyArrayAdap extends RecyclerView.Adapter<MyArrayAdap.MyViewHolder> {
 
     public static int CLUB_NO;
     Context con;
     ArrayList<Data1> club_data;
 
 
-    public MyArrayAdap(Context context, @LayoutRes int resource, @NonNull ArrayList<Data1> data) {
-        super(context, 0, data);
+    public MyArrayAdap(Context context, ArrayList<Data1> data) {
         con = context;
         club_data = data;
     }
 
-    @NonNull
     @Override
-    public View getView(final int position, View convertView, ViewGroup parent) {
-        Log.v("---Running---","getView");
+    public MyArrayAdap.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        Log.v("CreateViewHolder---","Running");
+        LayoutInflater inflater = LayoutInflater.from(con);
+        View photoView = inflater.inflate(R.layout.main_image_layout, parent, false);
+        MyArrayAdap.MyViewHolder viewHolder = new MyArrayAdap.MyViewHolder(photoView);
+        return viewHolder;
+    }
 
-        View gridItemView = convertView;
-        if(gridItemView==null){
-            gridItemView = LayoutInflater.from(getContext()).inflate(R.layout.image_layout,parent,false);
+    @Override
+    public void onBindViewHolder(MyViewHolder holder, int position) {
+        Log.v("BindViewHolder---","Running");
+        Data1 curr_club = club_data.get(position);
+        ImageView imageView = holder.mClubImageView;
+
+        Glide.with(con)
+                .load(curr_club.getImg_res_Id())
+                .apply(new RequestOptions()
+                        .placeholder(R.drawable.color_red))
+                .into(imageView);
+    }
+
+    @Override
+    public int getItemCount() {
+        return club_data.size();
+    }
+
+    public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+
+        public ImageView mClubImageView;
+
+        public MyViewHolder(View itemView) {
+            super(itemView);
+            Log.v("ViewHolder---","Running");
+            mClubImageView = (ImageView) itemView.findViewById(R.id.club_logo);
+            itemView.setOnClickListener(this);
         }
 
-        final Data1 curr_item = getItem(position);
-
-        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(width/2,width/2);
-
-        ImageView imgvar = (ImageView) gridItemView.findViewById(R.id.imgv);
-        imgvar.setLayoutParams(layoutParams);
-        imgvar.setImageResource(curr_item.getImg_res_Id());
-//        imgvar.setBaseline(width/2);
-
-        TextView tvar = (TextView) gridItemView.findViewById(R.id.tv);
-        tvar.setPadding(0,width/2,0,0);
-        tvar.setLayoutParams(new RelativeLayout.LayoutParams(width/2, ViewGroup.LayoutParams.WRAP_CONTENT));
-        tvar.setText(curr_item.getClub_name());
-
-
-        gridItemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                Intent in = new Intent(con,InClub.class);
-                in.setFlags(position);
-                Log.v("Position---",String.valueOf(position));
-                in.putExtra("CLUB_ID",curr_item.getClub_id());
-
-                con.startActivity(in);
-            }
-        });
-
-        return gridItemView;
-
-
-
-
-
-
-
-
-//        View gridItemView = convertView;
-
-/*        ImageView builtimgview;
-        if(convertView==null) {
-            builtimgview = new ImageView(con);
-            builtimgview.setLayoutParams(new GridView.LayoutParams(width/2,width/2));
-            builtimgview.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            builtimgview.setBackgroundColor(Color.rgb(0,0,0));
-//            gridItemView = LayoutInflater.from(getContext()).inflate(R.layout.image_layout,parent,false);
+        @Override
+        public void onClick(View view) {
+            Intent in = new Intent(con,InClub.class);
+            in.setFlags(getAdapterPosition());
+            con.startActivity(in);
         }
-        else{
-            builtimgview = (ImageView) convertView;
-        }
-
-        ArrayList<Integer> images = new ArrayList<>();
-        images.add(R.drawable.family_son);
-        images.add(R.drawable.family_daughter);
-        images.add(R.drawable.family_father);
-        images.add(R.drawable.family_mother);
-        images.add(R.drawable.family_grandfather);
-        images.add(R.drawable.family_grandmother);
-
-        Integer curr_item = getItem(position);
-
-//        ImageView img = gridItemView.findViewById(R.id.imgv);
-        builtimgview.setImageResource(curr_item);
-
-        return builtimgview;
-*/
     }
 }
