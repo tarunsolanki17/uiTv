@@ -34,4 +34,22 @@ public class ClubContract  {
         public static final String SOURCE_URL = "source";
 
     }
+    public class PhotosConstants{
+        public static final String ALBUMS = "albums";
+        public static final String ALBUM_NAME = "name";
+        public static final String PHOTO_COUNT = "photo_count";
+        public static final String PHOTOS = "photos";
+        public static final String PHOTO_NAME = "name";
+        public static final String CREATED_TIME = "created_time";
+        public static final String FACEBOOK_LINK = "link";
+        public static final String PLACE = "place";
+        public static final String HEIGHT = "height";
+        public static final String WIDTH = "width";
+        public static final String THUMB_PICTURE = "picture";
+        public static final String IMAGES = "images";
+        public static final String SOURCE = "source";
+        public static final String PAGING = "paging";
+        public static final String NEXT = "next";
+
+    }
 }

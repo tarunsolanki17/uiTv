@@ -31,6 +31,8 @@ import static com.example.tarun.uitsocieties.MainActivity.width;
  * Created by Tarun on 16-Aug-17.
  */
 
+/**********************  ARRAY ADAPTER FOR CLUB LOGOS GRID LAYOUT  ********************/
+
 public class MyArrayAdap extends ArrayAdapter<Data1> {
 
     public static int CLUB_NO;

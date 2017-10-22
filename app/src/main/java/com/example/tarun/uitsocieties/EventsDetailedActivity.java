@@ -1,8 +1,10 @@
 package com.example.tarun.uitsocieties;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -109,6 +111,11 @@ public class EventsDetailedActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 //  TODO --> MOVING TO THE MAP WITH LATITUDE AND LONGITUDE
+                Intent map_intent = new Intent(Intent.ACTION_VIEW);
+                map_intent.setData(Uri.parse("geo:"+curr_event.getLatitude()+", "+curr_event.getLongitude()));
+                if((map_intent.resolveActivity(getPackageManager())!=null)){
+                    startActivity(map_intent);
+                }
             }
         });
     }

@@ -154,8 +154,6 @@ public class EventsFrag extends Fragment {
                     @Override
                     public void onCompleted(GraphResponse response) {
 
-                        Log.v("JSON Response---",response.toString());
-
                         events_data = parseJSONData(response.getJSONObject());
                         onDataFetched();
                         //  TODO --> HANDLE RESPONSE CODES
@@ -217,7 +215,6 @@ public class EventsFrag extends Fragment {
 
                         end_date = new SimpleDateFormat(" EEEE, dd MMMM yyyy", java.util.Locale.getDefault()).format(d);
                     }
-                    Log.v("name---", event_name);
 
                     if(curr_event.has(PLACE)&&!curr_event.isNull(PLACE)) {
                         JSONObject place_obj = curr_event.getJSONObject(PLACE);
@@ -275,6 +272,7 @@ public class EventsFrag extends Fragment {
         }
     return events;
     }
+
     public boolean isConnectedFunc(){
         ConnectivityManager cm = (ConnectivityManager) getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo ninfo = cm.getActiveNetworkInfo();
@@ -300,10 +298,12 @@ public class EventsFrag extends Fragment {
         super.onSaveInstanceState(outState);
         outState.putParcelableArrayList("events_parcel",events_data);
     }
+
     public void onDataFetched(){
         eventsAdapter = new EventsListAdapter(getContext(),events_data);
         listView.setAdapter(eventsAdapter);
     }
+
     public static void eventNotification(Context con, final ArrayList<EventsDataModel> new_events, String club_name, String clubID, int index){
         EventsDataModel new_event = new_events.get(index);
         String date_time = "on " + new_event.getDate() + " " + new_event.getMonth() + " at " + new_event.getTime();

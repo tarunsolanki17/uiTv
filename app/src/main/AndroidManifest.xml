@@ -36,6 +36,10 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".InClub"/>
         </activity>
+        <activity android:name=".PhotoDetailActivity"
+            android:label="">
+
+        </activity>
         <!--*********************FACEBOOK INTEGRATION************************-->
 
         <meta-data android:name="com.facebook.sdk.ApplicationId"

@@ -2,11 +2,15 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
+        android:id="@+id/save"
+        android:title="Save Photo"
+        app:showAsAction="never"/>
+    <item
         android:id="@+id/share"
         android:title="Share"
         app:showAsAction="never"/>
     <item
-        android:id="@+id/save"
-        android:title="Save Photo"
+        android:id="@+id/facebook_link"
+        android:title="See in Facebook"
         app:showAsAction="never"/>
 </menu>

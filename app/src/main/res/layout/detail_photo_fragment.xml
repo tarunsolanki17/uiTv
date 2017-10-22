@@ -1,25 +1,35 @@
-<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
-    android:layout_width="match_parent"
+    android:id="@+id/detailed_layout"
     android:layout_height="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    android:layout_width="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android" >
 <ImageView
-    android:id="@+id/image"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/detail_image"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_centerInParent="true"
     android:adjustViewBounds="true"
     android:scaleType="fitCenter"
-    xmlns:android="http://schemas.android.com/apk/res/android" />
-    <ImageView
+    tools:context="com.example.tarun.uitsocieties.PhotoDetailActivity$PlaceholderFragment"
+    android:layout_centerInParent="true"/>
+<ProgressBar
+    android:id="@+id/photo_progress"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_centerInParent="true"/>
+    <TextView
+        android:id="@+id/not_loaded"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/com_facebook_button_send_icon_blue"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"/>
-    <ImageView
+        android:text="Couldn't load image."
+        android:layout_centerInParent="true"
+        android:textColor="#FFFFFF"
+        android:visibility="gone"/>
+    <TextView
+        android:id="@+id/caption"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"/>
+        android:textColor="#FFFFFF"/>
 </RelativeLayout>
