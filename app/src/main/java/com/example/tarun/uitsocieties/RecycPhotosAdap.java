@@ -33,7 +33,6 @@ public class RecycPhotosAdap extends RecyclerView.Adapter<RecycPhotosAdap.PhotoV
     @Override
     public RecycPhotosAdap.PhotoViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
-        Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
         View photoView = inflater.inflate(R.layout.photo_recyc_layout, parent, false);
         RecycPhotosAdap.PhotoViewHolder viewHolder = new RecycPhotosAdap.PhotoViewHolder(photoView);
@@ -47,7 +46,7 @@ public class RecycPhotosAdap extends RecyclerView.Adapter<RecycPhotosAdap.PhotoV
         ImageView imageView = holder.photo_img_view;
         Glide.with(context)
                 .load(curr_photo.getImage_link())
-                .apply(new RequestOptions().placeholder(R.drawable.color_black))
+                .apply(new RequestOptions().placeholder(R.drawable.color_gray_place))
                 .into(imageView);
     }
 
@@ -55,6 +54,7 @@ public class RecycPhotosAdap extends RecyclerView.Adapter<RecycPhotosAdap.PhotoV
     public int getItemCount() {
         return photos_data.size();
     }
+
     class PhotoViewHolder extends RecyclerView.ViewHolder implements  View.OnClickListener{
 
         ImageView photo_img_view;

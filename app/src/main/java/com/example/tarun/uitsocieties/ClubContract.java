@@ -60,4 +60,19 @@ public class ClubContract  {
         public static final String NEXT = "next";
 
     }
+
+    public class VideosConstants{
+        public static final String DATA = "data";
+        public static final String VIDEOS = "videos";
+        public static final String ID = "id";
+        public static final String CREATED_TIME = "created_time";
+        public static final String DESCRIPTION = "description";
+        public static final String LENGTH = "length";
+        public static final String PLACE = "place";
+        public static final String PICTURE = "picture";
+        public static final String SOURCE = "source";
+        public static final String THUMBNAILS = "thumbnails";
+        public static final String IS_PREFERRED = "is_preferred";
+        public static final String THUMBNAIL_URL = "uri";
+    }
 }

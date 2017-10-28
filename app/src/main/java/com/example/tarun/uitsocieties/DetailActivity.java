@@ -20,7 +20,6 @@ import android.widget.ImageView;
 
 import java.util.ArrayList;
 
-import static com.example.tarun.uitsocieties.R.drawable.a;
 
 /**
  * Created by Tarun on 10-Sep-17.

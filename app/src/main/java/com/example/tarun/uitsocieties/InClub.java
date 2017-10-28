@@ -26,7 +26,7 @@ import static com.facebook.internal.CallbackManagerImpl.RequestCodeOffset.Login;
 
 public class InClub extends AppCompatActivity {
 
-    static boolean login;
+    public static boolean login;
     static FragmentManager fmag;
     static FragmentTransaction ft;
     static ViewPager viewpgr;
@@ -37,6 +37,10 @@ public class InClub extends AppCompatActivity {
         setTheme(R.style.AppTheme);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.inclub_main);
+
+//        getActionBar().setDisplayHomeAsUpEnabled(true);
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//        getSupportActionBar().setHomeButtonEnabled(true);
 
         login_checker();
 

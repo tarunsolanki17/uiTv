@@ -92,7 +92,16 @@ public class PhotoParcel implements Parcelable {
     public String getBig_image_link() {
         return big_image_link;
     }
+
     public String getCaption() {
         return caption;
+    }
+
+    public String getFacebook_link() {
+        return facebook_link;
+    }
+
+    public String getAlbum_name() {
+        return album_name;
     }
 }

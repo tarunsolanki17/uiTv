@@ -1,8 +1,12 @@
 package com.example.tarun.uitsocieties;
 
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Parcel;
 import android.provider.ContactsContract;
 import android.support.annotation.Nullable;
@@ -23,6 +27,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
@@ -34,11 +39,16 @@ import com.bumptech.glide.request.target.Target;
 
 import org.w3c.dom.Text;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 
+import static android.content.Intent.ACTION_VIEW;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
-import static com.example.tarun.uitsocieties.R.drawable.a;
 
 /**
  * Created by Tarun on 18-Oct-17.
@@ -181,17 +191,73 @@ public class PhotoDetailActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
-            case R.id.save: //  TODO --> SAVE PHOTO TO DEVICE
-                            //  TODO --> TOAST WHEN SAVED
+            case R.id.save: saveImage();
                             break;
             case R.id.share://  TODO --> SHARE INTENT
                             break;
-            case R.id.facebook_link:    // TODO --> IMPLICIT INTENT TO FACEBOOK
+            case R.id.facebook_link:
+                Intent facebook_intent = new Intent(ACTION_VIEW);
+                facebook_intent.setData(Uri.parse(photos_data.get(pos).getFacebook_link()));
+                if((facebook_intent.resolveActivity(getPackageManager())!=null)){
+                startActivity(facebook_intent);
+            }
                             break;
-
             default :       break;
         }
 
         return true;
+    }
+    public void saveImage(){
+        AsyncTask downloadImage;
+        downloadImage = new AsyncTask() {
+            @Override
+            protected Object doInBackground(Object[] objects) {
+                Log.v("Save Image---","Running");
+                try {
+                    URL url = new URL("https://www.google.co.in/images/icons/material/system/1x/email_grey600_24dp.png"/*photos_data.get(pos).getBig_image_link()*/);
+                    HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+                    urlConnection.setRequestMethod("GET");
+                    urlConnection.setRequestProperty("User-Agent","Mozilla/5.0 ( compatible ) ");
+                    urlConnection.setRequestProperty("Accept","*/*");
+                    urlConnection.setDoOutput(true);
+                    urlConnection.connect();
+                    Log.v("Response Code IMG---",String.valueOf(urlConnection.getResponseCode()));
+
+                    File SDCardRoot = Environment.getExternalStorageDirectory().getAbsoluteFile();
+                    String fileName = photos_data.get(pos).getAlbum_name() + pos;
+                    File image_file = new File(SDCardRoot,fileName);
+                    boolean created = false;
+                    if(!image_file.exists()){
+                        created = image_file.createNewFile();
+                    }
+                    else
+                        created = true;
+                    if(created) {
+                        FileOutputStream fileOutput = new FileOutputStream(image_file);
+                        InputStream inputStream = urlConnection.getInputStream();
+                        int totalSize = urlConnection.getContentLength();
+                        int downloadedSize = 0;
+                        byte[] buffer = new byte[1024];
+                        int bufferLength = 0;
+                        while ((bufferLength = inputStream.read(buffer)) > 0) {
+                            fileOutput.write(buffer, 0, bufferLength);
+                            downloadedSize += bufferLength;
+                            Log.i("Progress:", "downloadedSize:" + downloadedSize + " totalSize:" + totalSize);
+                        }
+                        fileOutput.close();
+                        if (downloadedSize == totalSize) {
+                            Log.v("FilePath----", image_file.getPath());
+                            Toast.makeText(getApplicationContext(), "Photo Saved", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }
+                catch (Exception e){
+                    Log.v("Save Exception---","Caught:" + e.toString());
+                    e.printStackTrace();
+                }
+                return null;
+            }
+        };
+        downloadImage.execute();
     }
 }

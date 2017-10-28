@@ -42,8 +42,7 @@ import static com.example.tarun.uitsocieties.ClubContract.PHOENIX;
 import static com.example.tarun.uitsocieties.ClubContract.SUNDARBAN;
 import static com.example.tarun.uitsocieties.EventsFrag.eventNotification;
 import static com.example.tarun.uitsocieties.InClub.club_id;
-import static com.example.tarun.uitsocieties.R.drawable.c;
-import static com.example.tarun.uitsocieties.R.drawable.d;
+
 import static java.security.AccessController.getContext;
 
 import static com.example.tarun.uitsocieties.ClubContract.EventsConstants.CITY;
@@ -97,14 +96,14 @@ public class FetchingJobService extends JobService {
                         e.printStackTrace();
                     }
                 }
-                if(file_created==true||events_ids.length()==0){
-                    for (int i = 0; i < 6 /*CLUB_IDS.size()*/; i++) {
+                if(file_created||events_ids.length()==0){
+                    for (int i = 0; i < CLUB_IDS.length; i++) {
                         Log.v("First Loop---", String.valueOf(i));
                         eventIDJSONRequest(CLUB_IDS[i], CLUB_NAMES[i], true, i);
                     }
                 }
                 else if(events_ids.exists()&&events_ids.length()>0){
-                    for (int i = 0; i < 6 /*CLUB_IDS.size()*/; i++){
+                    for (int i = 0; i <CLUB_IDS.length; i++){
                         eventIDJSONRequest(CLUB_IDS[i],CLUB_NAMES[i],false, i);
                     }
                 }
@@ -322,26 +321,13 @@ public class FetchingJobService extends JobService {
     }
 
     private String sendClubID(String clubName){
-        if(clubName.equals("COHERENT")){
-            return COHERENT;
+
+        for(int k=0;k<CLUB_NAMES.length;k++){
+            if(clubName.equals(CLUB_NAMES[k])){
+                return CLUB_IDS[k];
+            }
         }
-        else if(clubName.equals("E_CELL")){
-            return E_CELL;
-        }
-        else if(clubName.equals("GREEN_ARMY")){
-            return GREEN_ARMY;
-        }
-        else if(clubName.equals("INSYNC")){
-            return INSYNC;
-        }
-        else if(clubName.equals("PHOENIX")){
-            return PHOENIX;
-        }
-        else if(clubName.equals("SUNDARBAN")){
-            return SUNDARBAN;
-        }
-        else
-            return "";
+        return "";
     }
 
     private void singleJSONRequest(final String clubID, final String existing_old_id, final String club_name){

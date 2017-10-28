@@ -65,8 +65,6 @@ import static com.example.tarun.uitsocieties.InClub.club_id;
 import static com.example.tarun.uitsocieties.InClub.ft;
 import static com.example.tarun.uitsocieties.InClub.login;
 import static com.example.tarun.uitsocieties.InClub.login_checker;
-import static com.example.tarun.uitsocieties.R.drawable.b;
-import static com.example.tarun.uitsocieties.R.drawable.c;
 
 
 /**
@@ -82,6 +80,7 @@ public class PhotosFrag extends Fragment{
     boolean isConnected;
     RecycPhotosAdap recycAdapter;
     AsyncTask fetchAsync;
+    int data_len;
 
     public PhotosFrag() {
         // Required empty public constructor
@@ -107,7 +106,9 @@ public class PhotosFrag extends Fragment{
             public void onRefresh() {
                 swipe.setRefreshing(true);
                 if(isConnectedFunc()) {
+                    if(fetchAsync!=null) {
                         fetchAsync.cancel(true);
+                    }
                         photos_data.clear();
                         pbar.setVisibility(VISIBLE);
                         photo_recyc_view.setVisibility(GONE);
@@ -115,7 +116,6 @@ public class PhotosFrag extends Fragment{
                         if(recycAdapter!=null)
                         recycAdapter.notifyDataSetChanged();
                         photoJSONRequest();
-
                 }
                 swipe.setRefreshing(false);
             }
@@ -135,6 +135,7 @@ public class PhotosFrag extends Fragment{
                     no_data.setVisibility(VISIBLE);
                 }
                 else{
+                    data_len = photos_data.size();
                     pbar.setVisibility(GONE);
                     no_data.setVisibility(GONE);
                     photo_recyc_view.setVisibility(VISIBLE);
@@ -154,25 +155,6 @@ public class PhotosFrag extends Fragment{
 
     /******************************  END OF onCreateView  *******************************/
 
-
-    /*public void photosjsonRequest(){
-        GraphRequest request = GraphRequest.newGraphPathRequest(
-                AccessToken.getCurrentAccessToken(),
-                "/"+ club_id,
-                new GraphRequest.Callback() {
-                    @Override
-                    public void onCompleted(GraphResponse response) {
-                        // Insert your code here
-                    }
-                });
-
-        Bundle parameters = new Bundle();
-        parameters.putString("fields", "albums{name,photo_count,photos{name,created_time,link,place,height,width,picture,images}}");
-        request.setParameters(parameters);
-        request.executeAsync();
-    }*/
-
-    int data_len;
 
     public void photoJSONRequest(){
         data_len = 0;
@@ -418,13 +400,15 @@ public class PhotosFrag extends Fragment{
             pbar.setVisibility(GONE);
             no_data.setVisibility(GONE);
             photo_recyc_view.setVisibility(VISIBLE);
-        }
-        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getContext(),3);
-        photo_recyc_view.setHasFixedSize(true);
-        photo_recyc_view.setLayoutManager(layoutManager);
 
-        recycAdapter = new RecycPhotosAdap(photos_data,getContext());
-        photo_recyc_view.setAdapter(recycAdapter);
+            RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getContext(),3);
+            photo_recyc_view.setHasFixedSize(true);
+            photo_recyc_view.setLayoutManager(layoutManager);
+            //  TODO --> SET A LISTENER WHICH RUNS WHEN THE LIST COMES TO END.
+
+            recycAdapter = new RecycPhotosAdap(photos_data,getContext());
+            photo_recyc_view.setAdapter(recycAdapter);
+        }
     }
 
     public boolean isConnectedFunc(){

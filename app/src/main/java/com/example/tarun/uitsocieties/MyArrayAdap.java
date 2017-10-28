@@ -52,7 +52,6 @@ public class MyArrayAdap extends RecyclerView.Adapter<MyArrayAdap.MyViewHolder> 
 
     @Override
     public MyArrayAdap.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        Log.v("CreateViewHolder---","Running");
         LayoutInflater inflater = LayoutInflater.from(con);
         View photoView = inflater.inflate(R.layout.main_image_layout, parent, false);
         MyArrayAdap.MyViewHolder viewHolder = new MyArrayAdap.MyViewHolder(photoView);
@@ -61,7 +60,6 @@ public class MyArrayAdap extends RecyclerView.Adapter<MyArrayAdap.MyViewHolder> 
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        Log.v("BindViewHolder---","Running");
         Data1 curr_club = club_data.get(position);
         ImageView imageView = holder.mClubImageView;
 
@@ -83,7 +81,6 @@ public class MyArrayAdap extends RecyclerView.Adapter<MyArrayAdap.MyViewHolder> 
 
         public MyViewHolder(View itemView) {
             super(itemView);
-            Log.v("ViewHolder---","Running");
             mClubImageView = (ImageView) itemView.findViewById(R.id.club_logo);
             itemView.setOnClickListener(this);
         }

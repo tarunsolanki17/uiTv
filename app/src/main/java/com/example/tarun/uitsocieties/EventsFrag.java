@@ -63,7 +63,6 @@ import static com.example.tarun.uitsocieties.ClubContract.INSYNC;
 import static com.example.tarun.uitsocieties.InClub.club_id;
 import static com.example.tarun.uitsocieties.InClub.login;
 import static com.example.tarun.uitsocieties.InClub.login_checker;
-import static com.example.tarun.uitsocieties.R.drawable.c;
 import static com.example.tarun.uitsocieties.R.id.date_time;
 import static com.example.tarun.uitsocieties.R.id.photo_recyc_view;
 import static com.facebook.login.widget.ProfilePictureView.TAG;
@@ -86,6 +85,7 @@ public class EventsFrag extends Fragment {
     TextView no_data;
     SwipeRefreshLayout swipe;
     boolean isConnected;
+    Context con;
 
     public EventsFrag() {
         // Required empty public constructor
@@ -97,6 +97,8 @@ public class EventsFrag extends Fragment {
                              Bundle savedInstanceState) {
 
         View events_view = inflater.inflate(R.layout.fragment_events, container, false);
+
+        con = events_view.getContext();
 
         listView = events_view.findViewById(R.id.listview);
         pbar = events_view.findViewById(R.id.progress_bar);
@@ -276,7 +278,7 @@ public class EventsFrag extends Fragment {
     public boolean isConnectedFunc(){
         ConnectivityManager cm = (ConnectivityManager) getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo ninfo = cm.getActiveNetworkInfo();
-        isConnected = ninfo != null && ninfo.isConnectedOrConnecting();
+        isConnected = ninfo != null && ninfo.isConnected();
 
         if(!isConnected){
 //            TODO --> IMAGE WITH TEXT IN NO INTERNET
@@ -300,7 +302,7 @@ public class EventsFrag extends Fragment {
     }
 
     public void onDataFetched(){
-        eventsAdapter = new EventsListAdapter(getContext(),events_data);
+        eventsAdapter = new EventsListAdapter(con,events_data);
         listView.setAdapter(eventsAdapter);
     }
 
