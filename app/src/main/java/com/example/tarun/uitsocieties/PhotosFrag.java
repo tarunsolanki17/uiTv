@@ -114,7 +114,7 @@ public class PhotosFrag extends Fragment{
                         photo_recyc_view.setVisibility(GONE);
 
                         if(recycAdapter!=null)
-                        recycAdapter.notifyDataSetChanged();
+                            recycAdapter.notifyDataSetChanged();
                         photoJSONRequest();
                 }
                 swipe.setRefreshing(false);
@@ -126,9 +126,13 @@ public class PhotosFrag extends Fragment{
             if(savedInstanceState!=null&&savedInstanceState.getInt("Login")==1)
                 savedInstanceState = null;
 
+            if(savedInstanceState!=null&&savedInstanceState.getBoolean("Incomplete"))
+                savedInstanceState = null;
+
             if (savedInstanceState != null) {
                 photos_data = savedInstanceState.getParcelableArrayList("photos_parcel");
-                if(photos_data.isEmpty()||photos_data==null){
+                if(photos_data!=null)
+                if(photos_data.isEmpty()){
                     //  TODO --> REMOVE NULL POINTER EXCEPTION IN isEmpty()
                     pbar.setVisibility(GONE);
                     photo_recyc_view.setVisibility(GONE);
@@ -261,7 +265,6 @@ public class PhotosFrag extends Fragment{
                             }
                             if(curr_image.has(THUMB_PICTURE)&&!curr_image.isNull(THUMB_PICTURE)) {
                                 thumb_link = curr_image.getString(THUMB_PICTURE);
-
                             }
 
                             if(curr_image.has(IMAGES)&&!curr_image.isNull(IMAGES)){
@@ -279,12 +282,18 @@ public class PhotosFrag extends Fragment{
                                 }
                             }
                             photos_data.add(new PhotoParcel(album_name,photo_count,caption,created_time,facebook_link,place,height,width,thumb_link,image_link,big_image_link));
+                            /*if(photos_data.size()>=28) {
+                                Log.v("Size---",">=28");
+                                break;
+                            }*/
                         }
+                        /*if(photos_data.size()>=28)
+                            break;*/
                         if(photo_object.has(PAGING)&&!photo_object.isNull(PAGING)){
                             JSONObject pagingObject = photo_object.getJSONObject(PAGING);
 
                             if(pagingObject.has(NEXT)&&!pagingObject.isNull(NEXT)){
-                                photoNextJSONReq(pagingObject.getString(NEXT),album_name,photo_count,caption,created_time,facebook_link,place,height,width,thumb_link);
+                                photoNextJSONReq(pagingObject.getString(NEXT),album_name,photo_count);
                             }
                         }
                     }
@@ -294,13 +303,13 @@ public class PhotosFrag extends Fragment{
                 Log.v("photos_data len---",String.valueOf(photos_data.size()));
 
             } catch (Exception e) {
-                Log.v("Exception---",e.toString());
+                Log.v("Excep fetchPhotosD---",e.toString());
                 e.printStackTrace();
             }
         }
     }
 
-    public void photoNextJSONReq(String nextResponseLink,String album_name, int photo_count, String caption, String created_time, String facebook_link, String place, String height, String width, String thumb_link){
+    public void photoNextJSONReq(String nextResponseLink,String album_name, int photo_count){
         URL nextURL;
         HttpURLConnection httpUConn = null;
         InputStream inputStream = null;
@@ -321,7 +330,7 @@ public class PhotosFrag extends Fragment{
                 builder.append(line);
             }
             Log.v("NEXT STRING---",builder.toString());
-            fetchNextPhotosData(builder.toString(),album_name,photo_count,caption,created_time,facebook_link,place,height,width,thumb_link);
+            fetchNextPhotosData(builder.toString(),album_name,photo_count);
         } catch (Exception e) {
             Log.v("Network Exception---","Caught");
             e.printStackTrace();
@@ -342,7 +351,14 @@ public class PhotosFrag extends Fragment{
 
     }
 
-    public void fetchNextPhotosData(String nextPhotoString, String album_name, int photo_count, String caption, String created_time, String facebook_link, String place, String height, String width, String thumb_link){
+    public void fetchNextPhotosData(String nextPhotoString, String album_name, int photo_count){
+        String caption = "";
+        String created_time = "";
+        String facebook_link = "";
+        String place = "";
+        String height = "";
+        String width = "";
+        String thumb_link = "";
         String image_link = "";
         String big_image_link = "";
         try {
@@ -351,6 +367,28 @@ public class PhotosFrag extends Fragment{
 
             for(int k=0;k<new_array.length();k++) {
                 JSONObject curr_image_next = new_array.getJSONObject(k);
+
+                if(curr_image_next.has(PHOTO_NAME)&&!curr_image_next.isNull(PHOTO_NAME)) {
+                    caption = curr_image_next.getString(PHOTO_NAME);
+                }
+                if(curr_image_next.has(CREATED_TIME)&&!curr_image_next.isNull(CREATED_TIME)) {
+                    created_time = curr_image_next.getString(CREATED_TIME);
+                }
+                if(curr_image_next.has(FACEBOOK_LINK)&&!curr_image_next.isNull(FACEBOOK_LINK)) {
+                    facebook_link = curr_image_next.getString(FACEBOOK_LINK);
+                }
+                if(curr_image_next.has(PLACE)&&!curr_image_next.isNull(PLACE)) {
+                    place = curr_image_next.getString(PLACE);
+                }
+                if(curr_image_next.has(HEIGHT)&&!curr_image_next.isNull(HEIGHT)) {
+                    height = curr_image_next.getString(HEIGHT);
+                }
+                if(curr_image_next.has(WIDTH)&&!curr_image_next.isNull(WIDTH)) {
+                    width = curr_image_next.getString(WIDTH);
+                }
+                if(curr_image_next.has(THUMB_PICTURE)&&!curr_image_next.isNull(THUMB_PICTURE)) {
+                    thumb_link = curr_image_next.getString(THUMB_PICTURE);
+                }
 
                 if (curr_image_next.has(IMAGES) && !curr_image_next.isNull(IMAGES)) {
                     JSONArray curr_sources_array = curr_image_next.getJSONArray(IMAGES);
@@ -367,25 +405,38 @@ public class PhotosFrag extends Fragment{
                     }
                 }
                 photos_data.add(new PhotoParcel(album_name,photo_count,caption,created_time,facebook_link,place,height,width,thumb_link,image_link,big_image_link));
+                /*if(photos_data.size()>=24)
+                    break;*/
             }
             if(nextObj.has(PAGING)&&!nextObj.isNull(PAGING)){
                 JSONObject pagingObject = nextObj.getJSONObject(PAGING);
 
                 if(pagingObject.has(NEXT)&&!pagingObject.isNull(NEXT)){
-                    photoNextJSONReq(pagingObject.getString(NEXT),album_name,photo_count,caption,created_time,facebook_link,place,height,width,thumb_link);
+                    photoNextJSONReq(pagingObject.getString(NEXT),album_name,photo_count);
                 }
             }
         } catch (Exception e) {
+            Log.v("Exception in fetchNext","----");
             e.printStackTrace();
         }
-
 
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelableArrayList("photos_parcel",photos_data);
+        if(fetchAsync!=null) {
+            if (fetchAsync.getStatus().toString().equals("RUNNING"))
+                outState.putBoolean("Incomplete",true);
+            else if(fetchAsync.getStatus().toString().equals("FINISHED")) {
+                outState.putParcelableArrayList("photos_parcel", photos_data);
+                outState.putBoolean("Incomplete", false);
+            }
+        }
+        else {
+            outState.putParcelableArrayList("photos_parcel", photos_data);
+            outState.putBoolean("Incomplete",false);
+        }
     }
 
     public void onDataFetched(){
@@ -406,8 +457,10 @@ public class PhotosFrag extends Fragment{
             photo_recyc_view.setLayoutManager(layoutManager);
             //  TODO --> SET A LISTENER WHICH RUNS WHEN THE LIST COMES TO END.
 
-            recycAdapter = new RecycPhotosAdap(photos_data,getContext());
+            recycAdapter = new RecycPhotosAdap(photos_data,getActivity());
             photo_recyc_view.setAdapter(recycAdapter);
+
+//            Toast.makeText(getActivity(),photos_data.size()+" photos fetched",Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -430,4 +483,5 @@ public class PhotosFrag extends Fragment{
             return true;
         }
     }
+
 }

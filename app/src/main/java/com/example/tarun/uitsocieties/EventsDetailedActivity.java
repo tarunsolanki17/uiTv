@@ -24,6 +24,7 @@ import org.w3c.dom.Text;
 import java.net.URL;
 import java.util.ArrayList;
 
+import static com.example.tarun.uitsocieties.InClub.event_detail;
 import static com.example.tarun.uitsocieties.InClub.viewpgr;
 
 /**
@@ -41,6 +42,7 @@ public class EventsDetailedActivity extends AppCompatActivity {
     Bitmap image;
     private EventsDataModel curr_event;
     private Bundle new_event_bundle;
+    private String curr_club_id;
 
 
     @Override
@@ -48,8 +50,7 @@ public class EventsDetailedActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.events_detailed);
 
-//        getSupportActionBar().setDefaultDisplayHomeAsUpEnabled(true);
-//        getSupportActionBar().setHomeButtonEnabled(true);
+        event_detail = true;
 
         Intent receivedIntent = getIntent();
         boolean notif = false;
@@ -61,13 +62,13 @@ public class EventsDetailedActivity extends AppCompatActivity {
         }
         else{
             detailedInfo = receivedIntent.getParcelableArrayListExtra("events_parcel");
+            curr_club_id = receivedIntent.getStringExtra("Club ID");
             position = receivedIntent.getIntExtra("Event Position",-1);
             curr_event = detailedInfo.get(position);
         }
 
         //  TODO --> ATTACH AN ONCLICKLISTENER TO THE IMAGE VIEW FOR LEADING TO DETAILED ACTIVITY WITH ZOOMING AND SAVING OPTIONS
         //  TODO --> ATTACH INTENT TO FACEBOOK LINK
-        //  TODO --> ATTACH INTENT TO SHOW IN MAP
 
         cover = (ImageView) findViewById(R.id.cover);
         name = (TextView) findViewById(R.id.event_name);

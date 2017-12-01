@@ -12,6 +12,8 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import static com.example.tarun.uitsocieties.InClub.club_id;
+
 /**
  * Created by Tarun on 16-Sep-17.
  */
@@ -20,7 +22,7 @@ public class EventsListAdapter extends ArrayAdapter<EventsDataModel> {
 
     private Context con;
     private ArrayList<EventsDataModel> events_data;
-    private TextView name, month, date, day, time, place, city;
+    private TextView name, month, date, day, time, place;
 
     public EventsListAdapter(Context context, ArrayList<EventsDataModel> data) {
         super(context, 0, data);
@@ -42,7 +44,6 @@ public class EventsListAdapter extends ArrayAdapter<EventsDataModel> {
         day = eventListItemView.findViewById(R.id.eday);
         time = eventListItemView.findViewById(R.id.etime);
         place = eventListItemView.findViewById(R.id.eplace);
-        city = eventListItemView.findViewById(R.id.ecity);
 
         EventsDataModel curr_obj = getItem(position);
 
@@ -55,7 +56,6 @@ public class EventsListAdapter extends ArrayAdapter<EventsDataModel> {
             day.setText(curr_obj.getDay());
             time.setText(curr_obj.getTime());
             place.setText(curr_obj.getPlace_name());
-            city.setText(curr_obj.getCity());
 
         }
         catch (Exception e){
@@ -68,6 +68,7 @@ public class EventsListAdapter extends ArrayAdapter<EventsDataModel> {
                 Intent in = new Intent(con,EventsDetailedActivity.class);
                 in.putParcelableArrayListExtra("events_parcel",events_data);
                 in.putExtra("Event Position",position);
+                in.putExtra("Club ID",club_id);
                 con.startActivity(in);
                 //  TODO -->  DETAILED EVENTS ACTIVITY
             }

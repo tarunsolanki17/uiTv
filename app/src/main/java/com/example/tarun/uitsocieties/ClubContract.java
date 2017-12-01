@@ -1,5 +1,7 @@
 package com.example.tarun.uitsocieties;
 
+import com.example.tarun.uitsocieties.videos_fragment.VideoParcel;
+
 import java.util.ArrayList;
 
 import static android.graphics.Color.GREEN;
@@ -24,7 +26,7 @@ public class ClubContract  {
     public static final String TEDX_RGPV = "117643995501901";
 
     public static final String[] CLUB_NAMES = {"ACM_RGPV","COHERENT","E_CELL","GREEN_ARMY","HACKER_EARTH","INSYNC","I_SPEAK_AALAY","MAHASANGRAM","PHOENIX","SHANKHNAAD","SUNDARBAN","TECHNOPHILIC","TEDX_RGPV"};
-    public static final String[] CLUB_NAMES_VISIBLE = {"ACM-Student Chapter RGPV","Coherent","E Cell","Green Army","Hacker Earth","Insync","I Speak Aalay ","Mahasangram","Phoenix","शंखनाद","Sundarban","Technophilic","TEDx RGPV"};
+    public static final String[] CLUB_NAMES_VISIBLE = {"ACM-Student Chapter RGPV","Coherent","E-Cell","Green Army","Hacker Earth","Insync","I Speak Aalay ","Mahasangram","Phoenix","शंखनाद","Sundarban","Technophilic","TEDx RGPV"};
     public static final String[] CLUB_IDS = {ACM_RGPV,COHERENT,E_CELL,GREEN_ARMY,HACKER_EARTH,INSYNC,I_SPEAK_AALAY,MAHASANGRAM,PHOENIX,SHANKHNAAD,SUNDARBAN,TECHNOPHILIC,TEDX_RGPV};
 
     public class EventsConstants{

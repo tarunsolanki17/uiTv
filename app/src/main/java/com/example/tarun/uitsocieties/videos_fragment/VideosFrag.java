@@ -4,6 +4,7 @@ package com.example.tarun.uitsocieties.videos_fragment;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -22,6 +23,7 @@ import com.example.tarun.uitsocieties.RecycPhotosAdap;
 import com.facebook.AccessToken;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
+import com.facebook.HttpMethod;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -65,6 +67,7 @@ public class VideosFrag extends Fragment {
     Context con;
     int data_len;
     RecycVideosAdap recycAdapter;
+    AsyncTask fetchAsync;
 
     public VideosFrag() {
         // Required empty public constructor
@@ -88,8 +91,18 @@ public class VideosFrag extends Fragment {
             @Override
             public void onRefresh() {
                 swipe.setRefreshing(true);
-                if(isConnectedFunc())
+                if(isConnectedFunc()) {
+                    if(fetchAsync!=null) {
+                        fetchAsync.cancel(true);
+                    }
+                    videos_data.clear();
+                    pbar.setVisibility(VISIBLE);
+                    video_recyclerView.setVisibility(GONE);
+
+                    if(recycAdapter!=null)
+                        recycAdapter.notifyDataSetChanged();
                     videoJSONReq();
+                }
                 swipe.setRefreshing(false);
             }
         });
@@ -99,10 +112,13 @@ public class VideosFrag extends Fragment {
             if(savedInstanceState!=null&&savedInstanceState.getInt("Login")==1)
                 savedInstanceState = null;
 
+            if(savedInstanceState!=null&&savedInstanceState.getBoolean("Incomplete"))
+                savedInstanceState = null;
+
             if (savedInstanceState != null) {
                 videos_data = savedInstanceState.getParcelableArrayList("videos_parcel");
-                if(/*videos_data.isEmpty()||*/videos_data==null){
-                    //  TODO --> REMOVE NULL POINTER EXCEPTION IN isEmpty()
+                if(videos_data!=null)
+                if(videos_data.isEmpty()){
                     pbar.setVisibility(GONE);
                     video_recyclerView.setVisibility(GONE);
                     no_data.setVisibility(VISIBLE);
@@ -127,28 +143,53 @@ public class VideosFrag extends Fragment {
     }
 
     public void videoJSONReq(){
-        GraphRequest request = GraphRequest.newGraphPathRequest(
-                AccessToken.getCurrentAccessToken(),
-                "/"+club_id,
-                new GraphRequest.Callback() {
-                    @Override
-                    public void onCompleted(GraphResponse response) {
-                        data_len = 0;
+        data_len = 0;
 
-                        Log.v("Video Res---",response.toString());
-                        videos_data = fetchVideosData(response);
-                        onDataFetched();
+        final Bundle parameters = new Bundle();
+        parameters.putString("fields", "videos.limit(25){id,created_time,title,description,length,place,picture,captions,source,thumbnails{is_preferred,uri}}");
+
+        final GraphRequest.Callback graphCallback = new GraphRequest.Callback(){
+            @Override
+            public void onCompleted(GraphResponse response) {
+                try {
+                    fetchVideosData(response);
+                    data_len = videos_data.size();
+                    Log.v("data_len---",String.valueOf(data_len));
+                    //  TODO --> HANDLE RESPONSE CODES
+
+                    GraphRequest newRequest = response.getRequestForPagedResults(GraphResponse.PagingDirection.NEXT);
+                    if(newRequest!=null) {
+                        newRequest.setGraphPath("/" + club_id );
+                        newRequest.setCallback(this);
+                        newRequest.setParameters(parameters);
+                        newRequest.executeAndWait();
                     }
-                });
+                }
+                catch (Exception e) {
+                    Log.v("Excep* videoJSONReq---:",e.toString());
+                    e.printStackTrace();
+                }
+            }
+        };
 
-        Bundle parameters = new Bundle();
-        parameters.putString("fields", "videos{id,created_time,title,description,length,place,picture,captions,source,thumbnails{is_preferred,uri}}");
-        request.setParameters(parameters);
-        request.executeAsync();
+        fetchAsync = new AsyncTask() {
+            @Override
+            protected Object doInBackground(Object[] objects) {
+                new GraphRequest(AccessToken.getCurrentAccessToken(),
+                        "/" + club_id ,parameters, HttpMethod.GET, graphCallback).executeAndWait();
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Object o) {
+                onDataFetched();
+            }
+        };
+        fetchAsync.execute();
     }
 
-    public ArrayList<VideoParcel> fetchVideosData(GraphResponse response){
-        ArrayList<VideoParcel> video_fetch_data = new ArrayList<>();
+    public void fetchVideosData(GraphResponse response){
+
         JSONObject JSONresponse = response.getJSONObject();
         if(JSONresponse!=null&&JSONresponse.length()>0) {
             try {
@@ -212,7 +253,7 @@ public class VideosFrag extends Fragment {
                             }
                         }
                     }
-                    video_fetch_data.add(new VideoParcel(id,created_time,description,length,picture,source_url,thumb_url));
+                    videos_data.add(new VideoParcel(id,created_time,description,length,picture,source_url,thumb_url));
                 }
 
             }
@@ -220,7 +261,6 @@ public class VideosFrag extends Fragment {
                 Log.v("Exception---",e.toString());
             }
         }
-        return video_fetch_data;
     }
 
     public void onDataFetched(){
@@ -268,5 +308,18 @@ public class VideosFrag extends Fragment {
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelableArrayList("videos_parcel",videos_data);
+
+        if(fetchAsync!=null) {
+            if (fetchAsync.getStatus().toString().equals("RUNNING"))
+                outState.putBoolean("Incomplete",true);
+            else if(fetchAsync.getStatus().toString().equals("FINISHED")) {
+                outState.putParcelableArrayList("videos_parcel",videos_data);
+                outState.putBoolean("Incomplete", false);
+            }
+        }
+        else {
+            outState.putParcelableArrayList("videos_parcel",videos_data);
+            outState.putBoolean("Incomplete",false);
+        }
     }
 }

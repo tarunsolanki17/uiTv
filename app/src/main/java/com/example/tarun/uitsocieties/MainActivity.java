@@ -1,6 +1,8 @@
 package com.example.tarun.uitsocieties;
 
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -31,6 +33,7 @@ import static com.example.tarun.uitsocieties.ClubContract.SHANKHNAAD;
 import static com.example.tarun.uitsocieties.ClubContract.SUNDARBAN;
 import static com.example.tarun.uitsocieties.ClubContract.TECHNOPHILIC;
 import static com.example.tarun.uitsocieties.ClubContract.TEDX_RGPV;
+import static java.security.AccessController.getContext;
 
 public class MainActivity extends AppCompatActivity implements Runnable{
 
@@ -52,7 +55,7 @@ public class MainActivity extends AppCompatActivity implements Runnable{
 //        TODO --> ADD THE PHOTOS WITH DIFFERENT DPIs
         club_data.add(new Data1(R.drawable.acm,"ACM Student Chapter RGPV",ACM_RGPV,1));
         club_data.add(new Data1(R.drawable.coherent,"Coherent",COHERENT,2));
-        club_data.add(new Data1(R.drawable.ecell,"E-cell",E_CELL,3));
+        club_data.add(new Data1(R.drawable.ecell,"E-Cell",E_CELL,3));
         club_data.add(new Data1(R.drawable.green_army,"Green Army",GREEN_ARMY,4));
         club_data.add(new Data1(R.drawable.hacker_earth,"Hacker Earth",HACKER_EARTH,5));
         club_data.add(new Data1(R.drawable.insync,"Insync",INSYNC,6));
@@ -86,6 +89,7 @@ public class MainActivity extends AppCompatActivity implements Runnable{
             width = metrics.widthPixels;
         }
     }
+
     @Override
     public void run() {
         Log.v("Thread---"," Running");
@@ -126,5 +130,16 @@ public class MainActivity extends AppCompatActivity implements Runnable{
         super.onStop();
         if(AccessToken.getCurrentAccessToken()!=null)
             FetchJobScheduler.scheduleFetching(this);
+    }
+
+    public static boolean isConnectedStatic(Context con){
+        ConnectivityManager cm = (ConnectivityManager) con.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo ninfo = cm.getActiveNetworkInfo();
+        boolean isConnectedStat = ninfo != null && ninfo.isConnected();
+
+        if(!isConnectedStat)
+            return false;
+        else
+            return true;
     }
 }

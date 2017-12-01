@@ -3,16 +3,16 @@
     android:layout_height="match_parent"
     android:layout_width="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android" >
-<ImageView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/detail_image"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:adjustViewBounds="true"
-    android:scaleType="fitCenter"
-    tools:context="com.example.tarun.uitsocieties.PhotoDetailActivity$PlaceholderFragment"
-    android:layout_centerInParent="true"/>
+
+    <it.sephiroth.android.library.imagezoom.ImageViewTouch
+        android:id="@+id/detail_image"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:adjustViewBounds="true"
+        android:scaleType="centerCrop"
+        android:layout_centerInParent="true"
+        />
+
 <ProgressBar
     android:id="@+id/photo_progress"
     android:layout_width="wrap_content"

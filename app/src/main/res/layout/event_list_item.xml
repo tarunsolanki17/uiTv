@@ -1,94 +1,139 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
+<LinearLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="1dp"
-    android:layout_marginBottom="1dp"
-    android:background="#FFFFFF">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical">
 
-    <ImageView
-        android:id="@+id/cover"
+
+
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-    <TextView
-        android:id="@+id/emonth"
+        android:layout_height="110dp"
+        android:layout_marginBottom="1dp"
+        android:layout_marginTop="1dp"
+        android:background="#f4cc37"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:id="@+id/date"
+            android:layout_width="85dp"
+            android:layout_height="110dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:background="#25B7D3">
+
+            <TextView
+                android:id="@+id/emonth"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:clickable="false"
+                android:text="SEP"
+                android:textAlignment="center"
+                android:textColor="#FFFFFF"
+                android:textSize="30sp"
+                android:paddingTop="5dp"/>
+
+            <TextView
+                android:id="@+id/edate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/emonth"
+                android:text="20"
+                android:textAlignment="center"
+                android:textColor="#FFFFFF"
+                android:layout_alignParentBottom="true"
+                android:textSize="47sp" />
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/ename"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="5dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_toEndOf="@+id/date"
+            android:layout_toRightOf="@+id/date"
+            android:text="AntarAgni '16 Central India Prelims "
+            android:textColor="#000000"
+            android:textSize="18sp"
+            />
+
+        <ImageView
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="7dp"
+            android:src="@drawable/info"
+            android:id="@+id/imageView2" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_alignParentBottom="true"
+            android:layout_alignLeft="@+id/ename"
+            android:layout_alignStart="@+id/ename"
+            android:layout_marginBottom="3dp">
+
+            <TextView
+                android:id="@+id/eday"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="5dp"
+                android:text="Sat" />
+
+            <TextView
+                android:id="@+id/etime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="9:00 AM" />
+
+        </LinearLayout>
+
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:clickable="false"
-        android:text="SEP"
-        android:textSize="20sp"
-        android:layout_below="@+id/ename"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginLeft="13dp"
-        android:layout_marginStart="13dp" />
+        android:orientation="vertical"
+        android:layout_alignParentBottom="true"
+        android:layout_alignRight="@+id/imageView2"
+        android:layout_alignEnd="@+id/imageView2"
+        android:layout_marginBottom="3dp">
 
-    <TextView
-        android:id="@+id/edate"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="20"
-        android:textSize="35sp"
-        android:textColor="#ff0004"
-        android:layout_below="@+id/emonth"
-        android:layout_alignLeft="@+id/emonth"
-        android:layout_alignStart="@+id/emonth" />
+        <TextView
+            android:id="@+id/eplace"
+            android:layout_width="190dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:paddingTop="5dp"
+            android:text="UIT RGPV"
+            android:textAlignment="viewEnd" />
 
-    <TextView
-        android:id="@+id/ename"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="AntarAgni '16 Central India Prelims "
-        android:textSize="20sp"
-        android:textColor="#000000"
-        android:textAlignment="center"
-        android:layout_centerHorizontal="true" />
+        <!--<TextView
+            android:id="@+id/ecity"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:text="Bhopal"
+            android:textAlignment="viewEnd" />-->
 
-    <TextView
-        android:id="@+id/eday"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    </LinearLayout>
 
-        android:text="Sat"
-        android:layout_alignTop="@+id/edate"
-        android:layout_centerHorizontal="true" />
-    <TextView
-        android:id="@+id/etime"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="9:00 AM"
-        android:layout_alignBaseline="@+id/edate"
-        android:layout_alignBottom="@+id/edate"
-        android:layout_centerHorizontal="true" />
+    </RelativeLayout>
 
-    <TextView
-        android:id="@+id/eplace"
-        android:layout_width="120dp"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/eday"
-        android:layout_alignParentEnd="true"
+    <View
+        android:id="@+id/grey_line"
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        tools:background="#c7c7c7"
+        />
 
-        android:layout_alignParentRight="true"
-        android:layout_below="@+id/ename"
-        android:layout_marginEnd="11dp"
-        android:layout_marginRight="11dp"
-        android:layout_marginTop="12dp"
-        android:gravity="end"
-        android:text="UIT RGPV"
-        android:textAlignment="viewEnd" />
-
-    <TextView
-        android:id="@+id/ecity"
-        android:layout_width="120dp"
-        android:layout_height="wrap_content"
-        android:layout_alignEnd="@+id/eplace"
-        android:layout_alignRight="@+id/eplace"
-        android:layout_below="@+id/eday"
-        android:textAlignment="viewEnd"
-        android:gravity="end"
-        android:text="Bhopal" />
-
-</RelativeLayout>
+</LinearLayout>

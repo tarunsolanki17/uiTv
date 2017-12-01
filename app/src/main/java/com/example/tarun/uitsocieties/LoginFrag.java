@@ -1,8 +1,11 @@
 package com.example.tarun.uitsocieties;
 
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
@@ -23,9 +26,13 @@ import com.facebook.login.LoginResult;
 
 import java.util.Arrays;
 
+import static android.widget.Toast.makeText;
 import static com.example.tarun.uitsocieties.InClub.login_checker;
 import static com.example.tarun.uitsocieties.InClub.viewpgr;
+import static com.example.tarun.uitsocieties.MainActivity.isConnectedStatic;
 import static com.example.tarun.uitsocieties.R.id.loginbutt2;
+import static com.example.tarun.uitsocieties.R.id.no_data;
+import static com.example.tarun.uitsocieties.R.id.no_internet;
 
 
 /**
@@ -35,6 +42,7 @@ public class LoginFrag extends Fragment {
 
     CallbackManager callbackManager;
     LoginManager loginManager;
+    Toast toast;
 
     public LoginFrag() {
         // Required empty public constructor
@@ -52,12 +60,21 @@ public class LoginFrag extends Fragment {
         loginbutt2.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                switch (view.getId()){
-                    case R.id.loginbutt2:
-                        if(AccessToken.getCurrentAccessToken()==null) {
-                            login();
-                        }
-                    default: break;
+                if(isConnectedStatic(getActivity())) {
+                    switch (view.getId()) {
+                        case R.id.loginbutt2:
+                            if (AccessToken.getCurrentAccessToken() == null) {
+                                login();
+                            }
+                        default:
+                            break;
+                    }
+                }
+                else {
+                    if (toast != null)
+                        toast.cancel();
+                    toast = Toast.makeText(getActivity(), R.string.no_internet_toast, Toast.LENGTH_LONG);
+                    toast.show();
                 }
             }
         });
@@ -76,7 +93,7 @@ public class LoginFrag extends Fragment {
 
             @Override
             public void onError(FacebookException error) {
-                Log.v("Error---",error.toString());
+                Log.v("Login Error---",error.toString());
             }
         };
 
@@ -96,8 +113,16 @@ public class LoginFrag extends Fragment {
     public void login(){
         loginManager.logInWithReadPermissions(this, Arrays.asList("public_profile", "email"));
     }
+
     public void handleLoginResult(AccessToken accessToken) {
-        Toast.makeText(getContext(), "Logged in", Toast.LENGTH_SHORT).show();
+        String text;
+        Profile profile = Profile.getCurrentProfile();
+        if(profile!=null && profile.getName() != null)
+            text = "Logged in as: " + profile.getName();
+        else
+            text = "Logged in using Facebook";
+
+        makeText(getActivity(), text, Toast.LENGTH_SHORT).show();
         login_checker();
         viewpgr.getAdapter().notifyDataSetChanged();
     }
@@ -107,4 +132,5 @@ public class LoginFrag extends Fragment {
         super.onSaveInstanceState(outState);
         outState.putInt("Login",1);
     }
+
 }

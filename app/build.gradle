@@ -36,6 +36,8 @@ dependencies {
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     testCompile 'junit:junit:4.12'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.1.1'
+    compile 'com.afollestad:easyvideoplayer:0.3.0'
+    compile 'it.sephiroth.android.library.imagezoom:imagezoom:+'
 }
 configurations.all {
     resolutionStrategy.eachDependency { DependencyResolveDetails details ->

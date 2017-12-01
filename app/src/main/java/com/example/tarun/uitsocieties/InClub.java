@@ -31,6 +31,7 @@ public class InClub extends AppCompatActivity {
     static FragmentTransaction ft;
     static ViewPager viewpgr;
     public static String club_id;
+    public static boolean event_detail=false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -45,7 +46,17 @@ public class InClub extends AppCompatActivity {
         login_checker();
 
         Intent in2 = getIntent();
-        int position = in2.getFlags();
+        int position=0;
+        if(event_detail){
+            for(int i=0;i<CLUB_IDS.length;i++)
+                if(club_id.equals(CLUB_IDS[i])) {
+                    position = i;
+                    break;
+                }
+        }
+        else {
+            position = in2.getFlags();
+        }
         setTitle(CLUB_NAMES_VISIBLE[position]);
 
 
@@ -59,6 +70,10 @@ public class InClub extends AppCompatActivity {
         MyPagerAdap adap = new MyPagerAdap(getSupportFragmentManager());
         viewpgr.setAdapter(adap);
 
+        if(event_detail) {
+            viewpgr.setCurrentItem(2);      /**     SET POSITION TO EVENTS FRAGMENT   */
+        }
+        event_detail = false;
         if(notif_intent)
             viewpgr.setCurrentItem(2);      /**     SET POSITION TO EVENTS FRAGMENT   */
 
@@ -92,7 +107,6 @@ public class InClub extends AppCompatActivity {
             Intent settings_intent = new Intent(getApplicationContext(),Settings.class);
             startActivity(settings_intent);
         }
-
         return true;
     }
 }

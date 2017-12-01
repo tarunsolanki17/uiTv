@@ -2,6 +2,7 @@ package com.example.tarun.uitsocieties;
 
 import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -35,7 +36,9 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.Target;
+import com.bumptech.glide.request.transition.Transition;
 
 import org.w3c.dom.Text;
 
@@ -45,6 +48,9 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+
+import it.sephiroth.android.library.imagezoom.ImageViewTouch;
+import it.sephiroth.android.library.imagezoom.ImageViewTouchBase;
 
 import static android.content.Intent.ACTION_VIEW;
 import static android.view.View.GONE;
@@ -135,7 +141,8 @@ public class PhotoDetailActivity extends AppCompatActivity {
 
             View rootView = inflater.inflate(R.layout.detail_photo_fragment, container, false);
 
-            final ImageView imageView = (ImageView) rootView.findViewById(R.id.detail_image);
+            final ImageViewTouch imageView = (ImageViewTouch) rootView.findViewById(R.id.detail_image);
+            imageView.setDisplayType(ImageViewTouchBase.DisplayType.FIT_TO_SCREEN);
             final ProgressBar photo_prog = (ProgressBar) rootView.findViewById(R.id.photo_progress);
             final TextView unloaded = (TextView) rootView.findViewById(R.id.not_loaded);
             RelativeLayout detail_layout = (RelativeLayout) rootView.findViewById(R.id.detailed_layout);
@@ -155,7 +162,7 @@ public class PhotoDetailActivity extends AppCompatActivity {
 
             caption_view.setText(caption);
 
-            Glide.with(getActivity()).load(big_image_link).thumbnail(0.1f)
+            /*Glide.with(getActivity()).load(big_image_link).thumbnail(0.1f)
                     .listener(new RequestListener<Drawable>() {
                         @Override
                         public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
@@ -176,7 +183,26 @@ public class PhotoDetailActivity extends AppCompatActivity {
                             return false;
                         }
                     })
-                    .into(imageView);
+                    .into(imageView);*/
+
+            Glide.with(getActivity()).asBitmap().load(big_image_link).into(new SimpleTarget<Bitmap>() {
+                @Override
+                public void onResourceReady(Bitmap resource, Transition<? super Bitmap> transition) {
+                    imageView.setVisibility(VISIBLE);
+                    caption_view.setVisibility(VISIBLE);
+                    unloaded.setVisibility(GONE);
+                    photo_prog.setVisibility(GONE);
+                    imageView.setImageBitmap(resource);
+                }
+
+                @Override
+                public void onLoadFailed(@Nullable Drawable errorDrawable) {
+                    imageView.setVisibility(GONE);
+                    unloaded.setVisibility(VISIBLE);
+                    photo_prog.setVisibility(GONE);
+                    caption_view.setVisibility(GONE);
+                }
+            });
 
             return rootView;
         }
