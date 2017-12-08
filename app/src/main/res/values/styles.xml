@@ -8,7 +8,7 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
     <style name="AppTheme.Launcher">
-        <item name="android:windowBackground">@drawable/l23</item>
+        <item name="android:windowBackground">@drawable/pre_main_layout</item>
     </style>
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Dark" />
 

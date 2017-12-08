@@ -1,5 +1,6 @@
 package com.example.tarun.uitsocieties;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -8,8 +9,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Parcel;
-import android.provider.ContactsContract;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -36,14 +35,17 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
+
 import com.bumptech.glide.request.target.SimpleTarget;
-import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.request.transition.Transition;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import org.w3c.dom.Text;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -55,6 +57,7 @@ import it.sephiroth.android.library.imagezoom.ImageViewTouchBase;
 import static android.content.Intent.ACTION_VIEW;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
+
 
 /**
  * Created by Tarun on 18-Oct-17.
@@ -115,6 +118,7 @@ public class PhotoDetailActivity extends AppCompatActivity {
             return all_photos.size();
         }
     }
+
     public static class PlaceholderFragment extends Fragment{
 
         String big_image_link;
@@ -217,16 +221,15 @@ public class PhotoDetailActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
-            case R.id.save: saveImage();
+            case R.id.save: imageDownload(getApplicationContext(),"dump_image");
                             break;
             case R.id.share://  TODO --> SHARE INTENT
                             break;
             case R.id.facebook_link:
                 Intent facebook_intent = new Intent(ACTION_VIEW);
                 facebook_intent.setData(Uri.parse(photos_data.get(pos).getFacebook_link()));
-                if((facebook_intent.resolveActivity(getPackageManager())!=null)){
+                if((facebook_intent.resolveActivity(getPackageManager())!=null))
                 startActivity(facebook_intent);
-            }
                             break;
             default :       break;
         }
@@ -286,4 +289,51 @@ public class PhotoDetailActivity extends AppCompatActivity {
         };
         downloadImage.execute();
     }
+
+
+        public void imageDownload(Context con, String url){
+            Picasso.with(con)
+                    .load("https://openclipart.org/download/216413/coniglio_rabbit_small.svg")
+                    .into(getTarget(url));
+        }
+
+        //target to save
+        private Target getTarget(final String url){
+            Target target = new Target(){
+
+                @Override
+                public void onBitmapLoaded(final Bitmap bitmap, Picasso.LoadedFrom from) {
+                    new Thread(new Runnable() {
+
+                        @Override
+                        public void run() {
+
+                            File file = new File(Environment.getExternalStorageDirectory().getPath() + "/" + url);
+                            try {
+                                file.createNewFile();
+                                FileOutputStream ostream = new FileOutputStream(file);
+                                bitmap.compress(Bitmap.CompressFormat.JPEG, 80, ostream);
+                                ostream.flush();
+                                ostream.close();
+                            } catch (IOException e) {
+                                Log.e("IOException", e.getLocalizedMessage());
+                            }
+                        }
+                    }).start();
+
+                }
+
+                @Override
+                public void onBitmapFailed(Drawable errorDrawable) {
+                    Log.v("Bitmap---!","Failed");
+                }
+
+                @Override
+                public void onPrepareLoad(Drawable placeHolderDrawable) {
+                    Log.v("Preparing---!","doing");
+                }
+            };
+            return target;
+        }
+
 }

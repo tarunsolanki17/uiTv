@@ -4,6 +4,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
+import com.example.tarun.uitsocieties.about_fragment.AboutFrag;
+import com.example.tarun.uitsocieties.updates_fragment.UpdatesFrag;
 import com.example.tarun.uitsocieties.videos_fragment.VideosFrag;
 
 import static com.example.tarun.uitsocieties.InClub.login;

@@ -38,6 +38,7 @@ dependencies {
     annotationProcessor 'com.github.bumptech.glide:compiler:4.1.1'
     compile 'com.afollestad:easyvideoplayer:0.3.0'
     compile 'it.sephiroth.android.library.imagezoom:imagezoom:+'
+    compile 'com.squareup.picasso:picasso:2.5.2'
 }
 configurations.all {
     resolutionStrategy.eachDependency { DependencyResolveDetails details ->

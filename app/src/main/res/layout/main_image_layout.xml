@@ -8,7 +8,7 @@
     <ImageView
         android:id="@+id/club_logo"
         android:adjustViewBounds="true"
-        android:layout_height="180dp"
+        android:layout_height="190dp"
         android:scaleType="centerCrop"
         android:layout_margin="1dp"
         android:layout_width="match_parent"/>

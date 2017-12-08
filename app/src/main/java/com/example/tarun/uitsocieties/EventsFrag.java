@@ -63,6 +63,8 @@ import static com.example.tarun.uitsocieties.ClubContract.EventsConstants.SOURCE
 import static com.example.tarun.uitsocieties.ClubContract.EventsConstants.START_TIME;
 import static com.example.tarun.uitsocieties.ClubContract.INSYNC;
 import static com.example.tarun.uitsocieties.InClub.club_id;
+import static com.example.tarun.uitsocieties.InClub.events_data;
+import static com.example.tarun.uitsocieties.InClub.fetchAsyncE;
 import static com.example.tarun.uitsocieties.InClub.login;
 import static com.example.tarun.uitsocieties.InClub.login_checker;
 import static com.example.tarun.uitsocieties.R.id.date_time;
@@ -79,8 +81,7 @@ import com.facebook.Profile;
  * A simple {@link Fragment} subclass.
  */
 public class EventsFrag extends Fragment {
-
-    ArrayList<EventsDataModel> events_data = new ArrayList<>();
+    
     EventsListAdapter eventsAdapter;
     ListView listView;
     ProgressBar pbar;
@@ -89,7 +90,7 @@ public class EventsFrag extends Fragment {
     SwipeRefreshLayout swipe;
     boolean isConnected;
     Context con;
-    AsyncTask fetchAsync;
+//    AsyncTask fetchAsync;
     int data_len;
 
     public EventsFrag() {
@@ -116,10 +117,14 @@ public class EventsFrag extends Fragment {
             public void onRefresh() {
                 swipe.setRefreshing(true);
                 if(isConnectedFunc()) {
-                    if(fetchAsync!=null) {
-                        fetchAsync.cancel(true);
+                    if(fetchAsyncE!=null) {
+                        fetchAsyncE.cancel(true);
                     }
-                    events_data.clear();
+                    if(events_data!=null)
+                        events_data.clear();
+                    else
+                        events_data = new ArrayList<>();
+
                     pbar.setVisibility(VISIBLE);
                     listView.setVisibility(GONE);
 
@@ -135,24 +140,65 @@ public class EventsFrag extends Fragment {
 
             if(savedInstanceState!=null&&savedInstanceState.getInt("Login")==1)
                 savedInstanceState = null;
-
-            if(savedInstanceState!=null&&savedInstanceState.getBoolean("Incomplete"))
-                    savedInstanceState = null;
+            
 
             if (savedInstanceState != null) {
-                events_data = savedInstanceState.getParcelableArrayList("events_parcel");
-                if(events_data!=null)
-                if(events_data.isEmpty()){
-                    pbar.setVisibility(GONE);
-                    listView.setVisibility(GONE);
-                    no_data.setVisibility(VISIBLE);
+                if(savedInstanceState.getBoolean("Incomplete")) {
+                    Log.v("fetchAync---<","was incomplete");
+                    if (fetchAsyncE != null) {
+                        Log.v("fetchAync---<","not null");
+                        if (fetchAsyncE.getStatus().toString().equals("RUNNING")) {    /** fetchAsyncE still running*/
+                            Log.v("fetchAync---<","still running");
+                            pbar.setVisibility(VISIBLE);
+                            listView.setVisibility(GONE);
+                        }
+                        if (fetchAsyncE.getStatus().toString().equals("FINISHED")) {   /** fetchAsyncE complete*/
+                            Log.v("fetchAync---<","finished");
+                            if (events_data != null)
+                                if (events_data.isEmpty()) {
+                                    pbar.setVisibility(GONE);
+                                    listView.setVisibility(GONE);
+                                    no_data.setVisibility(VISIBLE);
+                                } else {
+                                    data_len = events_data.size();
+                                    pbar.setVisibility(GONE);
+                                    no_data.setVisibility(GONE);
+                                    listView.setVisibility(VISIBLE);
+                                    onDataFetched();
+                                }
+                        }
+                    } else {
+                        Log.v("fetchAync---<","is null");
+                        Log.v("eventsdata---<",String.valueOf(events_data.size()));
+                        if (events_data != null)
+                            if (events_data.isEmpty()) {
+                                pbar.setVisibility(GONE);
+                                listView.setVisibility(GONE);
+                                no_data.setVisibility(VISIBLE);
+                            } else {
+                                data_len = events_data.size();
+                                pbar.setVisibility(GONE);
+                                no_data.setVisibility(GONE);
+                                listView.setVisibility(VISIBLE);
+                                onDataFetched();
+                            }
+                    }
                 }
-                else{
-                    data_len = events_data.size();
-                    pbar.setVisibility(GONE);
-                    no_data.setVisibility(GONE);
-                    listView.setVisibility(VISIBLE);
-                    onDataFetched();
+                else {
+                    Log.v("fetchAync---<","had already finished");
+                    events_data = savedInstanceState.getParcelableArrayList("events_parcel");
+                    if (events_data != null)
+                        if (events_data.isEmpty()) {
+                            pbar.setVisibility(GONE);
+                            listView.setVisibility(GONE);
+                            no_data.setVisibility(VISIBLE);
+                        } else {
+                            data_len = events_data.size();
+                            pbar.setVisibility(GONE);
+                            no_data.setVisibility(GONE);
+                            listView.setVisibility(VISIBLE);
+                            onDataFetched();
+                        }
                 }
             }
             else {
@@ -198,7 +244,7 @@ public class EventsFrag extends Fragment {
             }
         };
 
-        fetchAsync = new AsyncTask() {
+        fetchAsyncE = new AsyncTask() {
             @Override
             protected Object doInBackground(Object[] objects) {
                 new GraphRequest(AccessToken.getCurrentAccessToken(),
@@ -211,7 +257,7 @@ public class EventsFrag extends Fragment {
                 onDataFetched();
             }
         };
-        fetchAsync.execute();
+        fetchAsyncE.execute();
 
     }
 
@@ -296,9 +342,10 @@ public class EventsFrag extends Fragment {
                             cover_source = cover_obj.getString(SOURCE_URL);
                         }
                     }
-
+                    if(!fetchAsyncE.isCancelled())
                     events_data.add(new EventsDataModel(event_name, start_date, end_date, year,month, date, day, time, place_name, city, latitude, longitude, descp, cover_source));
 
+                    Log.v("eventsdata---<",String.valueOf(events_data.size()));
                 }
 
 
@@ -333,10 +380,10 @@ public class EventsFrag extends Fragment {
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        if(fetchAsync!=null){
-            if(fetchAsync.getStatus().toString().equals("RUNNING"))
+        if(fetchAsyncE!=null){
+            if(fetchAsyncE.getStatus().toString().equals("RUNNING"))
                 outState.putBoolean("Incomplete",true);
-            else if(fetchAsync.getStatus().toString().equals("FINISHED")) {
+            else if(fetchAsyncE.getStatus().toString().equals("FINISHED")) {
                 outState.putParcelableArrayList("events_parcel", events_data);
                 outState.putBoolean("Incomplete", false);
             }
@@ -372,7 +419,7 @@ public class EventsFrag extends Fragment {
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(con)
                 //  TODO --> SET SMALL ICON AS THE LOGO OF THE APP
-                .setSmallIcon(R.drawable.ic_drink_notification)
+                .setSmallIcon(R.drawable.ic_notification)
                 //  TODO --> SET LARGE ICON ACCORDING TO THE CLUB LOGO
                 .setLargeIcon(largeIcon(con))
                 .setContentTitle(new_event.getEvent_name())
@@ -416,7 +463,7 @@ public class EventsFrag extends Fragment {
     public static Bitmap largeIcon(Context con){
         Resources resources = con.getResources();
         return BitmapFactory.decodeResource(resources, R.drawable.ic_local_drink_black_24px);
-
+//        TODO --> ADD THE LARGE ICON
     }
 
     public static PendingIntent contentIntent(Context con, EventsDataModel new_event, String clubID, int index, String clubName){

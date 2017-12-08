@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.tarun.uitsocieties.AboutFrag"
+    tools:context="com.example.tarun.uitsocieties.about_fragment.AboutFrag"
     android:id="@+id/frag_about_lilay">
 
     <!-- TODO: Update blank fragment layout -->

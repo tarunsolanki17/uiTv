@@ -46,8 +46,10 @@ import static com.example.tarun.uitsocieties.ClubContract.VideosConstants.THUMBN
 import static com.example.tarun.uitsocieties.ClubContract.VideosConstants.VIDEOS;
 import static com.example.tarun.uitsocieties.DetailActivity.photos_data;
 import static com.example.tarun.uitsocieties.InClub.club_id;
+import static com.example.tarun.uitsocieties.InClub.fetchAsyncV;
 import static com.example.tarun.uitsocieties.InClub.login_checker;
 import static com.example.tarun.uitsocieties.InClub.login;
+import static com.example.tarun.uitsocieties.InClub.videos_data;
 import static com.example.tarun.uitsocieties.R.id.photo_recyc_view;
 
 
@@ -57,7 +59,7 @@ import static com.example.tarun.uitsocieties.R.id.photo_recyc_view;
 public class VideosFrag extends Fragment {
 
     /******************************* GLOBAL VARIABLES  *******************************/
-    ArrayList<VideoParcel> videos_data = new ArrayList<>();
+
     RecyclerView video_recyclerView;
     ProgressBar pbar;
     TextView no_internet;
@@ -67,7 +69,7 @@ public class VideosFrag extends Fragment {
     Context con;
     int data_len;
     RecycVideosAdap recycAdapter;
-    AsyncTask fetchAsync;
+//    AsyncTask fetchAsync;
 
     public VideosFrag() {
         // Required empty public constructor
@@ -92,10 +94,14 @@ public class VideosFrag extends Fragment {
             public void onRefresh() {
                 swipe.setRefreshing(true);
                 if(isConnectedFunc()) {
-                    if(fetchAsync!=null) {
-                        fetchAsync.cancel(true);
+                    if(fetchAsyncV!=null) {
+                        fetchAsyncV.cancel(true);
                     }
-                    videos_data.clear();
+                    if(videos_data!=null)
+                        videos_data.clear();
+                    else
+                        videos_data = new ArrayList<>();
+
                     pbar.setVisibility(VISIBLE);
                     video_recyclerView.setVisibility(GONE);
 
@@ -107,28 +113,73 @@ public class VideosFrag extends Fragment {
             }
         });
 
+        Log.v("videosdata 1 ---=",String.valueOf(videos_data.size()));
+
         if(isConnectedFunc()){
 
             if(savedInstanceState!=null&&savedInstanceState.getInt("Login")==1)
                 savedInstanceState = null;
 
-            if(savedInstanceState!=null&&savedInstanceState.getBoolean("Incomplete"))
-                savedInstanceState = null;
 
             if (savedInstanceState != null) {
-                videos_data = savedInstanceState.getParcelableArrayList("videos_parcel");
-                if(videos_data!=null)
-                if(videos_data.isEmpty()){
-                    pbar.setVisibility(GONE);
-                    video_recyclerView.setVisibility(GONE);
-                    no_data.setVisibility(VISIBLE);
+                if(savedInstanceState.getBoolean("Incomplete")) {
+                    Log.v("fetchAync---=","was incomplete");
+                    if (fetchAsyncV != null) {
+                        Log.v("fetchAync---=","not null");
+                        if (fetchAsyncV.getStatus().toString().equals("RUNNING")) {    /** fetchAsyncV still running*/
+                            Log.v("fetchAync---=","still running");
+                            pbar.setVisibility(VISIBLE);
+                            video_recyclerView.setVisibility(GONE);
+                        }
+                        if (fetchAsyncV.getStatus().toString().equals("FINISHED")) {   /** fetchAsyncV complete*/
+                            Log.v("fetchAync---=","finished");
+                            if (videos_data != null)
+                                if (videos_data.isEmpty()) {
+                                    pbar.setVisibility(GONE);
+                                    video_recyclerView.setVisibility(GONE);
+                                    no_data.setVisibility(VISIBLE);
+                                } else {
+                                    data_len = videos_data.size();
+                                    pbar.setVisibility(GONE);
+                                    no_data.setVisibility(GONE);
+                                    video_recyclerView.setVisibility(VISIBLE);
+                                    onDataFetched();
+                                }
+                        }
+                    } else {
+                        Log.v("fetchAync---=","is null");
+
+                        Log.v("videosdata---=",String.valueOf(videos_data.size()));
+
+                        if (videos_data != null)
+                            if (videos_data.isEmpty()) {
+                                pbar.setVisibility(GONE);
+                                video_recyclerView.setVisibility(GONE);
+                                no_data.setVisibility(VISIBLE);
+                            } else {
+                                data_len = videos_data.size();
+                                pbar.setVisibility(GONE);
+                                no_data.setVisibility(GONE);
+                                video_recyclerView.setVisibility(VISIBLE);
+                                onDataFetched();
+                            }
+                    }
                 }
-                else{
-                    data_len = videos_data.size();
-                    pbar.setVisibility(GONE);
-                    no_data.setVisibility(GONE);
-                    video_recyclerView.setVisibility(VISIBLE);
-                    onDataFetched();
+                else {
+                    Log.v("fetchAync---=","had already finished");
+                    videos_data = savedInstanceState.getParcelableArrayList("videos_parcel");
+                    if (videos_data != null)
+                        if (videos_data.isEmpty()) {
+                            pbar.setVisibility(GONE);
+                            video_recyclerView.setVisibility(GONE);
+                            no_data.setVisibility(VISIBLE);
+                        } else {
+                            data_len = videos_data.size();
+                            pbar.setVisibility(GONE);
+                            no_data.setVisibility(GONE);
+                            video_recyclerView.setVisibility(VISIBLE);
+                            onDataFetched();
+                        }
                 }
             }
             else {
@@ -172,7 +223,7 @@ public class VideosFrag extends Fragment {
             }
         };
 
-        fetchAsync = new AsyncTask() {
+        fetchAsyncV = new AsyncTask() {
             @Override
             protected Object doInBackground(Object[] objects) {
                 new GraphRequest(AccessToken.getCurrentAccessToken(),
@@ -183,9 +234,10 @@ public class VideosFrag extends Fragment {
             @Override
             protected void onPostExecute(Object o) {
                 onDataFetched();
+
             }
         };
-        fetchAsync.execute();
+        fetchAsyncV.execute();
     }
 
     public void fetchVideosData(GraphResponse response){
@@ -253,7 +305,10 @@ public class VideosFrag extends Fragment {
                             }
                         }
                     }
+                    if(!fetchAsyncV.isCancelled())
                     videos_data.add(new VideoParcel(id,created_time,description,length,picture,source_url,thumb_url));
+
+                    Log.v("Videos data---=",String.valueOf(videos_data.size()));
                 }
 
             }
@@ -307,19 +362,22 @@ public class VideosFrag extends Fragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelableArrayList("videos_parcel",videos_data);
 
-        if(fetchAsync!=null) {
-            if (fetchAsync.getStatus().toString().equals("RUNNING"))
-                outState.putBoolean("Incomplete",true);
-            else if(fetchAsync.getStatus().toString().equals("FINISHED")) {
-                outState.putParcelableArrayList("videos_parcel",videos_data);
+        if(fetchAsyncV!=null){
+            if (fetchAsyncV.getStatus().toString().equals("RUNNING")) {
+                Log.v("fetchAync---=","RUNNING");
+                outState.putBoolean("Incomplete", true);
+            }
+            else if(fetchAsyncV.getStatus().toString().equals("FINISHED")) {
+                Log.v("fetchAync---=","FINISHED");
+                outState.putParcelableArrayList("videos_parcel", videos_data);
                 outState.putBoolean("Incomplete", false);
             }
         }
         else {
-            outState.putParcelableArrayList("videos_parcel",videos_data);
-            outState.putBoolean("Incomplete",false);
-        }
+                Log.v("fetchAync---=","is null during saving state");
+                outState.putParcelableArrayList("videos_parcel",videos_data);
+                outState.putBoolean("Incomplete",false);
+            }
     }
 }

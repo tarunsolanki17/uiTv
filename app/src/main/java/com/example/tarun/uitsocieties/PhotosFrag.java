@@ -62,9 +62,11 @@ import static com.example.tarun.uitsocieties.ClubContract.PhotosConstants.SOURCE
 import static com.example.tarun.uitsocieties.ClubContract.PhotosConstants.THUMB_PICTURE;
 import static com.example.tarun.uitsocieties.ClubContract.PhotosConstants.WIDTH;
 import static com.example.tarun.uitsocieties.InClub.club_id;
+import static com.example.tarun.uitsocieties.InClub.fetchAsyncP;
 import static com.example.tarun.uitsocieties.InClub.ft;
 import static com.example.tarun.uitsocieties.InClub.login;
 import static com.example.tarun.uitsocieties.InClub.login_checker;
+import static com.example.tarun.uitsocieties.InClub.photos_data;
 
 
 /**
@@ -72,14 +74,12 @@ import static com.example.tarun.uitsocieties.InClub.login_checker;
  */
 public class PhotosFrag extends Fragment{
 
-    ArrayList<PhotoParcel> photos_data = new ArrayList<>();
     TextView no_internet, no_data;
     RecyclerView photo_recyc_view;
     ProgressBar pbar;
     SwipeRefreshLayout swipe;
     boolean isConnected;
     RecycPhotosAdap recycAdapter;
-    AsyncTask fetchAsync;
     int data_len;
 
     public PhotosFrag() {
@@ -106,10 +106,14 @@ public class PhotosFrag extends Fragment{
             public void onRefresh() {
                 swipe.setRefreshing(true);
                 if(isConnectedFunc()) {
-                    if(fetchAsync!=null) {
-                        fetchAsync.cancel(true);
+                    if(fetchAsyncP!=null) {
+                        fetchAsyncP.cancel(true);
                     }
+                    if(photos_data!=null)
                         photos_data.clear();
+                    else
+                        photos_data = new ArrayList<>();
+
                         pbar.setVisibility(VISIBLE);
                         photo_recyc_view.setVisibility(GONE);
 
@@ -126,24 +130,64 @@ public class PhotosFrag extends Fragment{
             if(savedInstanceState!=null&&savedInstanceState.getInt("Login")==1)
                 savedInstanceState = null;
 
-            if(savedInstanceState!=null&&savedInstanceState.getBoolean("Incomplete"))
-                savedInstanceState = null;
 
             if (savedInstanceState != null) {
-                photos_data = savedInstanceState.getParcelableArrayList("photos_parcel");
-                if(photos_data!=null)
-                if(photos_data.isEmpty()){
-                    //  TODO --> REMOVE NULL POINTER EXCEPTION IN isEmpty()
-                    pbar.setVisibility(GONE);
-                    photo_recyc_view.setVisibility(GONE);
-                    no_data.setVisibility(VISIBLE);
+                if(savedInstanceState.getBoolean("Incomplete")) {
+                    Log.v("fetchAync--->","was incomplete");
+                    if (fetchAsyncP != null) {
+                        Log.v("fetchAync--->","not null");
+                        if (fetchAsyncP.getStatus().toString().equals("RUNNING")) {    /** fetchAsyncP still running*/
+                            Log.v("fetchAync--->","still running");
+                            pbar.setVisibility(VISIBLE);
+                            photo_recyc_view.setVisibility(GONE);
+                        }
+                        if (fetchAsyncP.getStatus().toString().equals("FINISHED")) {   /** fetchAsyncP complete*/
+                            Log.v("fetchAync--->","finished");
+                            if (photos_data != null)
+                                if (photos_data.isEmpty()) {
+                                    pbar.setVisibility(GONE);
+                                    photo_recyc_view.setVisibility(GONE);
+                                    no_data.setVisibility(VISIBLE);
+                                } else {
+                                    data_len = photos_data.size();
+                                    pbar.setVisibility(GONE);
+                                    no_data.setVisibility(GONE);
+                                    photo_recyc_view.setVisibility(VISIBLE);
+                                    onDataFetched();
+                                }
+                        }
+                    } else {
+                        Log.v("fetchAync--->","is null");
+                        Log.v("videosdata--->",String.valueOf(photos_data.size()));
+                        if (photos_data != null)
+                            if (photos_data.isEmpty()) {
+                                pbar.setVisibility(GONE);
+                                photo_recyc_view.setVisibility(GONE);
+                                no_data.setVisibility(VISIBLE);
+                            } else {
+                                data_len = photos_data.size();
+                                pbar.setVisibility(GONE);
+                                no_data.setVisibility(GONE);
+                                photo_recyc_view.setVisibility(VISIBLE);
+                                onDataFetched();
+                            }
+                    }
                 }
-                else{
-                    data_len = photos_data.size();
-                    pbar.setVisibility(GONE);
-                    no_data.setVisibility(GONE);
-                    photo_recyc_view.setVisibility(VISIBLE);
-                    onDataFetched();
+                else {
+                    Log.v("fetchAync--->","had already finished");
+                    photos_data = savedInstanceState.getParcelableArrayList("photos_parcel");
+                    if (photos_data != null)
+                        if (photos_data.isEmpty()) {
+                            pbar.setVisibility(GONE);
+                            photo_recyc_view.setVisibility(GONE);
+                            no_data.setVisibility(VISIBLE);
+                        } else {
+                            data_len = photos_data.size();
+                            pbar.setVisibility(GONE);
+                            no_data.setVisibility(GONE);
+                            photo_recyc_view.setVisibility(VISIBLE);
+                            onDataFetched();
+                        }
                 }
             }
             else {
@@ -181,7 +225,7 @@ public class PhotosFrag extends Fragment{
             }
         };
 
-        fetchAsync = new AsyncTask() {
+        fetchAsyncP = new AsyncTask() {
             @Override
             protected Object doInBackground(Object[] objects) {
                 new GraphRequest(AccessToken.getCurrentAccessToken(),
@@ -194,7 +238,7 @@ public class PhotosFrag extends Fragment{
                 onDataFetched();
             }
         };
-        fetchAsync.execute();
+        fetchAsyncP.execute();
 
     }
 
@@ -281,7 +325,12 @@ public class PhotosFrag extends Fragment{
                                     big_image_link = curr_source.getString(SOURCE);
                                 }
                             }
+                            if(!fetchAsyncP.isCancelled())
                             photos_data.add(new PhotoParcel(album_name,photo_count,caption,created_time,facebook_link,place,height,width,thumb_link,image_link,big_image_link));
+                            else
+                                Log.v("fetchAsyncP---","Cancelled");
+//                                photos_data.clear();
+//                           TODO --> VERIFY CLEAR STATEMENT
                             /*if(photos_data.size()>=28) {
                                 Log.v("Size---",">=28");
                                 break;
@@ -404,7 +453,14 @@ public class PhotosFrag extends Fragment{
                         big_image_link = curr_source.getString(SOURCE);
                     }
                 }
-                photos_data.add(new PhotoParcel(album_name,photo_count,caption,created_time,facebook_link,place,height,width,thumb_link,image_link,big_image_link));
+                if(!fetchAsyncP.isCancelled()) {
+                    photos_data.add(new PhotoParcel(album_name, photo_count, caption, created_time, facebook_link, place, height, width, thumb_link, image_link, big_image_link));
+                }
+                else
+                    Log.v("fetchAsyncP---","Cancelled");
+//                    photos_data.clear();
+//                TODO --> VERIFY CLEAR
+                Log.v("photos add---+",String.valueOf(photos_data.size()));
                 /*if(photos_data.size()>=24)
                     break;*/
             }
@@ -425,10 +481,10 @@ public class PhotosFrag extends Fragment{
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        if(fetchAsync!=null) {
-            if (fetchAsync.getStatus().toString().equals("RUNNING"))
+        if(fetchAsyncP!=null) {
+            if (fetchAsyncP.getStatus().toString().equals("RUNNING"))
                 outState.putBoolean("Incomplete",true);
-            else if(fetchAsync.getStatus().toString().equals("FINISHED")) {
+            else if(fetchAsyncP.getStatus().toString().equals("FINISHED")) {
                 outState.putParcelableArrayList("photos_parcel", photos_data);
                 outState.putBoolean("Incomplete", false);
             }
@@ -483,5 +539,7 @@ public class PhotosFrag extends Fragment{
             return true;
         }
     }
+
+
 
 }

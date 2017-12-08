@@ -59,7 +59,7 @@ public class EventsListAdapter extends ArrayAdapter<EventsDataModel> {
 
         }
         catch (Exception e){
-            Log.v("Exception---",e.toString());
+            Log.v("Exception---"," In EventsListAdapter getView()---"+e.toString());
         }
 
         eventListItemView.setOnClickListener(new View.OnClickListener() {
@@ -75,4 +75,5 @@ public class EventsListAdapter extends ArrayAdapter<EventsDataModel> {
         });
         return eventListItemView;
     }
+
 }

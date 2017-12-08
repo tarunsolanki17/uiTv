@@ -2,6 +2,7 @@ package com.example.tarun.uitsocieties;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
@@ -13,8 +14,11 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.example.tarun.uitsocieties.videos_fragment.VideoParcel;
 import com.facebook.AccessToken;
 import com.facebook.FacebookSdk;
+
+import java.util.ArrayList;
 
 import static com.example.tarun.uitsocieties.ClubContract.CLUB_IDS;
 import static com.example.tarun.uitsocieties.ClubContract.CLUB_NAMES_VISIBLE;
@@ -26,18 +30,26 @@ import static com.facebook.internal.CallbackManagerImpl.RequestCodeOffset.Login;
 
 public class InClub extends AppCompatActivity {
 
+    public static ArrayList<EventsDataModel> events_data;
+    public static ArrayList<PhotoParcel> photos_data;
+    public static ArrayList<VideoParcel> videos_data;
     public static boolean login;
     static FragmentManager fmag;
     static FragmentTransaction ft;
     static ViewPager viewpgr;
     public static String club_id;
     public static boolean event_detail=false;
+    public static AsyncTask fetchAsyncE, fetchAsyncP, fetchAsyncV;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         setTheme(R.style.AppTheme);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.inclub_main);
+
+        events_data = new ArrayList<>();
+        photos_data = new ArrayList<>();
+        videos_data = new ArrayList<>();
 
 //        getActionBar().setDisplayHomeAsUpEnabled(true);
 //        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -108,5 +120,38 @@ public class InClub extends AppCompatActivity {
             startActivity(settings_intent);
         }
         return true;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.v("onDestroy inclub---","Running");
+        /**     Cancelling all the fetching tasks because they were still running if someone navigated to another club.     */
+
+        if(fetchAsyncE!=null) {
+            fetchAsyncE.cancel(true);
+            fetchAsyncE = null;
+        }
+
+        if(fetchAsyncP!=null) {
+            Log.v("fetchAsyncP---","NOT NULL");
+            fetchAsyncP.cancel(true);
+            fetchAsyncP = null;
+            if(fetchAsyncP==null)
+                Log.v("fetchAsyncP---","MADE NULL");
+        }
+        else{
+            Log.v("fetchAsyncP---","IS NULL");
+        }
+        if(fetchAsyncV!=null) {
+            fetchAsyncV.cancel(true);
+            fetchAsyncV = null;
+        }
     }
 }
