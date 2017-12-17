@@ -51,7 +51,7 @@ public class FetchJobScheduler {
                 .setLifetime(Lifetime.FOREVER)
                 .setRecurring(true)
                 .setReplaceCurrent(true)
-                .setTrigger(Trigger.executionWindow(5,SECONDS))
+                .setTrigger(Trigger.executionWindow(5,10))
                 .build();
 
         dispatcher.schedule(fetchingJob);

@@ -62,6 +62,7 @@ import static com.example.tarun.uitsocieties.ClubContract.EventsConstants.PLACE;
 import static com.example.tarun.uitsocieties.ClubContract.EventsConstants.SOURCE_URL;
 import static com.example.tarun.uitsocieties.ClubContract.EventsConstants.START_TIME;
 import static com.example.tarun.uitsocieties.ClubContract.INSYNC;
+import static com.example.tarun.uitsocieties.ClubContract.NOTIF_EVENT;
 import static com.example.tarun.uitsocieties.InClub.club_id;
 import static com.example.tarun.uitsocieties.InClub.events_data;
 import static com.example.tarun.uitsocieties.InClub.fetchAsyncE;
@@ -459,7 +460,7 @@ public class EventsFrag extends Fragment {
         //  TODO --> SET CORRECT FLAG FOR CLUBS
         eventsFrag.addFlags(getFlags(clubName));
         eventsFrag.putExtra("CLUB_ID",clubID);
-        eventsFrag.putExtra("Notif_intent",true);
+        eventsFrag.putExtra(NOTIF_EVENT,true);
 
         Intent mainAct = new Intent(con,MainActivity.class);
 

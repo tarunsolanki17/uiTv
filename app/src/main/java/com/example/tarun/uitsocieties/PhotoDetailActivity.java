@@ -38,6 +38,7 @@ import com.bumptech.glide.request.RequestOptions;
 
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
+import com.example.tarun.uitsocieties.photos_fragment.Photo_Serial;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
@@ -74,10 +75,10 @@ public class PhotoDetailActivity extends AppCompatActivity {
     Toolbar toolbar;
     int pos;
     ArrayList<PhotoParcel> photos_data_local;
+    ArrayList<Photo_Serial> photos_data;
     SectionsPagerAdapter mSectionsPagerAdapter;
     private ViewPager viewPager;
     public transient Context con;
-    ArrayList<String> S = new ArrayList<>();
     /*private RelativeLayout detail_layout;
     private TextView caption_view;*/
 
@@ -98,7 +99,7 @@ public class PhotoDetailActivity extends AppCompatActivity {
         try {
             FileInputStream fis = openFileInput(PHOTO_FILE);
             ObjectInputStream ois = new ObjectInputStream(fis);
-            S = (ArrayList<String>) ois.readObject();
+            photos_data =(ArrayList<Photo_Serial>) ois.readObject();
             ois.close();
         }
         catch (Exception e){
@@ -120,9 +121,9 @@ public class PhotoDetailActivity extends AppCompatActivity {
 
     public  class SectionsPagerAdapter extends FragmentPagerAdapter{
 
-        ArrayList<PhotoParcel> all_photos = new ArrayList<>();
+        ArrayList<Photo_Serial> all_photos = new ArrayList<>();
 
-        public SectionsPagerAdapter(FragmentManager fm, ArrayList<PhotoParcel> data) {
+        public SectionsPagerAdapter(FragmentManager fm, ArrayList<Photo_Serial> data) {
             super(fm);
             all_photos = data;
         }
@@ -338,4 +339,9 @@ public class PhotoDetailActivity extends AppCompatActivity {
             return target;
         }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+    }
 }

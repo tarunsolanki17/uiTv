@@ -10,6 +10,7 @@ import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.NotificationCompat;
@@ -48,6 +49,8 @@ import static android.icu.lang.UCharacter.GraphemeClusterBreak.V;
 import static android.icu.lang.UCharacter.JoiningGroup.E;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
+import static com.example.tarun.uitsocieties.ClubContract.CLUB_IDS;
+import static com.example.tarun.uitsocieties.ClubContract.NOTIF_UPDATE;
 import static com.example.tarun.uitsocieties.ClubContract.UpdatesConstants.CAPTION;
 import static com.example.tarun.uitsocieties.ClubContract.UpdatesConstants.CITY;
 import static com.example.tarun.uitsocieties.ClubContract.UpdatesConstants.CREATED_TIME;
@@ -400,23 +403,27 @@ public class UpdatesFrag extends Fragment {
     /****************************   NOTIFICATIONS   *****************************************/
 
     public static void updateNotification(Context con, final ArrayList<UpdateParcel> new_updates, String club_name, String clubID, int index){
+        Log.v("Update Notif----","Sent");
         UpdateParcel new_update = new_updates.get(index);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(con)
+//                .setSmallIcon(R.drawable.ic_notification)
                 .setSmallIcon(R.drawable.ic_notification)
-//                TODO --> SET LARGE ICON
                 .setLargeIcon(BitmapFactory.decodeResource(con.getResources(),R.mipmap.ic_launcher))
-                .setContentTitle(getNotifTitle(new_update) + absoluteClubName(club_name))
-                .setContentText("")
-                .setColor(ContextCompat.getColor(con,R.color.colorPrimary))
+                .setContentTitle("Update from " + absoluteClubName(club_name))
+                .setContentText(getNotifTitle(new_update) + absoluteClubName(club_name))
                 .setContentIntent(updateContentIntent(con,new_update,clubID,index,club_name))
                 .setDefaults(Notification.DEFAULT_ALL)
                 .setTicker("New Update by " + absoluteClubName(club_name))
                 .setAutoCancel(true);
 
+        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.JELLY_BEAN){
+            builder.setPriority(Notification.PRIORITY_HIGH);
+        }
+
         NotificationManager notificationManager = (NotificationManager) con.getSystemService(con.NOTIFICATION_SERVICE);
         Log.v("Notification---:","Issue");
-        notificationManager.notify(1,builder.build());
+        notificationManager.notify(getClubIndex(clubID),builder.build());
     }
 
     public static PendingIntent updateContentIntent(Context con, UpdateParcel new_event, String clubID, int index, String clubName){
@@ -427,14 +434,14 @@ public class UpdatesFrag extends Fragment {
         //  TODO --> SET CORRECT FLAG FOR CLUBS
         updatesFrag.addFlags(getFlags(clubName));
         updatesFrag.putExtra("CLUB_ID",clubID);
-        updatesFrag.putExtra("Notif_intent_update",true);
+        updatesFrag.putExtra(NOTIF_UPDATE,true);
 
         Intent mainAct = new Intent(con,MainActivity.class);
 
         stackBuilder.addNextIntentWithParentStack(mainAct);
         stackBuilder.addNextIntent(updatesFrag);
 
-        PendingIntent pendingIntent = stackBuilder.getPendingIntent(index,PendingIntent.FLAG_ONE_SHOT);
+        PendingIntent pendingIntent = stackBuilder.getPendingIntent(getClubIndex(clubID),PendingIntent.FLAG_CANCEL_CURRENT);
         return pendingIntent;
     }
 
@@ -442,11 +449,19 @@ public class UpdatesFrag extends Fragment {
         String line = "New ";
 
         switch (new_update.getType()){
-            case UP_STATUS: return line + "Update by ";
-            case UP_LINK: return line + "Update by ";
+            case UP_STATUS: return line + "Post by ";
+            case UP_LINK: return line + "Link by ";
             case UP_PHOTO: return line + "Photo uploaded by ";
             case UP_VIDEO: return line + "Video uploaded by ";
         }
         return "New Update by ";
+    }
+
+    private static int getClubIndex(String clubID){
+        for(int k=0;k<CLUB_IDS.length;k++){
+            if(clubID.equals(CLUB_IDS[k]))
+                return k;
+        }
+        return -1;
     }
 }

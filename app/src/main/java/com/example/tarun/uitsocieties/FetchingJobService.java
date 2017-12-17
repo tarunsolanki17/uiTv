@@ -92,7 +92,7 @@ public class FetchingJobService extends JobService {
             protected Object doInBackground(Object[] objects) {
                 Log.v("Running---", "JobService");
 
-                events_ids = new File(getApplicationContext().getFilesDir(), "event_ids_file");
+                /*events_ids = new File(getApplicationContext().getFilesDir(), "event_ids_file");
                 Log.v("CLUB_IDS SIZE----:", String.valueOf(CLUB_IDS.length));
                 fresh_event_ids = new ArrayList<>(CLUB_IDS.length);
                 fresh_event_ids.clear();
@@ -114,7 +114,7 @@ public class FetchingJobService extends JobService {
                     for (int i = 0; i < CLUB_IDS.length; i++) {
                         eventIDJSONRequest(CLUB_IDS[i], CLUB_NAMES[i], false, i);
                     }
-                }
+                }*/
 
                 fetchUpdate();      /**     UPDATES FETCHING    **/
 
@@ -511,6 +511,7 @@ public class FetchingJobService extends JobService {
     /***********************************  UPDATE SECTION *********************************************/
 
     private void fetchUpdate() {
+        Log.v("fetchUpdate--->>>","Running");
         update_ids = new File(getApplicationContext().getFilesDir(), "update_ids_file");
         fresh_update_ids = new ArrayList<>();
         fresh_update_ids.clear();
@@ -548,13 +549,15 @@ public class FetchingJobService extends JobService {
                             readNewUpdateID(response.getJSONObject(), index);
                             if (fresh_update_ids.size() == CLUB_NAMES.length) {
                                 writeUpdateFile();
-                            } else {
+                            }
+                        }
+                        else {
                                 readNewUpdateID(response.getJSONObject(), index);
                                 if (fresh_update_ids.size() == CLUB_NAMES.length) {
                                     compareUpdateIDs();
                                 }
                             }
-                        }
+
                     }
                 });
 
@@ -658,21 +661,19 @@ public class FetchingJobService extends JobService {
                 for (int y = 0; y < fresh_update_ids.size(); y++) {
                     if (existing_ids.get(x).getName().equals(fresh_update_ids.get(y).getName())) {
                         if (existing_ids.get(x).getId().equals(fresh_update_ids.get(y).getId())) {
+                            /**********************     NO NOTIFICATION     **************************/
                             writeUpdateFile();
                             Log.v("Result---", "No Notification");
 // TODO --> WRITE LOG FILE -----------------------------------------------------------------------
 //                            writeUpdateLogFile(false,existing_ids.get(x).getId(),fresh_update_ids.get(y).getId());
                         } else {
+                            /**********************     ISSUE NOTIFICATION     **************************/
                             writeUpdateFile();
-                            Log.v("Result---", "Notification");
-                            //  TODO  --> ADD A BACK STACK WHICH WILL OPEN MAIN ACTIVITY IF BACK IS PRESSED
-
-//                            writeUpdateLogFile(true,existing_ids.get(x).getId(),fresh_update_ids.get(y).getId());
                             String clubID = sendClubID(fresh_update_ids.get(y).getName());
                             singleUpdateJSONRequest(clubID, existing_ids.get(x).getId(), fresh_update_ids.get(y).getName());
+                            Log.v("Result---", "Notification");
                             //  *******************   END   **********************
                         }
-//                        readUpdateLogFile();
                     }
                 }
             }
@@ -705,7 +706,7 @@ public class FetchingJobService extends JobService {
             try {
                 JSONArray data = response.getJSONArray("data");
 
-                for (int i = 0; i <= 1; i++) {
+                for (int i = 0; i <= 0; i++) {
                     String id = "";
                     String caption = "";
                     String created_time = "";

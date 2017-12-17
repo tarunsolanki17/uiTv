@@ -23,6 +23,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.tarun.uitsocieties.photos_fragment.Photo_Serial;
 import com.facebook.AccessToken;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
@@ -46,6 +47,8 @@ import java.util.ArrayList;
 import static android.R.attr.data;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
+import static com.example.tarun.uitsocieties.ClubContract.PHOTOS_SERIAL;
+import static com.example.tarun.uitsocieties.ClubContract.PHOTO_BUNDLE;
 import static com.example.tarun.uitsocieties.ClubContract.PhotosConstants.ALBUMS;
 import static com.example.tarun.uitsocieties.ClubContract.PhotosConstants.ALBUM_NAME;
 import static com.example.tarun.uitsocieties.ClubContract.PhotosConstants.CREATED_TIME;
@@ -63,6 +66,7 @@ import static com.example.tarun.uitsocieties.ClubContract.PhotosConstants.THUMB_
 import static com.example.tarun.uitsocieties.ClubContract.PhotosConstants.WIDTH;
 import static com.example.tarun.uitsocieties.InClub.club_id;
 import static com.example.tarun.uitsocieties.InClub.fetchAsyncP;
+import static com.example.tarun.uitsocieties.InClub.fetchAsyncU;
 import static com.example.tarun.uitsocieties.InClub.ft;
 import static com.example.tarun.uitsocieties.InClub.login;
 import static com.example.tarun.uitsocieties.InClub.login_checker;
@@ -89,9 +93,6 @@ public class PhotosFrag extends Fragment{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
-        // TODO --> LOOK FOR INTERNET CONNECTION
-        // TODO --> LOOK FOR DATA AVAILABLE
 
         View view = inflater.inflate(R.layout.fragment_photos, container, false);
 
@@ -176,7 +177,9 @@ public class PhotosFrag extends Fragment{
                 }
                 else {
                     Log.v("fetchAync--->","had already finished");
-                    photos_data = savedInstanceState.getParcelableArrayList("photos_parcel");
+                    Bundle received_bundle = new Bundle();
+                    received_bundle = savedInstanceState.getBundle(PHOTO_BUNDLE);
+                    photos_data = (ArrayList<Photo_Serial>) received_bundle.getSerializable("photos");
                     if (photos_data != null)
                         if (photos_data.isEmpty()) {
                             pbar.setVisibility(GONE);
@@ -219,6 +222,13 @@ public class PhotosFrag extends Fragment{
                         Log.v("Photo Response---",temp_response.toString());
                         fetchPhotosData(temp_response.getJSONObject());
 
+                    GraphRequest newRequest = temp_response.getRequestForPagedResults(GraphResponse.PagingDirection.NEXT);
+                    if(newRequest!=null) {
+                        newRequest.setGraphPath("/" + club_id + "/");
+                        newRequest.setCallback(this);
+                        newRequest.setParameters(parameters);
+                        newRequest.executeAndWait();
+                    }
                 } catch (Exception e) {
                     Log.v("JSON Exception---:",e.toString());
                     e.printStackTrace();
@@ -244,7 +254,7 @@ public class PhotosFrag extends Fragment{
     }
 
     public void fetchPhotosData(JSONObject response){
-//        ArrayList<PhotoParcel> photos = new ArrayList<>();
+
         Log.v("Fetching Data---","Running");
         if(response!=null&&response.length()>0) {
             try {
@@ -326,13 +336,16 @@ public class PhotosFrag extends Fragment{
                                     big_image_link = curr_source.getString(SOURCE);
                                 }
                             }
-                            if(!fetchAsyncP.isCancelled())
-                            photos_data.add(new PhotoParcel(album_name,photo_count,caption,created_time,facebook_link,place,height,width,thumb_link,image_link,big_image_link));
+                            if(!fetchAsyncP.isCancelled()) {
+                                photos_data.add(new Photo_Serial(album_name, photo_count, caption, created_time, facebook_link, place, height, width, thumb_link, image_link, big_image_link));
+                            }
                             else {
                                 Log.v("fetchAsyncP---", "Cancelled");
                                 if(photos_data!=null)
                                 photos_data.clear();
                             }
+                            /*if(photos_data.size()>=50)
+                                break;*/
 //                           TODO --> VERIFY CLEAR STATEMENT
 
                         }
@@ -453,7 +466,7 @@ public class PhotosFrag extends Fragment{
                     }
                 }
                 if(!fetchAsyncP.isCancelled()) {
-                    photos_data.add(new PhotoParcel(album_name, photo_count, caption, created_time, facebook_link, place, height, width, thumb_link, image_link, big_image_link));
+                    photos_data.add(new Photo_Serial(album_name, photo_count, caption, created_time, facebook_link, place, height, width, thumb_link, image_link, big_image_link));
                 }
                 else {
                     Log.v("fetchAsyncP---", "Cancelled");
@@ -461,9 +474,12 @@ public class PhotosFrag extends Fragment{
                     photos_data.clear();
                 }
 //                TODO --> VERIFY CLEAR
+                if(photos_data.size()>=50)
+                    break;
                 Log.v("photos add---+",String.valueOf(photos_data.size()));
                 /*if(photos_data.size()>=24)
                     break;*/
+
             }
             if(nextObj.has(PAGING)&&!nextObj.isNull(PAGING)){
                 JSONObject pagingObject = nextObj.getJSONObject(PAGING);
@@ -486,12 +502,16 @@ public class PhotosFrag extends Fragment{
             if (fetchAsyncP.getStatus().toString().equals("RUNNING"))
                 outState.putBoolean("Incomplete",true);
             else if(fetchAsyncP.getStatus().toString().equals("FINISHED")) {
-                outState.putParcelableArrayList("photos_parcel", photos_data);
+                Bundle photoBundle = new Bundle();
+                photoBundle.putSerializable("photos",photos_data);
+                outState.putBundle(PHOTO_BUNDLE,photoBundle);
                 outState.putBoolean("Incomplete", false);
             }
         }
         else {
-            outState.putParcelableArrayList("photos_parcel", photos_data);
+            Bundle photoBundle = new Bundle();
+            photoBundle.putSerializable("photos",photos_data);
+            outState.putBundle(PHOTO_BUNDLE,photoBundle);
             outState.putBoolean("Incomplete",false);
         }
     }
@@ -541,6 +561,8 @@ public class PhotosFrag extends Fragment{
         }
     }
 
+    public void setRecycAdapter(){
 
+    }
 
 }

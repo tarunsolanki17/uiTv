@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.example.tarun.uitsocieties.photos_fragment.Photo_Serial;
 import com.example.tarun.uitsocieties.updates_fragment.UpdateParcel;
 import com.example.tarun.uitsocieties.videos_fragment.VideoParcel;
 import com.facebook.AccessToken;
@@ -24,6 +25,8 @@ import java.util.ArrayList;
 
 import static com.example.tarun.uitsocieties.ClubContract.CLUB_IDS;
 import static com.example.tarun.uitsocieties.ClubContract.CLUB_NAMES_VISIBLE;
+import static com.example.tarun.uitsocieties.ClubContract.NOTIF_EVENT;
+import static com.example.tarun.uitsocieties.ClubContract.NOTIF_UPDATE;
 import static com.example.tarun.uitsocieties.ClubContract.PHOTO_FILE;
 import static com.facebook.internal.CallbackManagerImpl.RequestCodeOffset.Login;
 
@@ -35,7 +38,7 @@ public class InClub extends AppCompatActivity {
 
     public static ArrayList<UpdateParcel> updates_data;
     public static ArrayList<EventsDataModel> events_data;
-    public static ArrayList<PhotoParcel> photos_data;
+    public static ArrayList<Photo_Serial> photos_data;
     public static ArrayList<VideoParcel> videos_data;
     public static boolean login;
     static FragmentTransaction ft;
@@ -77,8 +80,6 @@ public class InClub extends AppCompatActivity {
         setTitle(CLUB_NAMES_VISIBLE[position]);
 
 
-        boolean notif_intent = in2.getBooleanExtra("Notif_intent",false);
-
         club_id = CLUB_IDS[position];
         if(club_id!=null)
         Log.v("Clubid----",club_id);
@@ -87,12 +88,19 @@ public class InClub extends AppCompatActivity {
         MyPagerAdap adap = new MyPagerAdap(getSupportFragmentManager());
         viewpgr.setAdapter(adap);
 
+        boolean notif_event = in2.getBooleanExtra(NOTIF_EVENT,false);
+        boolean notif_update = in2.getBooleanExtra(NOTIF_UPDATE,false);
+
         if(event_detail) {
             viewpgr.setCurrentItem(2);      /**     SET POSITION TO EVENTS FRAGMENT   */
         }
         event_detail = false;
-        if(notif_intent)
+        if(notif_event)
             viewpgr.setCurrentItem(2);      /**     SET POSITION TO EVENTS FRAGMENT   */
+
+        if(notif_update){
+            viewpgr.setCurrentItem(1);      /**     SET POSITION TO UPDATES FRAGMENT   */
+        }
 
         TabLayout tablay = (TabLayout) findViewById(R.id.tabl);
         tablay.setupWithViewPager(viewpgr);
@@ -157,11 +165,25 @@ public class InClub extends AppCompatActivity {
             fetchAsyncV.cancel(true);
             fetchAsyncV = null;
         }
+
+        if(updates_data!=null){
+            updates_data.clear();
+        }
+        if(events_data!=null){
+            events_data.clear();
+        }
+        if(photos_data!=null){
+            photos_data.clear();
+        }
+        if(videos_data!=null){
+            videos_data.clear();
+        }
+
         started1 = false;
         started2 = false;
         list_item = false;
 
-        File photoFile = new File(PHOTO_FILE);
+        File photoFile = new File(getApplicationContext().getFilesDir(),PHOTO_FILE);
         if(photoFile.exists()){
             boolean deleted = photoFile.delete();
             Log.v("Photo File Del---",String.valueOf(deleted));

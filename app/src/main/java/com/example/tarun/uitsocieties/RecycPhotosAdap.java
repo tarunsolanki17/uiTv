@@ -11,6 +11,7 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.example.tarun.uitsocieties.photos_fragment.Photo_Serial;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -27,10 +28,10 @@ import static com.example.tarun.uitsocieties.R.id.photo_view;
 
 public class RecycPhotosAdap extends RecyclerView.Adapter<RecycPhotosAdap.PhotoViewHolder> {
 
-    ArrayList<PhotoParcel> photos_data;
+    ArrayList<Photo_Serial> photos_data;
     Context context;
 
-    public RecycPhotosAdap(ArrayList<PhotoParcel> data,Context con) {
+    public RecycPhotosAdap(ArrayList<Photo_Serial> data,Context con) {
         photos_data = data;
         context = con;
     }
@@ -47,7 +48,7 @@ public class RecycPhotosAdap extends RecyclerView.Adapter<RecycPhotosAdap.PhotoV
 
     @Override
     public void onBindViewHolder(RecycPhotosAdap.PhotoViewHolder holder, int position) {
-        PhotoParcel curr_photo = photos_data.get(position);
+        Photo_Serial curr_photo = photos_data.get(position);
         ImageView imageView = holder.photo_img_view;
         Glide.with(context)
                 .load(curr_photo.getImage_link())
@@ -77,18 +78,17 @@ public class RecycPhotosAdap extends RecyclerView.Adapter<RecycPhotosAdap.PhotoV
             if (!photoFile.exists()) {
                 try {
                     photoFile.createNewFile();
+                    Log.v("File created---","Now");
+                    FileOutputStream fos = context.openFileOutput(PHOTO_FILE, context.MODE_PRIVATE);
+                    ObjectOutputStream oos = new ObjectOutputStream(fos);
+                    oos.writeObject(photos_data);
+                    oos.close();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
-            try {
-                FileOutputStream fos = context.openFileOutput(PHOTO_FILE, context.MODE_PRIVATE);
-                ObjectOutputStream oos = new ObjectOutputStream(fos);
-                oos.writeObject(photos_data);
-                oos.close();
-            }
-            catch (Exception e){
-                e.printStackTrace();
+            else {
+                Log.v("File not created---","Not");
             }
 
             int position = getAdapterPosition();
@@ -98,6 +98,5 @@ public class RecycPhotosAdap extends RecyclerView.Adapter<RecycPhotosAdap.PhotoV
                 context.startActivity(intent);
             }
         }
-
     }
 }
