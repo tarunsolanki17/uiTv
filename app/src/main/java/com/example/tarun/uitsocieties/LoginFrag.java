@@ -27,7 +27,11 @@ import com.facebook.login.LoginResult;
 import java.util.Arrays;
 
 import static android.widget.Toast.makeText;
+import static com.example.tarun.uitsocieties.InClub.events_data;
 import static com.example.tarun.uitsocieties.InClub.login_checker;
+import static com.example.tarun.uitsocieties.InClub.photos_data;
+import static com.example.tarun.uitsocieties.InClub.updates_data;
+import static com.example.tarun.uitsocieties.InClub.videos_data;
 import static com.example.tarun.uitsocieties.InClub.viewpgr;
 import static com.example.tarun.uitsocieties.MainActivity.isConnectedStatic;
 import static com.example.tarun.uitsocieties.R.id.loginbutt2;
@@ -93,6 +97,7 @@ public class LoginFrag extends Fragment {
 
             @Override
             public void onError(FacebookException error) {
+                Toast.makeText(getActivity(),"There was an error logging in. Please try again later.",Toast.LENGTH_SHORT).show();
                 Log.v("Login Error---",error.toString());
             }
         };
@@ -115,6 +120,15 @@ public class LoginFrag extends Fragment {
     }
 
     public void handleLoginResult(AccessToken accessToken) {
+        if(updates_data!=null)
+            updates_data.clear();
+        if(events_data!=null)
+            events_data.clear();
+        if(photos_data!=null)
+            photos_data.clear();
+        if(videos_data!=null)
+            videos_data.clear();
+
         String text;
         Profile profile = Profile.getCurrentProfile();
         if(profile!=null && profile.getName() != null)

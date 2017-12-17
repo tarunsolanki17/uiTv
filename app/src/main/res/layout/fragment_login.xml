@@ -2,7 +2,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
-
     android:background="#3c3c3c">
 
     <TextView
@@ -35,7 +34,7 @@ Please login to continue."
             android:layout_marginStart="4dp"
             android:layout_marginLeft="4dp"
             android:layout_marginTop="1dp"
-            android:src="@drawable/com_facebook_button_login_logo" />
+            android:src="@drawable/com_facebook_button_icon" />
 
         <TextView
             android:id="@+id/textView"
@@ -61,7 +60,5 @@ Please login to continue."
         android:layout_marginTop="50dp"
         android:textAlignment="center"
         android:textSize="20sp"/>
-
-    <!--TODO ->> ADD "NO INTERNET CONNECTION" TEXT VIEW-->
 
 </RelativeLayout>

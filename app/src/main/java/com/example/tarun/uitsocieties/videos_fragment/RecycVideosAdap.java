@@ -13,9 +13,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.example.tarun.uitsocieties.PhotoParcel;
 import com.example.tarun.uitsocieties.R;
-import com.example.tarun.uitsocieties.RecycPhotosAdap;
 
 import java.util.ArrayList;
 

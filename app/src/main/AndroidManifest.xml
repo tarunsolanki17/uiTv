@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.tarun.uitsocieties">
 
     <!-- ***************************** PERMISSIONS *********************************** -->
@@ -28,7 +29,8 @@
         <activity
             android:name=".InClub"
             android:parentActivityName=".MainActivity"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
@@ -55,6 +57,13 @@
             android:label=""
             android:theme="@style/VideoDetail"
             android:configChanges="orientation|keyboardHidden|screenLayout|screenSize">
+        </activity>
+        <activity android:name=".events_fragment.EventsDeatiledPhotoActivity"
+            android:label=""
+            android:parentActivityName=".EventsDetailedActivity">
+        <meta-data
+            android:name="android.support.PARENT_ACTIVITY"
+            android:value=".EventsDetailedActivity" />
         </activity>
 
         <!-- *********************FACEBOOK INTEGRATION************************ -->

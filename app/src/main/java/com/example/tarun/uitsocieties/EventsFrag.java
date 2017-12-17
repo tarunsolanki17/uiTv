@@ -65,8 +65,11 @@ import static com.example.tarun.uitsocieties.ClubContract.INSYNC;
 import static com.example.tarun.uitsocieties.InClub.club_id;
 import static com.example.tarun.uitsocieties.InClub.events_data;
 import static com.example.tarun.uitsocieties.InClub.fetchAsyncE;
+import static com.example.tarun.uitsocieties.InClub.list_item;
 import static com.example.tarun.uitsocieties.InClub.login;
 import static com.example.tarun.uitsocieties.InClub.login_checker;
+import static com.example.tarun.uitsocieties.InClub.started1;
+import static com.example.tarun.uitsocieties.InClub.started2;
 import static com.example.tarun.uitsocieties.R.id.date_time;
 import static com.example.tarun.uitsocieties.R.id.photo_recyc_view;
 import static com.facebook.login.widget.ProfilePictureView.TAG;
@@ -99,8 +102,7 @@ public class EventsFrag extends Fragment {
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View events_view = inflater.inflate(R.layout.fragment_events, container, false);
 
@@ -115,6 +117,9 @@ public class EventsFrag extends Fragment {
         swipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                started1 = false;
+                started2 = false;
+                list_item = false;
                 swipe.setRefreshing(true);
                 if(isConnectedFunc()) {
                     if(fetchAsyncE!=null) {
@@ -154,51 +159,18 @@ public class EventsFrag extends Fragment {
                         }
                         if (fetchAsyncE.getStatus().toString().equals("FINISHED")) {   /** fetchAsyncE complete*/
                             Log.v("fetchAync---<","finished");
-                            if (events_data != null)
-                                if (events_data.isEmpty()) {
-                                    pbar.setVisibility(GONE);
-                                    listView.setVisibility(GONE);
-                                    no_data.setVisibility(VISIBLE);
-                                } else {
-                                    data_len = events_data.size();
-                                    pbar.setVisibility(GONE);
-                                    no_data.setVisibility(GONE);
-                                    listView.setVisibility(VISIBLE);
-                                    onDataFetched();
-                                }
+                            showing();
                         }
                     } else {
                         Log.v("fetchAync---<","is null");
                         Log.v("eventsdata---<",String.valueOf(events_data.size()));
-                        if (events_data != null)
-                            if (events_data.isEmpty()) {
-                                pbar.setVisibility(GONE);
-                                listView.setVisibility(GONE);
-                                no_data.setVisibility(VISIBLE);
-                            } else {
-                                data_len = events_data.size();
-                                pbar.setVisibility(GONE);
-                                no_data.setVisibility(GONE);
-                                listView.setVisibility(VISIBLE);
-                                onDataFetched();
-                            }
+                        showing();
                     }
                 }
                 else {
                     Log.v("fetchAync---<","had already finished");
                     events_data = savedInstanceState.getParcelableArrayList("events_parcel");
-                    if (events_data != null)
-                        if (events_data.isEmpty()) {
-                            pbar.setVisibility(GONE);
-                            listView.setVisibility(GONE);
-                            no_data.setVisibility(VISIBLE);
-                        } else {
-                            data_len = events_data.size();
-                            pbar.setVisibility(GONE);
-                            no_data.setVisibility(GONE);
-                            listView.setVisibility(VISIBLE);
-                            onDataFetched();
-                        }
+                    showing();
                 }
             }
             else {
@@ -210,6 +182,21 @@ public class EventsFrag extends Fragment {
         }
 
         return events_view;
+    }
+
+    private void showing(){
+        if (events_data != null)
+            if (events_data.isEmpty()) {
+                pbar.setVisibility(GONE);
+                listView.setVisibility(GONE);
+                no_data.setVisibility(VISIBLE);
+            } else {
+                data_len = events_data.size();
+                pbar.setVisibility(GONE);
+                no_data.setVisibility(GONE);
+                listView.setVisibility(VISIBLE);
+                onDataFetched();
+            }
     }
 
     public void eventJSONRequest(){
@@ -262,7 +249,7 @@ public class EventsFrag extends Fragment {
     }
 
     public void parseJSONData(JSONObject response){
-        ArrayList<EventsDataModel> events = new ArrayList<>();
+
         if(response!=null&&response.length()>0){
             try{
                 JSONArray data = response.getJSONArray("data");
@@ -418,10 +405,9 @@ public class EventsFrag extends Fragment {
 
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(con)
-                //  TODO --> SET SMALL ICON AS THE LOGO OF THE APP
                 .setSmallIcon(R.drawable.ic_notification)
                 //  TODO --> SET LARGE ICON ACCORDING TO THE CLUB LOGO
-                .setLargeIcon(largeIcon(con))
+                .setLargeIcon(BitmapFactory.decodeResource(con.getResources(),R.mipmap.ic_launcher))
                 .setContentTitle(new_event.getEvent_name())
                 .setContentText("New event by " + absoluteClubName(club_name) + " " + date_time)
                 .setColor(ContextCompat.getColor(con,R.color.colorPrimary))
@@ -460,12 +446,6 @@ public class EventsFrag extends Fragment {
         notificationManager.notify(1,builder.build());
     }
 
-    public static Bitmap largeIcon(Context con){
-        Resources resources = con.getResources();
-        return BitmapFactory.decodeResource(resources, R.drawable.ic_local_drink_black_24px);
-//        TODO --> ADD THE LARGE ICON
-    }
-
     public static PendingIntent contentIntent(Context con, EventsDataModel new_event, String clubID, int index, String clubName){
 
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(con);
@@ -502,7 +482,7 @@ public class EventsFrag extends Fragment {
         return pendingIntent;
     }
 
-    private static int getFlags(String clubName){
+    public static int getFlags(String clubName){
             for(int i=0;i<CLUB_NAMES.length;i++)
             if(clubName.equals(CLUB_NAMES[i]))
                 return i;
@@ -510,12 +490,12 @@ public class EventsFrag extends Fragment {
         return -1;
     }
 
-    private static String absoluteClubName(String club_name){
+    public static String absoluteClubName(String club_name){
         for(int i=0;i<CLUB_NAMES_VISIBLE.length;i++){
             if(club_name.equals(CLUB_NAMES[i]))
                 return CLUB_NAMES_VISIBLE[i];
         }
-        return "a society";
+        return "a Society";
     }
 
     public static class NotificationBroadCastReceiver extends BroadcastReceiver{

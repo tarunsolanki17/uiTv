@@ -14,6 +14,8 @@ import static com.example.tarun.uitsocieties.InClub.login;
  * Created by Tarun on 17-Aug-17.
  */
 
+/***********************    PAGER ADAPTER FOR MAIN ACTIVITY     **********************************/
+
 public class MyPagerAdap extends FragmentStatePagerAdapter {
 
     public MyPagerAdap(FragmentManager fm) {

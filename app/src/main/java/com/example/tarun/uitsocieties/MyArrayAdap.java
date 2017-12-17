@@ -25,6 +25,8 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -69,6 +71,9 @@ public class MyArrayAdap extends RecyclerView.Adapter<MyArrayAdap.MyViewHolder> 
                 .apply(new RequestOptions()
                         .placeholder(R.drawable.color_gray_place))
                 .into(imageView);
+
+        TextView name = holder.club_name;
+        name.setText(curr_club.getClub_name());
     }
 
     @Override
@@ -79,9 +84,11 @@ public class MyArrayAdap extends RecyclerView.Adapter<MyArrayAdap.MyViewHolder> 
     public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         public ImageView mClubImageView;
+        public TextView club_name;
 
         public MyViewHolder(View itemView) {
             super(itemView);
+            club_name = (TextView) itemView.findViewById(R.id.club_name);
             mClubImageView = (ImageView) itemView.findViewById(R.id.club_logo);
             itemView.setOnClickListener(this);
         }

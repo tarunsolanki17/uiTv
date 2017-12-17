@@ -14,14 +14,17 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.example.tarun.uitsocieties.updates_fragment.UpdateParcel;
 import com.example.tarun.uitsocieties.videos_fragment.VideoParcel;
 import com.facebook.AccessToken;
 import com.facebook.FacebookSdk;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import static com.example.tarun.uitsocieties.ClubContract.CLUB_IDS;
 import static com.example.tarun.uitsocieties.ClubContract.CLUB_NAMES_VISIBLE;
+import static com.example.tarun.uitsocieties.ClubContract.PHOTO_FILE;
 import static com.facebook.internal.CallbackManagerImpl.RequestCodeOffset.Login;
 
 /**
@@ -30,16 +33,17 @@ import static com.facebook.internal.CallbackManagerImpl.RequestCodeOffset.Login;
 
 public class InClub extends AppCompatActivity {
 
+    public static ArrayList<UpdateParcel> updates_data;
     public static ArrayList<EventsDataModel> events_data;
     public static ArrayList<PhotoParcel> photos_data;
     public static ArrayList<VideoParcel> videos_data;
     public static boolean login;
-    static FragmentManager fmag;
     static FragmentTransaction ft;
-    static ViewPager viewpgr;
+    public static ViewPager viewpgr;
     public static String club_id;
     public static boolean event_detail=false;
-    public static AsyncTask fetchAsyncE, fetchAsyncP, fetchAsyncV;
+    public static AsyncTask fetchAsyncU, fetchAsyncE, fetchAsyncP, fetchAsyncV;
+    public static boolean started1=false, started2=false, list_item=false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -47,6 +51,7 @@ public class InClub extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.inclub_main);
 
+        updates_data = new ArrayList<>();
         events_data = new ArrayList<>();
         photos_data = new ArrayList<>();
         videos_data = new ArrayList<>();
@@ -134,24 +139,32 @@ public class InClub extends AppCompatActivity {
         Log.v("onDestroy inclub---","Running");
         /**     Cancelling all the fetching tasks because they were still running if someone navigated to another club.     */
 
+        if(fetchAsyncU!=null){
+            fetchAsyncU.cancel(true);
+            fetchAsyncU = null;
+        }
         if(fetchAsyncE!=null) {
             fetchAsyncE.cancel(true);
             fetchAsyncE = null;
         }
 
         if(fetchAsyncP!=null) {
-            Log.v("fetchAsyncP---","NOT NULL");
             fetchAsyncP.cancel(true);
             fetchAsyncP = null;
-            if(fetchAsyncP==null)
-                Log.v("fetchAsyncP---","MADE NULL");
         }
-        else{
-            Log.v("fetchAsyncP---","IS NULL");
-        }
+
         if(fetchAsyncV!=null) {
             fetchAsyncV.cancel(true);
             fetchAsyncV = null;
+        }
+        started1 = false;
+        started2 = false;
+        list_item = false;
+
+        File photoFile = new File(PHOTO_FILE);
+        if(photoFile.exists()){
+            boolean deleted = photoFile.delete();
+            Log.v("Photo File Del---",String.valueOf(deleted));
         }
     }
 }

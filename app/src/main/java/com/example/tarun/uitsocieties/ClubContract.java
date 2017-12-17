@@ -11,6 +11,9 @@ import static android.graphics.Color.GREEN;
  */
 
 public class ClubContract  {
+
+    public static final String PHOTO_FILE = "Photo_File";
+
     public static final String ACM_RGPV = "1356583771115130";
     public static final String COHERENT = "493932347436578";
     public static final String E_CELL = "1756876974557988";
@@ -28,6 +31,35 @@ public class ClubContract  {
     public static final String[] CLUB_NAMES = {"ACM_RGPV","COHERENT","E_CELL","GREEN_ARMY","HACKER_EARTH","INSYNC","I_SPEAK_AALAY","MAHASANGRAM","PHOENIX","SHANKHNAAD","SUNDARBAN","TECHNOPHILIC","TEDX_RGPV"};
     public static final String[] CLUB_NAMES_VISIBLE = {"ACM-Student Chapter RGPV","Coherent","E-Cell","Green Army","Hacker Earth","Insync","I Speak Aalay ","Mahasangram","Phoenix","शंखनाद","Sundarban","Technophilic","TEDx RGPV"};
     public static final String[] CLUB_IDS = {ACM_RGPV,COHERENT,E_CELL,GREEN_ARMY,HACKER_EARTH,INSYNC,I_SPEAK_AALAY,MAHASANGRAM,PHOENIX,SHANKHNAAD,SUNDARBAN,TECHNOPHILIC,TEDX_RGPV};
+
+    public class UpdatesConstants{
+        public static final String ID = "id";
+        public static final String CAPTION = "caption";      //  ACTUALLY AN EVENT NAME
+        public static final String CREATED_TIME = "created_time";
+        public static final String DESCRIPTION = "description";
+        public static final String LINK = "link";
+        public static final String MESSAGE = "message";     //   POST CAPTION
+        public static final String NAME = "name";           //   NAME OF EVENT
+        public static final String PERMA_LINK = "permalink_url";
+        public static final String PICTURE = "picture";
+        public static final String FULL_PICTURE = "full_picture";
+        public static final String PLACE = "place";
+        public static final String LOCATION = "location";
+        public static final String CITY = "city";
+        public static final String SOURCE = "source";       //  SOURCE OF ANY FILE OR ATTACHED VIDEO
+        public static final String STATUS_TYPE = "status_type";
+        public static final String TYPE = "type";
+
+        /**         CONSTANTS FOR TYPE OF STATUS                 */
+        public static final String UP_STATUS = "status";
+        public static final String UP_LINK = "link";
+        public static final String UP_EVENT = "event";
+        public static final String UP_PHOTO = "photo";
+        public static final String UP_VIDEO = "video";
+
+
+
+    }
 
     public class EventsConstants{
         public static final String ID = "id";

@@ -26,13 +26,15 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="No Internet Connection"
-        android:layout_centerInParent="true"/>
+        android:layout_centerInParent="true"
+        style="@style/NothingToShow"/>
     <TextView
         android:id="@+id/no_data"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:text="No Events Available"/>
+        android:text="No Events Available"
+        style="@style/NothingToShow"/>
 
 
 

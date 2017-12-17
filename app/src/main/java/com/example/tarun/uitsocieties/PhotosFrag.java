@@ -106,6 +106,7 @@ public class PhotosFrag extends Fragment{
             public void onRefresh() {
                 swipe.setRefreshing(true);
                 if(isConnectedFunc()) {
+//                    TODO --> WHEN REFRESHING TOO MUCH, WRONG DATA IS BEING WITHHELD
                     if(fetchAsyncP!=null) {
                         fetchAsyncP.cancel(true);
                     }
@@ -327,17 +328,15 @@ public class PhotosFrag extends Fragment{
                             }
                             if(!fetchAsyncP.isCancelled())
                             photos_data.add(new PhotoParcel(album_name,photo_count,caption,created_time,facebook_link,place,height,width,thumb_link,image_link,big_image_link));
-                            else
-                                Log.v("fetchAsyncP---","Cancelled");
-//                                photos_data.clear();
+                            else {
+                                Log.v("fetchAsyncP---", "Cancelled");
+                                if(photos_data!=null)
+                                photos_data.clear();
+                            }
 //                           TODO --> VERIFY CLEAR STATEMENT
-                            /*if(photos_data.size()>=28) {
-                                Log.v("Size---",">=28");
-                                break;
-                            }*/
+
                         }
-                        /*if(photos_data.size()>=28)
-                            break;*/
+
                         if(photo_object.has(PAGING)&&!photo_object.isNull(PAGING)){
                             JSONObject pagingObject = photo_object.getJSONObject(PAGING);
 
@@ -456,9 +455,11 @@ public class PhotosFrag extends Fragment{
                 if(!fetchAsyncP.isCancelled()) {
                     photos_data.add(new PhotoParcel(album_name, photo_count, caption, created_time, facebook_link, place, height, width, thumb_link, image_link, big_image_link));
                 }
-                else
-                    Log.v("fetchAsyncP---","Cancelled");
-//                    photos_data.clear();
+                else {
+                    Log.v("fetchAsyncP---", "Cancelled");
+                    if(photos_data!=null)
+                    photos_data.clear();
+                }
 //                TODO --> VERIFY CLEAR
                 Log.v("photos add---+",String.valueOf(photos_data.size()));
                 /*if(photos_data.size()>=24)

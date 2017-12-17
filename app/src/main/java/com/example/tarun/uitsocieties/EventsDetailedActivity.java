@@ -19,11 +19,16 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
+import com.example.tarun.uitsocieties.events_fragment.EventsDeatiledPhotoActivity;
+
 import org.w3c.dom.Text;
 
 import java.net.URL;
 import java.util.ArrayList;
 
+import static android.view.View.GONE;
 import static com.example.tarun.uitsocieties.InClub.event_detail;
 import static com.example.tarun.uitsocieties.InClub.viewpgr;
 
@@ -77,26 +82,11 @@ public class EventsDetailedActivity extends AppCompatActivity {
         descp = (TextView) findViewById(R.id.descp);
         button = (Button) findViewById(R.id.map);
 
-        coverAsync = new AsyncTask() {
-            @Override
-            protected Bitmap doInBackground(Object[] objects) {
-                try{
-
-                    URL cover_url = new URL(curr_event.getCover_url());
-                    image = BitmapFactory.decodeStream(cover_url.openConnection().getInputStream());
-                }
-                catch (Exception e){
-                    e.printStackTrace();
-                }
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(Object o) {
-                cover.setImageBitmap(image);
-            }
-        };
-        coverAsync.execute();
+        if(curr_event.getCover_url().isEmpty())
+            cover.setVisibility(GONE);
+        Glide.with(getApplicationContext())
+                .load(curr_event.getCover_url())
+                .into(cover);
 
         name.setText(curr_event.getEvent_name());
         String date = curr_event.getDate();
@@ -111,14 +101,15 @@ public class EventsDetailedActivity extends AppCompatActivity {
         cover.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //  TODO --> DETAILED IMAGE VIEW WITH SAVE AND SHARE OPTIONS AS WELL
+                Intent photo_detail = new Intent(getApplicationContext(), EventsDeatiledPhotoActivity.class);
+                photo_detail.putExtra("cover_url",curr_event.getCover_url());
+                startActivity(photo_detail);
             }
         });
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //  TODO --> MOVING TO THE MAP WITH LATITUDE AND LONGITUDE
                 Intent map_intent = new Intent(Intent.ACTION_VIEW);
                 map_intent.setData(Uri.parse("geo:"+curr_event.getLatitude()+", "+curr_event.getLongitude()));
                 if((map_intent.resolveActivity(getPackageManager())!=null)){

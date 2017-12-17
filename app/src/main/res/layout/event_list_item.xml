@@ -9,11 +9,12 @@
 
 
     <RelativeLayout
+        android:id="@+id/event_item"
         android:layout_width="match_parent"
         android:layout_height="110dp"
-        android:layout_marginBottom="1dp"
+
         android:layout_marginTop="1dp"
-        android:background="#f4cc37"
+        android:background="?selectableItemBackground"
         android:orientation="vertical">
 
         <RelativeLayout
@@ -132,8 +133,8 @@
     <View
         android:id="@+id/grey_line"
         android:layout_width="match_parent"
-        android:layout_height="10dp"
-        tools:background="#c7c7c7"
+        android:layout_height="2dp"
+        android:background="#c7c7c7"
         />
 
 </LinearLayout>

@@ -48,7 +48,6 @@ public class FetchJobScheduler {
         Job fetchingJob = dispatcher.newJobBuilder()
                 .setService(FetchingJobService.class)
                 .setTag(TAG)
-                .setConstraints(Constraint.ON_ANY_NETWORK)
                 .setLifetime(Lifetime.FOREVER)
                 .setRecurring(true)
                 .setReplaceCurrent(true)
@@ -57,6 +56,7 @@ public class FetchJobScheduler {
 
         dispatcher.schedule(fetchingJob);
         sInitialized = true;
+        Log.v("Schedular-------","Dispatched");
     }
     private static boolean isConnected(Context con){
         ConnectivityManager cm = (ConnectivityManager) con.getSystemService(Context.CONNECTIVITY_SERVICE);

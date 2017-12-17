@@ -44,9 +44,12 @@ import com.squareup.picasso.Target;
 import org.w3c.dom.Text;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -57,6 +60,8 @@ import it.sephiroth.android.library.imagezoom.ImageViewTouchBase;
 import static android.content.Intent.ACTION_VIEW;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
+import static com.example.tarun.uitsocieties.ClubContract.PHOTO_FILE;
+import static com.example.tarun.uitsocieties.InClub.photos_data;
 
 
 /**
@@ -68,9 +73,11 @@ public class PhotoDetailActivity extends AppCompatActivity {
     ImageView image;
     Toolbar toolbar;
     int pos;
-    ArrayList<PhotoParcel> photos_data;
+    ArrayList<PhotoParcel> photos_data_local;
     SectionsPagerAdapter mSectionsPagerAdapter;
     private ViewPager viewPager;
+    public transient Context con;
+    ArrayList<String> S = new ArrayList<>();
     /*private RelativeLayout detail_layout;
     private TextView caption_view;*/
 
@@ -80,12 +87,24 @@ public class PhotoDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.detail_photo);
 
+        con = getApplicationContext();
+
         toolbar = (Toolbar) findViewById(R.id.detail_toolbar);
         setSupportActionBar(toolbar);
         image = (ImageView) findViewById(R.id.image);
 //        caption_view = (TextView) findViewById(R.id.caption);
 
-        photos_data = getIntent().getParcelableArrayListExtra("photo_parcel");
+//        photos_data = getIntent().getParcelableArrayListExtra("photo_parcel");
+        try {
+            FileInputStream fis = openFileInput(PHOTO_FILE);
+            ObjectInputStream ois = new ObjectInputStream(fis);
+            S = (ArrayList<String>) ois.readObject();
+            ois.close();
+        }
+        catch (Exception e){
+            Log.v("PhotoDet Excep---",e.toString());
+            e.printStackTrace();
+        }
         Log.v("Photos Count---",String.valueOf(photos_data.size()));
         pos = getIntent().getIntExtra("position",-1);
 
@@ -145,26 +164,10 @@ public class PhotoDetailActivity extends AppCompatActivity {
 
             View rootView = inflater.inflate(R.layout.detail_photo_fragment, container, false);
 
-            final ImageViewTouch imageView = (ImageViewTouch) rootView.findViewById(R.id.detail_image);
+            final ImageViewTouch imageView = rootView.findViewById(R.id.detail_image);
             imageView.setDisplayType(ImageViewTouchBase.DisplayType.FIT_TO_SCREEN);
-            final ProgressBar photo_prog = (ProgressBar) rootView.findViewById(R.id.photo_progress);
-            final TextView unloaded = (TextView) rootView.findViewById(R.id.not_loaded);
-            RelativeLayout detail_layout = (RelativeLayout) rootView.findViewById(R.id.detailed_layout);
-            final TextView caption_view = (TextView) rootView.findViewById(R.id.caption);
-
-            detail_layout.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if(caption_view.getVisibility()==VISIBLE){
-                        caption_view.setVisibility(GONE);
-                    }
-                    else{
-                        caption_view.setVisibility(VISIBLE);
-                    }
-                }
-            });
-
-            caption_view.setText(caption);
+            final ProgressBar photo_prog = rootView.findViewById(R.id.photo_progress);
+            final TextView unloaded = rootView.findViewById(R.id.not_loaded);
 
             /*Glide.with(getActivity()).load(big_image_link).thumbnail(0.1f)
                     .listener(new RequestListener<Drawable>() {
@@ -193,7 +196,6 @@ public class PhotoDetailActivity extends AppCompatActivity {
                 @Override
                 public void onResourceReady(Bitmap resource, Transition<? super Bitmap> transition) {
                     imageView.setVisibility(VISIBLE);
-                    caption_view.setVisibility(VISIBLE);
                     unloaded.setVisibility(GONE);
                     photo_prog.setVisibility(GONE);
                     imageView.setImageBitmap(resource);
@@ -204,7 +206,7 @@ public class PhotoDetailActivity extends AppCompatActivity {
                     imageView.setVisibility(GONE);
                     unloaded.setVisibility(VISIBLE);
                     photo_prog.setVisibility(GONE);
-                    caption_view.setVisibility(GONE);
+
                 }
             });
 
@@ -227,7 +229,7 @@ public class PhotoDetailActivity extends AppCompatActivity {
                             break;
             case R.id.facebook_link:
                 Intent facebook_intent = new Intent(ACTION_VIEW);
-                facebook_intent.setData(Uri.parse(photos_data.get(pos).getFacebook_link()));
+                facebook_intent.setData(Uri.parse(photos_data.get(viewPager.getCurrentItem()).getFacebook_link()));
                 if((facebook_intent.resolveActivity(getPackageManager())!=null))
                 startActivity(facebook_intent);
                             break;

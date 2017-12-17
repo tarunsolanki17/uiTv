@@ -12,8 +12,13 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.ObjectOutputStream;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 
+import static com.example.tarun.uitsocieties.ClubContract.PHOTO_FILE;
 import static com.example.tarun.uitsocieties.R.id.photo_view;
 
 /**
@@ -67,12 +72,29 @@ public class RecycPhotosAdap extends RecyclerView.Adapter<RecycPhotosAdap.PhotoV
 
         @Override
         public void onClick(View view) {
+
+            File photoFile = new File(context.getFilesDir(),PHOTO_FILE);
+            if (!photoFile.exists()) {
+                try {
+                    photoFile.createNewFile();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            try {
+                FileOutputStream fos = context.openFileOutput(PHOTO_FILE, context.MODE_PRIVATE);
+                ObjectOutputStream oos = new ObjectOutputStream(fos);
+                oos.writeObject(photos_data);
+                oos.close();
+            }
+            catch (Exception e){
+                e.printStackTrace();
+            }
+
             int position = getAdapterPosition();
             if(position != RecyclerView.NO_POSITION) {
-                PhotoParcel curr_photo = photos_data.get(position);
                 Intent intent = new Intent(context, PhotoDetailActivity.class);
-                intent.putParcelableArrayListExtra("photo_parcel",photos_data);
-                intent.putExtra("position",position);
+                intent.putExtra("position", position);
                 context.startActivity(intent);
             }
         }
