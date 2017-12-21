@@ -3,6 +3,9 @@
     android:layout_height="match_parent"
     android:layout_width="match_parent">
 
+        <!--<ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">-->
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/swipe"
         android:layout_width="match_parent"
@@ -14,7 +17,17 @@
             android:layout_height="match_parent">
         </android.support.v7.widget.RecyclerView>
 
+        <!--<ProgressBar
+            android:id="@+id/down_prog"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"/>-->
+
     </android.support.v4.widget.SwipeRefreshLayout>
+
+
+        <!--</ScrollView>-->
+
 
     <TextView
         android:id="@+id/no_internet_photos"

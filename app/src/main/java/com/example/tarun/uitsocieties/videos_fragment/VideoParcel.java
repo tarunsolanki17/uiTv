@@ -80,4 +80,12 @@ public class VideoParcel implements Parcelable{
     public String getThumbnail_url() {
         return thumbnail_url;
     }
+
+    public String getCreated_time() {
+        return created_time;
+    }
+
+    public int getLength() {
+        return length;
+    }
 }

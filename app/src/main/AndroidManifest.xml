@@ -19,7 +19,8 @@
         android:theme="@style/AppTheme.Launcher">
         <activity
             android:name=".MainActivity"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -37,21 +38,17 @@
         </activity>
         <activity
             android:name=".Settings"
-            android:label="Settings" />
-        <activity
-            android:name=".DetailActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="" />
+            android:label="Settings"
+            android:theme="@style/AppTheme"/>
         <activity
             android:name=".EventsDetailedActivity"
-            android:parentActivityName=".InClub">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".InClub" />
+            android:label="Details"
+            android:theme="@style/AppTheme">
         </activity>
         <activity
             android:name=".PhotoDetailActivity"
-            android:label="">
+            android:label=""
+            android:theme="@style/PhotoDetailTheme">
         </activity>
         <activity android:name=".videos_fragment.VideosDetail"
             android:label=""
@@ -60,10 +57,19 @@
         </activity>
         <activity android:name=".events_fragment.EventsDeatiledPhotoActivity"
             android:label=""
+            android:theme="@style/PhotoDetailTheme"
             android:parentActivityName=".EventsDetailedActivity">
         <meta-data
             android:name="android.support.PARENT_ACTIVITY"
             android:value=".EventsDetailedActivity" />
+        </activity>
+        <activity android:name=".videos_fragment.VideosData"
+            android:label="Details"
+            android:theme="@style/AppTheme"
+            android:parentActivityName=".videos_fragment.VideosDetail">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".videos_fragment.VideosDetail"/>
         </activity>
 
         <!-- *********************FACEBOOK INTEGRATION************************ -->

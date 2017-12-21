@@ -47,6 +47,8 @@ public class InClub extends AppCompatActivity {
     public static boolean event_detail=false;
     public static AsyncTask fetchAsyncU, fetchAsyncE, fetchAsyncP, fetchAsyncV;
     public static boolean started1=false, started2=false, list_item=false;
+    public static int albumNo,data_len,album_len,album_len_max_index;
+    public static RecycPhotosAdap recycAdapter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -58,6 +60,8 @@ public class InClub extends AppCompatActivity {
         events_data = new ArrayList<>();
         photos_data = new ArrayList<>();
         videos_data = new ArrayList<>();
+
+        albumNo = 0;    /**     TO START FROM THE FIRST ALBUM   */
 
 //        getActionBar().setDisplayHomeAsUpEnabled(true);
 //        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -132,13 +136,15 @@ public class InClub extends AppCompatActivity {
             Intent settings_intent = new Intent(getApplicationContext(),Settings.class);
             startActivity(settings_intent);
         }
+        if(item.getItemId()==android.R.id.home){
+            finish();
+        }
         return true;
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-
     }
 
     @Override
@@ -188,5 +194,11 @@ public class InClub extends AppCompatActivity {
             boolean deleted = photoFile.delete();
             Log.v("Photo File Del---",String.valueOf(deleted));
         }
+
+        albumNo = 0;
+        album_len = 0;
+        album_len_max_index = 0;
+        data_len = 0;
+        recycAdapter = null;
     }
 }

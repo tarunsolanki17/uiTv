@@ -44,7 +44,6 @@ import static com.example.tarun.uitsocieties.ClubContract.VideosConstants.SOURCE
 import static com.example.tarun.uitsocieties.ClubContract.VideosConstants.THUMBNAILS;
 import static com.example.tarun.uitsocieties.ClubContract.VideosConstants.THUMBNAIL_URL;
 import static com.example.tarun.uitsocieties.ClubContract.VideosConstants.VIDEOS;
-import static com.example.tarun.uitsocieties.DetailActivity.photos_data;
 import static com.example.tarun.uitsocieties.InClub.club_id;
 import static com.example.tarun.uitsocieties.InClub.fetchAsyncV;
 import static com.example.tarun.uitsocieties.InClub.login_checker;

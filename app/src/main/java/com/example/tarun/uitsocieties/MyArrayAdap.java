@@ -46,17 +46,19 @@ public class MyArrayAdap extends RecyclerView.Adapter<MyArrayAdap.MyViewHolder> 
     public static int CLUB_NO;
     Context con;
     ArrayList<Data1> club_data;
+    int layout;
 
 
-    public MyArrayAdap(Context context, ArrayList<Data1> data) {
+    public MyArrayAdap(Context context, ArrayList<Data1> data, int layout) {
         con = context;
         club_data = data;
+        this.layout = layout;
     }
 
     @Override
     public MyArrayAdap.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(con);
-        View photoView = inflater.inflate(R.layout.main_image_layout, parent, false);
+        View photoView = inflater.inflate(layout, parent, false);
         MyArrayAdap.MyViewHolder viewHolder = new MyArrayAdap.MyViewHolder(photoView);
         return viewHolder;
     }
@@ -88,7 +90,9 @@ public class MyArrayAdap extends RecyclerView.Adapter<MyArrayAdap.MyViewHolder> 
 
         public MyViewHolder(View itemView) {
             super(itemView);
-            club_name = (TextView) itemView.findViewById(R.id.club_name);
+            if((itemView.findViewById(R.id.club_name))!=null) {
+                club_name = (TextView) itemView.findViewById(R.id.club_name);
+            }
             mClubImageView = (ImageView) itemView.findViewById(R.id.club_logo);
             itemView.setOnClickListener(this);
         }

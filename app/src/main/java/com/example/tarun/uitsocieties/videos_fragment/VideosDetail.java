@@ -5,7 +5,11 @@ import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
@@ -25,12 +29,15 @@ public class VideosDetail extends AppCompatActivity implements EasyVideoCallback
     VideoParcel curr_video;
     int pos;
     TextView error;
+    Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.videos_detail);
 
+        /*toolbar = (Toolbar) findViewById(R.id.detail_toolbar_v);
+        setSupportActionBar(toolbar);*/
 //        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
 //      TODO -> ADD AUDIO FOCUS
 
@@ -43,6 +50,8 @@ public class VideosDetail extends AppCompatActivity implements EasyVideoCallback
         error = (TextView) findViewById(R.id.easy_player_error);
         error.setVisibility(GONE);
         easyVideoPlayer = (EasyVideoPlayer) findViewById(R.id.easy_vplayer);
+
+        easyVideoPlayer.setAutoFullscreen(true);
 
         easyVideoPlayer.setCallback(this);
         easyVideoPlayer.setSource(Uri.parse(curr_video.getSource_url()));
@@ -96,4 +105,20 @@ public class VideosDetail extends AppCompatActivity implements EasyVideoCallback
 
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.video_detail_menu,menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.video_details :
+                Intent detail = new Intent(this,VideosData.class);
+                detail.putExtra("Data",curr_video);
+                startActivity(detail);
+        }
+        return true;
+    }
 }

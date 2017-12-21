@@ -45,6 +45,7 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 
 import static android.R.attr.data;
+import static android.support.v7.widget.helper.ItemTouchHelper.DOWN;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 import static com.example.tarun.uitsocieties.ClubContract.PHOTOS_SERIAL;
@@ -64,13 +65,18 @@ import static com.example.tarun.uitsocieties.ClubContract.PhotosConstants.PLACE;
 import static com.example.tarun.uitsocieties.ClubContract.PhotosConstants.SOURCE;
 import static com.example.tarun.uitsocieties.ClubContract.PhotosConstants.THUMB_PICTURE;
 import static com.example.tarun.uitsocieties.ClubContract.PhotosConstants.WIDTH;
+import static com.example.tarun.uitsocieties.InClub.albumNo;
+import static com.example.tarun.uitsocieties.InClub.album_len;
+import static com.example.tarun.uitsocieties.InClub.album_len_max_index;
 import static com.example.tarun.uitsocieties.InClub.club_id;
+import static com.example.tarun.uitsocieties.InClub.data_len;
 import static com.example.tarun.uitsocieties.InClub.fetchAsyncP;
 import static com.example.tarun.uitsocieties.InClub.fetchAsyncU;
 import static com.example.tarun.uitsocieties.InClub.ft;
 import static com.example.tarun.uitsocieties.InClub.login;
 import static com.example.tarun.uitsocieties.InClub.login_checker;
 import static com.example.tarun.uitsocieties.InClub.photos_data;
+import static com.example.tarun.uitsocieties.InClub.recycAdapter;
 
 
 /**
@@ -83,8 +89,12 @@ public class PhotosFrag extends Fragment{
     ProgressBar pbar;
     SwipeRefreshLayout swipe;
     boolean isConnected;
-    RecycPhotosAdap recycAdapter;
-    int data_len;
+    RecyclerView.LayoutManager layoutManager;
+    public int FIRST_SCAN = 45;
+    int reqAlbums = 0;
+    int k;
+    Toast t;
+
 
     public PhotosFrag() {
         // Required empty public constructor
@@ -102,10 +112,48 @@ public class PhotosFrag extends Fragment{
         pbar = view.findViewById(R.id.progress_bar_photos);
         swipe = view.findViewById(R.id.swipe);
 
+        layoutManager = new GridLayoutManager(getContext(),3);
+        photo_recyc_view.setHasFixedSize(true);
+        photo_recyc_view.setLayoutManager(layoutManager);
+
+        photo_recyc_view.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                Log.v("AlbumNo in Scroll---=",String.valueOf(albumNo) + "  album_len---=" + String.valueOf(album_len));
+
+                if(photo_recyc_view.canScrollVertically(-1))
+                    if(t!=null){
+                        t.cancel();
+                    }
+                if(recycAdapter!=null)
+                if(!photo_recyc_view.canScrollVertically(1)) {
+                    if (albumNo >= album_len_max_index) {
+                        if(t!=null) {
+                            t.cancel();
+                        }
+                        t = Toast.makeText(getActivity(), "No more Photos", Toast.LENGTH_SHORT);
+                        t.show();
+                    }
+                    else {
+                        if(t!=null) {
+                            t.cancel();
+                        }
+                        t = Toast.makeText(getActivity(), "Loading...", Toast.LENGTH_SHORT);
+                        t.show();
+                        photoJSONRequest();
+                    }
+                }
+
+            }
+        });
+
         swipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 swipe.setRefreshing(true);
+                albumNo = 0;
+                recycAdapter = null;
                 if(isConnectedFunc()) {
 //                    TODO --> WHEN REFRESHING TOO MUCH, WRONG DATA IS BEING WITHHELD
                     if(fetchAsyncP!=null) {
@@ -132,7 +180,6 @@ public class PhotosFrag extends Fragment{
             if(savedInstanceState!=null&&savedInstanceState.getInt("Login")==1)
                 savedInstanceState = null;
 
-
             if (savedInstanceState != null) {
                 if(savedInstanceState.getBoolean("Incomplete")) {
                     Log.v("fetchAync--->","was incomplete");
@@ -145,34 +192,12 @@ public class PhotosFrag extends Fragment{
                         }
                         if (fetchAsyncP.getStatus().toString().equals("FINISHED")) {   /** fetchAsyncP complete*/
                             Log.v("fetchAync--->","finished");
-                            if (photos_data != null)
-                                if (photos_data.isEmpty()) {
-                                    pbar.setVisibility(GONE);
-                                    photo_recyc_view.setVisibility(GONE);
-                                    no_data.setVisibility(VISIBLE);
-                                } else {
-                                    data_len = photos_data.size();
-                                    pbar.setVisibility(GONE);
-                                    no_data.setVisibility(GONE);
-                                    photo_recyc_view.setVisibility(VISIBLE);
-                                    onDataFetched();
-                                }
+                            showing();
                         }
                     } else {
                         Log.v("fetchAync--->","is null");
                         Log.v("videosdata--->",String.valueOf(photos_data.size()));
-                        if (photos_data != null)
-                            if (photos_data.isEmpty()) {
-                                pbar.setVisibility(GONE);
-                                photo_recyc_view.setVisibility(GONE);
-                                no_data.setVisibility(VISIBLE);
-                            } else {
-                                data_len = photos_data.size();
-                                pbar.setVisibility(GONE);
-                                no_data.setVisibility(GONE);
-                                photo_recyc_view.setVisibility(VISIBLE);
-                                onDataFetched();
-                            }
+                        showing();
                     }
                 }
                 else {
@@ -180,18 +205,7 @@ public class PhotosFrag extends Fragment{
                     Bundle received_bundle = new Bundle();
                     received_bundle = savedInstanceState.getBundle(PHOTO_BUNDLE);
                     photos_data = (ArrayList<Photo_Serial>) received_bundle.getSerializable("photos");
-                    if (photos_data != null)
-                        if (photos_data.isEmpty()) {
-                            pbar.setVisibility(GONE);
-                            photo_recyc_view.setVisibility(GONE);
-                            no_data.setVisibility(VISIBLE);
-                        } else {
-                            data_len = photos_data.size();
-                            pbar.setVisibility(GONE);
-                            no_data.setVisibility(GONE);
-                            photo_recyc_view.setVisibility(VISIBLE);
-                            onDataFetched();
-                        }
+                    showing();
                 }
             }
             else {
@@ -207,6 +221,20 @@ public class PhotosFrag extends Fragment{
 
     /******************************  END OF onCreateView  *******************************/
 
+    public void showing(){
+        if (photos_data != null)
+            if (photos_data.isEmpty()) {
+                pbar.setVisibility(GONE);
+                photo_recyc_view.setVisibility(GONE);
+                no_data.setVisibility(VISIBLE);
+            } else {
+                data_len = photos_data.size();
+                pbar.setVisibility(GONE);
+                no_data.setVisibility(GONE);
+                photo_recyc_view.setVisibility(VISIBLE);
+                onDataFetched();
+            }
+    }
 
     public void photoJSONRequest(){
         data_len = 0;
@@ -246,14 +274,20 @@ public class PhotosFrag extends Fragment{
 
             @Override
             protected void onPostExecute(Object o) {
+                Log.v("AlbumNo---=",String.valueOf(albumNo) + "  k---=" + String.valueOf(k));
+                if(recycAdapter==null)
                 onDataFetched();
+                else
+                    setNextData();
+                if(albumNo<album_len_max_index)
+                albumNo++;
             }
         };
         fetchAsyncP.execute();
 
     }
 
-    public void fetchPhotosData(JSONObject response){
+    synchronized public void fetchPhotosData(JSONObject response){
 
         Log.v("Fetching Data---","Running");
         if(response!=null&&response.length()>0) {
@@ -261,12 +295,48 @@ public class PhotosFrag extends Fragment{
                 JSONObject albums = response.getJSONObject(ALBUMS);
                 Log.v("albums---:",albums.toString());
 
-                JSONArray data = albums.getJSONArray("data");
-                data_len = data.length();
-                Log.v("data---",data.toString());
-                Log.v("Album Count in Res---",String.valueOf(data_len));
+                if(recycAdapter==null){
+                    album_len = 0;
+                    album_len_max_index = 0;
+                    data_len = 0;
+                }
 
-                for (int i = 0; i < data.length(); i++) {
+                JSONArray data = albums.getJSONArray("data");
+                album_len = data.length();
+                album_len_max_index = album_len - 1;
+                Log.v("data---",data.toString());
+                Log.v("Album Count in Res---",String.valueOf(album_len));
+                data_len = album_len;
+
+                int total_photos = 0;
+                int i;
+
+                if(recycAdapter==null) {
+                    albumNo = 0;
+                }
+
+                Log.v("AlbumNo---=",String.valueOf(albumNo));
+                if(albumNo==0){
+                    if(photos_data!=null)
+                        photos_data.clear();
+                    for (k = 0; k < data.length(); k++){
+                        JSONObject curr_album = data.getJSONObject(k);
+                        if(curr_album.has(PHOTO_COUNT)&&!curr_album.isNull(PHOTO_COUNT))
+                            total_photos = total_photos + curr_album.getInt(PHOTO_COUNT);
+
+                        if(total_photos>=51)
+                            break;
+                    }
+                    albumNo = k;
+                    i=0;
+                }
+                else
+                    i=albumNo;
+
+                Log.v("i---=",String.valueOf(i));
+                /*for (int i = reqAlbums; i < reqAlbums+1*//*data.length()*//*; i++)*/
+
+                for(i=i;i<=albumNo;i++){
 
                     String album_name = "";
                     int photo_count = -1;
@@ -341,11 +411,13 @@ public class PhotosFrag extends Fragment{
                             }
                             else {
                                 Log.v("fetchAsyncP---", "Cancelled");
-                                if(photos_data!=null)
-                                photos_data.clear();
+                                /*if(photos_data!=null)
+                                photos_data.clear();*/    /**     CLEARED SO THAT ANOTHER CLUB DOESN'T SHOW PHOTOS OF THIS CLUB   */
                             }
-                            /*if(photos_data.size()>=50)
-                                break;*/
+                            /*if(photos_data.size()>=FIRST_SCAN) {
+//                                fetchAsyncP.cancel(true);
+                                break;
+                            }*/
 //                           TODO --> VERIFY CLEAR STATEMENT
 
                         }
@@ -470,15 +542,15 @@ public class PhotosFrag extends Fragment{
                 }
                 else {
                     Log.v("fetchAsyncP---", "Cancelled");
-                    if(photos_data!=null)
-                    photos_data.clear();
+                    /*if(photos_data!=null)
+                    photos_data.clear();*/    /**     CLEARED SO THAT ANOTHER CLUB DOESN'T SHOW PHOTOS OF THIS CLUB   */
                 }
 //                TODO --> VERIFY CLEAR
-                if(photos_data.size()>=50)
+                /*if(photos_data.size()>=FIRST_SCAN) {
+//                    fetchAsyncP.cancel(true);
                     break;
+                }*/
                 Log.v("photos add---+",String.valueOf(photos_data.size()));
-                /*if(photos_data.size()>=24)
-                    break;*/
 
             }
             if(nextObj.has(PAGING)&&!nextObj.isNull(PAGING)){
@@ -499,8 +571,11 @@ public class PhotosFrag extends Fragment{
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         if(fetchAsyncP!=null) {
-            if (fetchAsyncP.getStatus().toString().equals("RUNNING"))
-                outState.putBoolean("Incomplete",true);
+            if (fetchAsyncP.getStatus().toString().equals("RUNNING")) {
+                outState.putBoolean("Incomplete", true);
+                /*if(!photos_data.isEmpty())*/
+                    
+            }
             else if(fetchAsyncP.getStatus().toString().equals("FINISHED")) {
                 Bundle photoBundle = new Bundle();
                 photoBundle.putSerializable("photos",photos_data);
@@ -529,10 +604,11 @@ public class PhotosFrag extends Fragment{
             no_data.setVisibility(GONE);
             photo_recyc_view.setVisibility(VISIBLE);
 
-            RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getContext(),3);
+            layoutManager = new GridLayoutManager(getContext(),3);
             photo_recyc_view.setHasFixedSize(true);
             photo_recyc_view.setLayoutManager(layoutManager);
             //  TODO --> SET A LISTENER WHICH RUNS WHEN THE LIST COMES TO END.
+
 
             recycAdapter = new RecycPhotosAdap(photos_data,getActivity());
             photo_recyc_view.setAdapter(recycAdapter);
@@ -561,8 +637,8 @@ public class PhotosFrag extends Fragment{
         }
     }
 
-    public void setRecycAdapter(){
-
+    public void setNextData(){
+            recycAdapter.notifyDataSetChanged();
     }
 
 }

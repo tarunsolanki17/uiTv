@@ -1,15 +1,20 @@
 package com.example.tarun.uitsocieties;
 
+import android.content.ClipData;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.view.menu.ActionMenuItemView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.WindowManager;
 import android.widget.GridView;
 
@@ -41,7 +46,11 @@ public class MainActivity extends AppCompatActivity implements Runnable{
     /**********************  GLOBAL VARIABLES  ********************************/
 
     public static int width;
+    ArrayList<Data1> club_data;
     public RecyclerView mainRecyclerView;
+    RecyclerView.LayoutManager L_layoutManager,G_layoutManager;
+    MyArrayAdap mainAdap;
+    MenuItem icon;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +60,7 @@ public class MainActivity extends AppCompatActivity implements Runnable{
 
         new MyWidthThread().start();
 
-        ArrayList<Data1> club_data = new ArrayList<>();
+        club_data = new ArrayList<>();
 
 //        TODO --> ADD THE PHOTOS WITH DIFFERENT DPIs
         club_data.add(new Data1(R.drawable.acm,"ACM Student Chapter RGPV",ACM_RGPV,1));
@@ -68,15 +77,51 @@ public class MainActivity extends AppCompatActivity implements Runnable{
         club_data.add(new Data1(R.drawable.technophilic,"Technophilic",TECHNOPHILIC,12));
         club_data.add(new Data1(R.drawable.tedxrgpv,"TEDx RGPV",TEDX_RGPV,13));
 
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
+        L_layoutManager = new LinearLayoutManager(this);
+        G_layoutManager = new GridLayoutManager(this,3);
+
+        mainRecyclerView = (RecyclerView) findViewById(R.id.main_recyc_view);
+        mainRecyclerView.setHasFixedSize(true);
+        mainRecyclerView.setLayoutManager(L_layoutManager);
+
+        mainAdap = new MyArrayAdap(this,club_data,R.layout.main_image_layout);
+        mainRecyclerView.setAdapter(mainAdap);
+
+        /*layoutManager = new GridLayoutManager(this,3);
         mainRecyclerView = (RecyclerView) findViewById(R.id.main_recyc_view);
         mainRecyclerView.setHasFixedSize(true);
         mainRecyclerView.setLayoutManager(layoutManager);
-
-        MyArrayAdap mainAdap = new MyArrayAdap(this,club_data);
-        mainRecyclerView.setAdapter(mainAdap);
+        mainAdap = new MyArrayAdap(this,club_data,R.layout.main_image_layout_grid);
+        mainRecyclerView.setAdapter(mainAdap);*/
 
         readFile();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.layout_changer,menu);
+        icon = menu.getItem(0);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId()==R.id.layout_changer){
+            if(mainRecyclerView.getLayoutManager()==L_layoutManager) {
+                mainAdap = new MyArrayAdap(this, club_data, R.layout.main_image_layout_grid);
+                mainRecyclerView.setLayoutManager(G_layoutManager);
+                mainRecyclerView.setAdapter(mainAdap);
+                icon.setIcon(ContextCompat.getDrawable(getApplicationContext(),R.drawable.ic_format_list_bulleted_black_24dp));
+            }
+            else if(mainRecyclerView.getLayoutManager()==G_layoutManager){
+                mainAdap = new MyArrayAdap(this,club_data,R.layout.main_image_layout);
+                mainRecyclerView.setLayoutManager(L_layoutManager);
+                mainRecyclerView.setAdapter(mainAdap);
+                icon.setIcon(ContextCompat.getDrawable(getApplicationContext(),R.drawable.ic_grid_on_black_24dp));
+            }
+        }
+
+        return true;
     }
 
     public class MyWidthThread extends Thread{

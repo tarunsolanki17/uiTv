@@ -75,6 +75,7 @@ public class RecycPhotosAdap extends RecyclerView.Adapter<RecycPhotosAdap.PhotoV
         public void onClick(View view) {
 
             File photoFile = new File(context.getFilesDir(),PHOTO_FILE);
+            photoFile.delete();
             if (!photoFile.exists()) {
                 try {
                     photoFile.createNewFile();

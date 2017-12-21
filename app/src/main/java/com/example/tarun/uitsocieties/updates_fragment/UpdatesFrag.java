@@ -411,7 +411,7 @@ public class UpdatesFrag extends Fragment {
                 .setSmallIcon(R.drawable.ic_notification)
                 .setLargeIcon(BitmapFactory.decodeResource(con.getResources(),R.mipmap.ic_launcher))
                 .setContentTitle("Update from " + absoluteClubName(club_name))
-                .setContentText(getNotifTitle(new_update) + absoluteClubName(club_name))
+                .setContentText(new_update.getMessage())       //(getNotifTitle(new_update) + absoluteClubName(club_name))
                 .setContentIntent(updateContentIntent(con,new_update,clubID,index,club_name))
                 .setDefaults(Notification.DEFAULT_ALL)
                 .setTicker("New Update by " + absoluteClubName(club_name))
@@ -441,7 +441,7 @@ public class UpdatesFrag extends Fragment {
         stackBuilder.addNextIntentWithParentStack(mainAct);
         stackBuilder.addNextIntent(updatesFrag);
 
-        PendingIntent pendingIntent = stackBuilder.getPendingIntent(getClubIndex(clubID),PendingIntent.FLAG_CANCEL_CURRENT);
+        PendingIntent pendingIntent = stackBuilder.getPendingIntent(getClubIndex(clubID),PendingIntent.FLAG_UPDATE_CURRENT);
         return pendingIntent;
     }
 

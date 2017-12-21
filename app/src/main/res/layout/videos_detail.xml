@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    android:layout_width="match_parent"
+<RelativeLayout android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android" >
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
 <com.afollestad.easyvideoplayer.EasyVideoPlayer
     xmlns:android="http://schemas.android.com/apk/res/android"
@@ -10,6 +10,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
      />
+
+    <!--<android.support.v7.widget.Toolbar
+        android:id="@+id/detail_toolbar_v"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@android:color/transparent"
+        app:elevation="0dp"
+        app:popupTheme="@style/AppTheme.PopupOverlay" />-->
 
     <TextView
         android:id="@+id/easy_player_error"

@@ -32,15 +32,7 @@ public class FetchJobScheduler {
 
     synchronized public static void scheduleFetching(Context con){
         Log.v("Running---","SCHEDULAR");
-//        if(!isConnected(con));{
-//            if (dispatcher != null) {
-//                dispatcher.cancelAll();
-//                sInitialized = false;
-//                Log.v("Job-----","Cancelled");
-//            }
-//        }
-        //  TODO --> IF INTERNET IS CONNECTED THEN SET sInitialized TO FALSE SO THAT JOB CAN BE RESTARTED
-        //  TODO --> IF INTERNET IS NOT CONNECTED, TURN OFF THE JOB SCHEDULER
+
         if(sInitialized)
             return;
         Driver driver = new GooglePlayDriver(con);
@@ -51,17 +43,12 @@ public class FetchJobScheduler {
                 .setLifetime(Lifetime.FOREVER)
                 .setRecurring(true)
                 .setReplaceCurrent(true)
-                .setTrigger(Trigger.executionWindow(5,10))
+                .setTrigger(Trigger.executionWindow(5,SECONDS))
                 .build();
 
         dispatcher.schedule(fetchingJob);
         sInitialized = true;
         Log.v("Schedular-------","Dispatched");
     }
-    private static boolean isConnected(Context con){
-        ConnectivityManager cm = (ConnectivityManager) con.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo ninfo = cm.getActiveNetworkInfo();
-        boolean isConnected = ninfo != null && ninfo.isConnectedOrConnecting();
-        return isConnected;
-    }
+
 }

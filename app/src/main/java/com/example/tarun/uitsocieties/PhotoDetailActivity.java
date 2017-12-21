@@ -84,7 +84,6 @@ public class PhotoDetailActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        setTheme(R.style.PhotoDetailTheme);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.detail_photo);
 
