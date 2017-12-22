@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#FFFFFF"
+    android:background="#f5f5f5"
     >
 <ScrollView
     android:layout_width="match_parent"
@@ -11,7 +11,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     >
 
-<RelativeLayout
+<LinearLayout
     android:id="@+id/top_relative"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
@@ -22,54 +22,172 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="15dp"
+        android:background="#f5f5f5">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/icon_name"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/ic_event_black_24dp"
+                />
+    <TextView
+        android:id="@+id/name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Name:"
+        android:layout_marginBottom="3dp"
+        style="@style/event_style"
+        android:layout_toRightOf="@id/icon_name"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        />
     <TextView
         android:id="@+id/event_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Event Name"
-        android:textColor="#f29c00"
-        android:padding="6dp"
-        android:textSize="22sp"
-        android:layout_below="@id/cover"
-        android:layout_centerHorizontal="true"
-        android:textAlignment="center"
+        style="@style/event_style2"
+        android:layout_below="@id/name"
+        android:layout_toRightOf="@id/icon_name"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        />
+        </RelativeLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#c7c7c7"
+        android:layout_margin="10dp"/>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:id="@+id/icon_date"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/ic_timer_black_24dp"
+                />
+    <TextView
+        android:id="@+id/event_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Date:"
+        style="@style/event_style"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="3dp"
+        android:layout_toRightOf="@id/icon_date"
+        android:layout_toEndOf="@id/icon_date"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
         />
     <TextView
         android:id="@+id/date_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="On 23rd Oct 2017 at 1:00 PM"
-        android:textColor="#f29c00"
-        android:padding="6dp"
-        android:layout_below="@id/event_name"
-        android:layout_centerHorizontal="true"
-        android:textSize="18sp"
-        android:textAlignment="center"/>
+        style="@style/event_style2"
+        android:layout_below="@id/event_date"
+        android:layout_toRightOf="@id/icon_date"
+        android:layout_toEndOf="@id/icon_date"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        />
+        </RelativeLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#c7c7c7"
+            android:layout_margin="10dp"/>
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:id="@+id/icon_venue"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/ic_place_black_24dp"/>
+            <TextView
+                android:id="@+id/e_venue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Venue:"
+                style="@style/event_style"
+                android:layout_marginBottom="3dp"
+                android:layout_marginTop="4dp"
+                android:layout_toRightOf="@id/icon_venue"
+                android:layout_toEndOf="@id/icon_venue"
+                android:layout_marginLeft="8dp"
+                android:layout_marginStart="8dp"
+                />
+            <TextView
+                android:id="@+id/venue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="UIT RGPV, Bhopal"
+                style="@style/event_style2"
+                android:layout_toRightOf="@id/icon_venue"
+                android:layout_toEndOf="@id/icon_venue"
+                android:layout_below="@id/e_venue"
+                android:layout_marginLeft="8dp"
+                android:layout_marginStart="8dp"/>
+
+        </RelativeLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#c7c7c7"
+            android:layout_margin="10dp"/>
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:id="@+id/icon_descp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/ic_description_black_24dp"/>
     <TextView
-        android:id="@+id/venue"
+        android:id="@+id/e_descp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Venue: UIT RGPV, Bhopal"
-        android:textColor="#f29c00"
-        android:padding="6dp"
-        android:layout_below="@id/date_time"
-        android:layout_centerHorizontal="true"
-        android:textSize="18sp"
-        android:textAlignment="center"/>
+        android:text="Description:"
+        style="@style/event_style"
+        android:layout_marginBottom="3dp"
+        android:layout_marginTop="4dp"
+        android:layout_toRightOf="@id/icon_descp"
+        android:layout_toEndOf="@id/icon_descp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        />
     <TextView
         android:id="@+id/descp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="#f29c00"
+        android:textIsSelectable="true"
         android:text="The description of the event goes here. The description of the event goes here. The description of the event goes here. The description of the event goes here."
-        android:padding="6dp"
-        android:layout_below="@id/venue"
-        android:layout_centerHorizontal="true"
-        android:textSize="16sp"/>
-    </RelativeLayout>
+        style="@style/event_style2"
+        android:textSize="15sp"
+        android:layout_toRightOf="@id/icon_descp"
+        android:layout_toEndOf="@id/icon_descp"
+        android:layout_below="@id/e_descp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        />
+        </RelativeLayout>
+
+    </LinearLayout>
+    </LinearLayout>
 </ScrollView>
 
-<RelativeLayout
+<!--<RelativeLayout
 android:layout_width="wrap_content"
 android:layout_height="wrap_content"
 android:layout_alignParentBottom="true">
@@ -80,6 +198,6 @@ android:layout_alignParentBottom="true">
     android:layout_height="wrap_content"
     android:text="SHOW IN MAP"
     android:layout_alignParentBottom="true"/>
-</RelativeLayout>
+</RelativeLayout>-->
 
 </LinearLayout>

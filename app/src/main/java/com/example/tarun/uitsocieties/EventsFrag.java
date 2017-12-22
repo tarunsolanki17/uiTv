@@ -73,6 +73,7 @@ import static com.example.tarun.uitsocieties.InClub.started1;
 import static com.example.tarun.uitsocieties.InClub.started2;
 import static com.example.tarun.uitsocieties.R.id.date_time;
 import static com.example.tarun.uitsocieties.R.id.photo_recyc_view;
+import static com.example.tarun.uitsocieties.updates_fragment.UpdatesFrag.getClubIndex;
 import static com.facebook.login.widget.ProfilePictureView.TAG;
 import static java.util.Objects.isNull;
 
@@ -444,7 +445,7 @@ public class EventsFrag extends Fragment {
 
         NotificationManager notificationManager = (NotificationManager) con.getSystemService(con.NOTIFICATION_SERVICE);
         Log.v("Notification---:","Issue");
-        notificationManager.notify(1,builder.build());
+        notificationManager.notify(getClubIndex(clubID)+100,builder.build());
     }
 
     public static PendingIntent contentIntent(Context con, EventsDataModel new_event, String clubID, int index, String clubName){
@@ -479,7 +480,7 @@ public class EventsFrag extends Fragment {
 //        new_event_data.putParcelable("new_event",new_event);
 //        in.putExtra("new_event_model",new_event);
 //        PendingIntent pendingIntent = PendingIntent.getActivity(con,index,in,PendingIntent.FLAG_ONE_SHOT);
-        PendingIntent pendingIntent = stackBuilder.getPendingIntent(index,PendingIntent.FLAG_ONE_SHOT);
+        PendingIntent pendingIntent = stackBuilder.getPendingIntent(index,PendingIntent.FLAG_UPDATE_CURRENT);
         return pendingIntent;
     }
 

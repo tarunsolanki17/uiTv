@@ -107,7 +107,7 @@ public class UpdatesFrag extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View updates_view = inflater.inflate(R.layout.fragment_updates,container,false);
-        
+
         con = updates_view.getContext();
 
         listView = updates_view.findViewById(R.id.listview_u);
@@ -174,6 +174,7 @@ public class UpdatesFrag extends Fragment {
                 }
             }
         }
+
         return updates_view;
 
     }
@@ -410,8 +411,10 @@ public class UpdatesFrag extends Fragment {
 //                .setSmallIcon(R.drawable.ic_notification)
                 .setSmallIcon(R.drawable.ic_notification)
                 .setLargeIcon(BitmapFactory.decodeResource(con.getResources(),R.mipmap.ic_launcher))
+                .setColor(ContextCompat.getColor(con,R.color.colorPrimary))
                 .setContentTitle("Update from " + absoluteClubName(club_name))
-                .setContentText(new_update.getMessage())       //(getNotifTitle(new_update) + absoluteClubName(club_name))
+                .setContentText(getNotifTitle(new_update) + absoluteClubName(club_name))
+                .setStyle(new NotificationCompat.BigTextStyle().bigText(new_update.getMessage()))
                 .setContentIntent(updateContentIntent(con,new_update,clubID,index,club_name))
                 .setDefaults(Notification.DEFAULT_ALL)
                 .setTicker("New Update by " + absoluteClubName(club_name))
@@ -457,7 +460,7 @@ public class UpdatesFrag extends Fragment {
         return "New Update by ";
     }
 
-    private static int getClubIndex(String clubID){
+    public static int getClubIndex(String clubID){
         for(int k=0;k<CLUB_IDS.length;k++){
             if(clubID.equals(CLUB_IDS[k]))
                 return k;

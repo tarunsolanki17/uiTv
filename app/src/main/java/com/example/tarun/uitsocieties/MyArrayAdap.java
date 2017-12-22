@@ -67,6 +67,7 @@ public class MyArrayAdap extends RecyclerView.Adapter<MyArrayAdap.MyViewHolder> 
     public void onBindViewHolder(MyViewHolder holder, int position) {
         Data1 curr_club = club_data.get(position);
         ImageView imageView = holder.mClubImageView;
+        imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
         Glide.with(con)
                 .load(curr_club.getImg_res_Id())

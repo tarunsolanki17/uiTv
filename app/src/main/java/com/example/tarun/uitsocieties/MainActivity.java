@@ -82,17 +82,10 @@ public class MainActivity extends AppCompatActivity implements Runnable{
 
         mainRecyclerView = (RecyclerView) findViewById(R.id.main_recyc_view);
         mainRecyclerView.setHasFixedSize(true);
-        mainRecyclerView.setLayoutManager(L_layoutManager);
+        mainRecyclerView.setLayoutManager(G_layoutManager);
 
-        mainAdap = new MyArrayAdap(this,club_data,R.layout.main_image_layout);
-        mainRecyclerView.setAdapter(mainAdap);
-
-        /*layoutManager = new GridLayoutManager(this,3);
-        mainRecyclerView = (RecyclerView) findViewById(R.id.main_recyc_view);
-        mainRecyclerView.setHasFixedSize(true);
-        mainRecyclerView.setLayoutManager(layoutManager);
         mainAdap = new MyArrayAdap(this,club_data,R.layout.main_image_layout_grid);
-        mainRecyclerView.setAdapter(mainAdap);*/
+        mainRecyclerView.setAdapter(mainAdap);
 
         readFile();
     }

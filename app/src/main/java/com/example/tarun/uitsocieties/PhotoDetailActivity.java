@@ -38,6 +38,7 @@ import com.bumptech.glide.request.RequestOptions;
 
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
+import com.example.tarun.uitsocieties.photos_fragment.PhotoData;
 import com.example.tarun.uitsocieties.photos_fragment.Photo_Serial;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
@@ -61,7 +62,10 @@ import it.sephiroth.android.library.imagezoom.ImageViewTouchBase;
 import static android.content.Intent.ACTION_VIEW;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
+import static com.example.tarun.uitsocieties.ClubContract.PHOTO_DATA;
 import static com.example.tarun.uitsocieties.ClubContract.PHOTO_FILE;
+import static com.example.tarun.uitsocieties.ClubContract.PhotosConstants.CREATED_TIME;
+import static com.example.tarun.uitsocieties.ClubContract.PhotosConstants.PHOTO_NAME;
 import static com.example.tarun.uitsocieties.InClub.photos_data;
 
 
@@ -73,8 +77,8 @@ public class PhotoDetailActivity extends AppCompatActivity {
 
     ImageView image;
     Toolbar toolbar;
-    int pos;
-    ArrayList<PhotoParcel> photos_data_local;
+    int pos,curr_pos;
+//    ArrayList<PhotoParcel> photos_data_local;
     ArrayList<Photo_Serial> photos_data;
     SectionsPagerAdapter mSectionsPagerAdapter;
     private ViewPager viewPager;
@@ -91,8 +95,10 @@ public class PhotoDetailActivity extends AppCompatActivity {
 
         toolbar = (Toolbar) findViewById(R.id.detail_toolbar);
         setSupportActionBar(toolbar);
+//        getSupportActionBar().setHomeButtonEnabled(true);
+//        getSupportActionBar().setDefaultDisplayHomeAsUpEnabled(true);
+
         image = (ImageView) findViewById(R.id.image);
-//        caption_view = (TextView) findViewById(R.id.caption);
 
 //        photos_data = getIntent().getParcelableArrayListExtra("photo_parcel");
         try {
@@ -110,17 +116,17 @@ public class PhotoDetailActivity extends AppCompatActivity {
 
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(), photos_data);
 
+
         viewPager = (ViewPager) findViewById(R.id.detail_viewpager);
         viewPager.setPageTransformer(true, new DepthPageTransformer());
 
         viewPager.setAdapter(mSectionsPagerAdapter);
         viewPager.setCurrentItem(pos);
-
     }
 
-    public  class SectionsPagerAdapter extends FragmentPagerAdapter{
+    public class SectionsPagerAdapter extends FragmentPagerAdapter{
 
-        ArrayList<Photo_Serial> all_photos = new ArrayList<>();
+        private ArrayList<Photo_Serial> all_photos = new ArrayList<>();
 
         public SectionsPagerAdapter(FragmentManager fm, ArrayList<Photo_Serial> data) {
             super(fm);
@@ -136,6 +142,7 @@ public class PhotoDetailActivity extends AppCompatActivity {
         public int getCount() {
             return all_photos.size();
         }
+
     }
 
     public static class PlaceholderFragment extends Fragment{
@@ -169,29 +176,6 @@ public class PhotoDetailActivity extends AppCompatActivity {
             final ProgressBar photo_prog = rootView.findViewById(R.id.photo_progress);
             final TextView unloaded = rootView.findViewById(R.id.not_loaded);
 
-            /*Glide.with(getActivity()).load(big_image_link).thumbnail(0.1f)
-                    .listener(new RequestListener<Drawable>() {
-                        @Override
-                        public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                            imageView.setVisibility(GONE);
-                            unloaded.setVisibility(VISIBLE);
-                            photo_prog.setVisibility(GONE);
-                            caption_view.setVisibility(GONE);
-                            return false;
-                        }
-
-                        @Override
-                        public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                            imageView.setVisibility(VISIBLE);
-                            caption_view.setVisibility(VISIBLE);
-                            unloaded.setVisibility(GONE);
-                            photo_prog.setVisibility(GONE);
-
-                            return false;
-                        }
-                    })
-                    .into(imageView);*/
-
             Glide.with(getActivity()).asBitmap().load(big_image_link).into(new SimpleTarget<Bitmap>() {
                 @Override
                 public void onResourceReady(Bitmap resource, Transition<? super Bitmap> transition) {
@@ -223,33 +207,48 @@ public class PhotoDetailActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
-            case R.id.save: imageDownload(getApplicationContext(),"dump_image");
+
+            /*case R.id.save: imageDownload(getApplicationContext(),"dump_image");
                             break;
+
             case R.id.share://  TODO --> SHARE INTENT
-                            break;
+                            break;*/
+
+            case R.id.details_photo:
+                Intent detail_in = new Intent(this, PhotoData.class);
+                detail_in.putExtra(PHOTO_NAME,photos_data.get(viewPager.getCurrentItem()).getCaption());
+                detail_in.putExtra(CREATED_TIME,photos_data.get(viewPager.getCurrentItem()).getCreated_time());
+                startActivity(detail_in);
+                    break;
+
             case R.id.facebook_link:
                 Intent facebook_intent = new Intent(ACTION_VIEW);
                 facebook_intent.setData(Uri.parse(photos_data.get(viewPager.getCurrentItem()).getFacebook_link()));
                 if((facebook_intent.resolveActivity(getPackageManager())!=null))
                 startActivity(facebook_intent);
                             break;
+
+            case android.R.id.home:
+                finish();
+                break;
+
             default :       break;
         }
 
         return true;
     }
-    public void saveImage(){
+    /*public void saveImage(){
         AsyncTask downloadImage;
         downloadImage = new AsyncTask() {
             @Override
             protected Object doInBackground(Object[] objects) {
                 Log.v("Save Image---","Running");
                 try {
-                    URL url = new URL("https://www.google.co.in/images/icons/material/system/1x/email_grey600_24dp.png"/*photos_data.get(pos).getBig_image_link()*/);
+                    URL url = new URL("https://www.google.co.in/images/icons/material/system/1x/email_grey600_24dp.png"*//*photos_data.get(pos).getBig_image_link()*//*);
                     HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
                     urlConnection.setRequestMethod("GET");
                     urlConnection.setRequestProperty("User-Agent","Mozilla/5.0 ( compatible ) ");
-                    urlConnection.setRequestProperty("Accept","*/*");
+                    urlConnection.setRequestProperty("Accept","");
                     urlConnection.setDoOutput(true);
                     urlConnection.connect();
                     Log.v("Response Code IMG---",String.valueOf(urlConnection.getResponseCode()));
@@ -342,5 +341,5 @@ public class PhotoDetailActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
 
-    }
+    }*/
 }

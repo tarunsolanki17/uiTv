@@ -11,13 +11,13 @@
     android:layout_height="match_parent"
      />
 
-    <!--<android.support.v7.widget.Toolbar
+    <android.support.v7.widget.Toolbar
         android:id="@+id/detail_toolbar_v"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@android:color/transparent"
         app:elevation="0dp"
-        app:popupTheme="@style/AppTheme.PopupOverlay" />-->
+        app:popupTheme="@style/AppTheme.PopupOverlay" />
 
     <TextView
         android:id="@+id/easy_player_error"
@@ -27,5 +27,7 @@
         android:text="An error occurred while playing the video."
         android:textColor="#FFFFFF"
         android:textAlignment="center"/>
+
+
 </RelativeLayout>
 

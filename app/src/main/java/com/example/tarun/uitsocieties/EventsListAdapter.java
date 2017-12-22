@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import static android.R.attr.value;
+import static android.icu.lang.UCharacter.GraphemeClusterBreak.V;
 import static android.view.View.VISIBLE;
 import static com.example.tarun.uitsocieties.InClub.club_id;
 import static com.example.tarun.uitsocieties.InClub.list_item;
@@ -47,11 +48,48 @@ public class EventsListAdapter extends ArrayAdapter<EventsDataModel> {
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
 
-        /*View eventListItemView;
-        View Section;*/
+        View eventListItemView;
         EventsDataModel curr_obj = getItem(position);
 
+        eventListItemView = convertView;
+        if(eventListItemView==null)
+            eventListItemView = LayoutInflater.from(con).inflate(R.layout.event_list_item,parent,false);
+
+        name = eventListItemView.findViewById(R.id.ename);
+        month = eventListItemView.findViewById(R.id.emonth);
+        date = eventListItemView.findViewById(R.id.edate);
+        day = eventListItemView.findViewById(R.id.eday);
+        time = eventListItemView.findViewById(R.id.etime);
+        place = eventListItemView.findViewById(R.id.eplace);
+
         try {
+            name.setText(curr_obj.getEvent_name());
+            month.setText(curr_obj.getMonth());
+            date.setText(curr_obj.getDate());
+            day.setText(curr_obj.getDay());
+            time.setText(curr_obj.getTime());
+            place.setText(curr_obj.getPlace_name());
+
+        }
+        catch (Exception e){
+            Log.v("Exception---"," In EventsListAdapter getView()---"+e.toString());
+        }
+
+        event_item_rel = eventListItemView.findViewById(event_item);
+        event_item_rel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent in = new Intent(con,EventsDetailedActivity.class);
+                in.putParcelableArrayListExtra("events_parcel",events_data);
+                in.putExtra("Event Position",position);
+                in.putExtra("Club ID",club_id);
+                con.startActivity(in);
+            }
+        });
+
+        return eventListItemView;
+
+        /*try {
             SimpleDateFormat format = new SimpleDateFormat(" EEEE, dd MMMM yyyy");
             Date event_date = format.parse(curr_obj.getStart_date());
             Date today = new Date();
@@ -64,7 +102,7 @@ public class EventsListAdapter extends ArrayAdapter<EventsDataModel> {
 
         View eventListItemView;
 
-        if(comparision==-1&&!started1) {        /**     UPCOMING*/
+        if(comparision==-1&&!started1) {        *//**     UPCOMING*//*
             Log.v("Upcoming------",curr_obj.getEvent_name());
             list_item = false;
             eventListItemView = LayoutInflater.from(con).inflate(R.layout.event_header_item,parent,false);
@@ -73,7 +111,7 @@ public class EventsListAdapter extends ArrayAdapter<EventsDataModel> {
             assignValues(eventListItemView,comparision,curr_obj, position);
         }
 
-        else if(comparision==1&&!started2){     /**     PAST    */
+        else if(comparision==1&&!started2){     *//**     PAST    *//*
             Log.v("Past------",curr_obj.getEvent_name());
             list_item = false;
             eventListItemView = LayoutInflater.from(con).inflate(R.layout.event_header_item,parent,false);
@@ -97,12 +135,12 @@ public class EventsListAdapter extends ArrayAdapter<EventsDataModel> {
             }
             Log.v("View Type---",String.valueOf(getViewTypeCount()));
             list_item = true;
-        }
+        }*/
 
-        return eventListItemView;
+
     }
 
-    private void assignValues(View eventItem, int comp, EventsDataModel curr_eve,final int pos){
+    /*private void assignValues(View eventItem, int comp, EventsDataModel curr_eve,final int pos){
         if(comp==-1){
             header = eventItem.findViewById(R.id.event_header);
             header.setVisibility(VISIBLE);
@@ -145,5 +183,5 @@ public class EventsListAdapter extends ArrayAdapter<EventsDataModel> {
                 con.startActivity(in);
             }
         });
-    }
+    }*/
 }

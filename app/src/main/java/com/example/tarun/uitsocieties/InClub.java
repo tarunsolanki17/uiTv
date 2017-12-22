@@ -13,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.Window;
 
 import com.example.tarun.uitsocieties.photos_fragment.Photo_Serial;
 import com.example.tarun.uitsocieties.updates_fragment.UpdateParcel;
@@ -52,7 +53,6 @@ public class InClub extends AppCompatActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        setTheme(R.style.AppTheme);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.inclub_main);
 
@@ -66,23 +66,18 @@ public class InClub extends AppCompatActivity {
 //        getActionBar().setDisplayHomeAsUpEnabled(true);
 //        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 //        getSupportActionBar().setHomeButtonEnabled(true);
+//        getSupportActionBar().setHideOnContentScrollEnabled(true);
+//        Log.v("Action Bar---",String.valueOf(getSupportActionBar().isHideOnContentScrollEnabled()));
+
 
         login_checker();
 
         Intent in2 = getIntent();
         int position=0;
-        if(event_detail){
-            for(int i=0;i<CLUB_IDS.length;i++)
-                if(club_id.equals(CLUB_IDS[i])) {
-                    position = i;
-                    break;
-                }
-        }
-        else {
-            position = in2.getFlags();
-        }
-        setTitle(CLUB_NAMES_VISIBLE[position]);
 
+        position = in2.getFlags();
+
+        setTitle(CLUB_NAMES_VISIBLE[position]);
 
         club_id = CLUB_IDS[position];
         if(club_id!=null)
@@ -95,14 +90,10 @@ public class InClub extends AppCompatActivity {
         boolean notif_event = in2.getBooleanExtra(NOTIF_EVENT,false);
         boolean notif_update = in2.getBooleanExtra(NOTIF_UPDATE,false);
 
-        if(event_detail) {
-            viewpgr.setCurrentItem(2);      /**     SET POSITION TO EVENTS FRAGMENT   */
-        }
-        event_detail = false;
         if(notif_event)
             viewpgr.setCurrentItem(2);      /**     SET POSITION TO EVENTS FRAGMENT   */
 
-        if(notif_update){
+        else if(notif_update){
             viewpgr.setCurrentItem(1);      /**     SET POSITION TO UPDATES FRAGMENT   */
         }
 

@@ -17,6 +17,7 @@ public class ClubContract  {
     public static final String PHOTO_BUNDLE = "photo_bundle";
     public static final String NOTIF_UPDATE = "Notif_Intent_Update";
     public static final String NOTIF_EVENT = "Notif_Intent_Event";
+    public static final String PHOTO_DATA = "photo_data";
 
     public static final String ACM_RGPV = "120674037988973";//"1356583771115130";
     public static final String COHERENT = "493932347436578";

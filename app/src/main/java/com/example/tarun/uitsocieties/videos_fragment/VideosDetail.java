@@ -36,9 +36,9 @@ public class VideosDetail extends AppCompatActivity implements EasyVideoCallback
         super.onCreate(savedInstanceState);
         setContentView(R.layout.videos_detail);
 
-        /*toolbar = (Toolbar) findViewById(R.id.detail_toolbar_v);
-        setSupportActionBar(toolbar);*/
-//        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
+        toolbar = (Toolbar) findViewById(R.id.detail_toolbar_v);
+        setSupportActionBar(toolbar);
+
 //      TODO -> ADD AUDIO FOCUS
 
         Intent in = getIntent();
@@ -75,12 +75,11 @@ public class VideosDetail extends AppCompatActivity implements EasyVideoCallback
 
     @Override
     public void onPrepared(EasyVideoPlayer player) {
-
+        easyVideoPlayer.setVisibility(VISIBLE);
     }
 
     @Override
     public void onBuffering(int percent) {
-
     }
 
     @Override
@@ -105,7 +104,7 @@ public class VideosDetail extends AppCompatActivity implements EasyVideoCallback
 
     }
 
-    @Override
+    /*@Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.video_detail_menu,menu);
         return true;
@@ -115,10 +114,14 @@ public class VideosDetail extends AppCompatActivity implements EasyVideoCallback
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case R.id.video_details :
+
+                if(easyVideoPlayer.isPlaying())
+                easyVideoPlayer.pause();
                 Intent detail = new Intent(this,VideosData.class);
                 detail.putExtra("Data",curr_video);
                 startActivity(detail);
         }
         return true;
-    }
+    }*/
+
 }

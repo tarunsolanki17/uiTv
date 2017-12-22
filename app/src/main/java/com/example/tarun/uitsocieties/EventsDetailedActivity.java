@@ -55,8 +55,6 @@ public class EventsDetailedActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.events_detailed);
 
-        event_detail = true;
-
         Intent receivedIntent = getIntent();
         boolean notif = false;
         if(receivedIntent.getBooleanExtra("Notification",notif)){
@@ -72,15 +70,12 @@ public class EventsDetailedActivity extends AppCompatActivity {
             curr_event = detailedInfo.get(position);
         }
 
-        //  TODO --> ATTACH AN ONCLICKLISTENER TO THE IMAGE VIEW FOR LEADING TO DETAILED ACTIVITY WITH ZOOMING AND SAVING OPTIONS
-        //  TODO --> ATTACH INTENT TO FACEBOOK LINK
-
         cover = (ImageView) findViewById(R.id.cover);
         name = (TextView) findViewById(R.id.event_name);
         date_time = (TextView) findViewById(R.id.date_time);
         venue = (TextView) findViewById(R.id.venue);
         descp = (TextView) findViewById(R.id.descp);
-        button = (Button) findViewById(R.id.map);
+//        button = (Button) findViewById(R.id.map);
 
         if(curr_event.getCover_url().isEmpty())
             cover.setVisibility(GONE);
@@ -95,7 +90,10 @@ public class EventsDetailedActivity extends AppCompatActivity {
         String time = curr_event.getTime();
         String date_text = "On " + date + " " + mon + " " + year + " at " + time;
         date_time.setText(date_text);
-        venue.setText("Venue: " + curr_event.getPlace_name() + ", " + curr_event.getCity());
+        venue.setText(curr_event.getPlace_name() + ", " + curr_event.getCity());
+        if(curr_event.getDescp().isEmpty())
+            descp.setText("No Description Available.");
+        else
         descp.setText(curr_event.getDescp());
 
         cover.setOnClickListener(new View.OnClickListener() {
@@ -107,7 +105,7 @@ public class EventsDetailedActivity extends AppCompatActivity {
             }
         });
 
-        button.setOnClickListener(new View.OnClickListener() {
+        /*button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent map_intent = new Intent(Intent.ACTION_VIEW);
@@ -116,19 +114,14 @@ public class EventsDetailedActivity extends AppCompatActivity {
                     startActivity(map_intent);
                 }
             }
-        });
-    }
-
-    /*@Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_photo,menu);
-        return true;
+        });*/
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId()==android.R.id.home){
-            NavUtils.navigateUpFromSameTask(InClub);
+            finish();
         }
-    }*/
+        return true;
+    }
 }

@@ -92,7 +92,7 @@ public class FetchingJobService extends JobService {
             protected Object doInBackground(Object[] objects) {
                 Log.v("Running---", "JobService");
 
-                /*events_ids = new File(getApplicationContext().getFilesDir(), "event_ids_file");
+                events_ids = new File(getApplicationContext().getFilesDir(), "event_ids_file");
                 Log.v("CLUB_IDS SIZE----:", String.valueOf(CLUB_IDS.length));
                 fresh_event_ids = new ArrayList<>(CLUB_IDS.length);
                 fresh_event_ids.clear();
@@ -114,7 +114,7 @@ public class FetchingJobService extends JobService {
                     for (int i = 0; i < CLUB_IDS.length; i++) {
                         eventIDJSONRequest(CLUB_IDS[i], CLUB_NAMES[i], false, i);
                     }
-                }*/
+                }
 
                 fetchUpdate();      /**     UPDATES FETCHING    **/
 
@@ -440,17 +440,21 @@ public class FetchingJobService extends JobService {
                     if (new_events != null) {
                         Log.v("New Event---", "Sent");
 //                        TODO --> ADD A CONDITION THAT THE NOTIFICATION SHOULD ONLY BE GENERATED WHEN THE EVENT IS ONLY A WEEK OR TWO OLD
-                        Date today = new Date();
+                        /*Date today = new Date();
                         SimpleDateFormat incoming = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
                         Date event_date = incoming.parse(start_date);
+                        Log.v("Compare to---",String.valueOf(event_date.compareTo(today)));
 
-                        if (event_date.compareTo(today) > 0)
+                        if (event_date.compareTo(today) > 0)*/ {
+                            Log.v("New Event---", "Sent2");
                             eventNotification(getApplicationContext(), new_events, club_name, clubID, i);
+                        }
                     }
                 }
 
 
             } catch (Exception e) {
+                Log.v("Exception---", "at event notif");
                 e.printStackTrace();
             }
         }

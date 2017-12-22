@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.tarun.uitsocieties">
 
     <!-- ***************************** PERMISSIONS *********************************** -->
@@ -20,7 +19,7 @@
         <activity
             android:name=".MainActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme">
+            android:theme="@style/AppTheme.Launcher">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -39,38 +38,60 @@
         <activity
             android:name=".Settings"
             android:label="Settings"
-            android:theme="@style/AppTheme"/>
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".EventsDetailedActivity"
             android:label="Details"
+            android:parentActivityName=".InClub"
             android:theme="@style/AppTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".InClub" />
         </activity>
         <activity
             android:name=".PhotoDetailActivity"
             android:label=""
-            android:theme="@style/PhotoDetailTheme">
-        </activity>
-        <activity android:name=".videos_fragment.VideosDetail"
-            android:label=""
-            android:theme="@style/VideoDetail"
-            android:configChanges="orientation|keyboardHidden|screenLayout|screenSize">
-        </activity>
-        <activity android:name=".events_fragment.EventsDeatiledPhotoActivity"
-            android:label=""
-            android:theme="@style/PhotoDetailTheme"
-            android:parentActivityName=".EventsDetailedActivity">
-        <meta-data
-            android:name="android.support.PARENT_ACTIVITY"
-            android:value=".EventsDetailedActivity" />
-        </activity>
-        <activity android:name=".videos_fragment.VideosData"
-            android:label="Details"
-            android:theme="@style/AppTheme"
-            android:parentActivityName=".videos_fragment.VideosDetail">
+            android:parentActivityName=".InClub"
+            android:theme="@style/PhotoDetailTheme2">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".videos_fragment.VideosDetail"/>
+                android:value=".InClub" />
         </activity>
+        <activity
+            android:name=".videos_fragment.VideosDetail"
+            android:configChanges="orientation|keyboardHidden|screenLayout|screenSize"
+            android:label=""
+            android:theme="@style/VideoDetail">
+        </activity>
+        <activity
+            android:name=".events_fragment.EventsDeatiledPhotoActivity"
+            android:label=""
+            android:parentActivityName=".EventsDetailedActivity"
+            android:theme="@style/PhotoDetailTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".EventsDetailedActivity" />
+        </activity>
+        <activity
+            android:name=".videos_fragment.VideosData"
+            android:label="Details"
+            android:parentActivityName=".videos_fragment.VideosDetail"
+            android:theme="@style/AppTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".videos_fragment.VideosDetail" />
+        </activity>
+
+        <activity
+            android:name=".photos_fragment.PhotoData"
+            android:label="Details"
+            android:parentActivityName=".PhotoDetailActivity"
+            android:theme="@style/AppTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".PhotoDetailActivity" />
+        </activity>
+
 
         <!-- *********************FACEBOOK INTEGRATION************************ -->
 

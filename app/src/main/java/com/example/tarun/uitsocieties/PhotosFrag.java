@@ -72,7 +72,6 @@ import static com.example.tarun.uitsocieties.InClub.club_id;
 import static com.example.tarun.uitsocieties.InClub.data_len;
 import static com.example.tarun.uitsocieties.InClub.fetchAsyncP;
 import static com.example.tarun.uitsocieties.InClub.fetchAsyncU;
-import static com.example.tarun.uitsocieties.InClub.ft;
 import static com.example.tarun.uitsocieties.InClub.login;
 import static com.example.tarun.uitsocieties.InClub.login_checker;
 import static com.example.tarun.uitsocieties.InClub.photos_data;
@@ -187,8 +186,13 @@ public class PhotosFrag extends Fragment{
                         Log.v("fetchAync--->","not null");
                         if (fetchAsyncP.getStatus().toString().equals("RUNNING")) {    /** fetchAsyncP still running*/
                             Log.v("fetchAync--->","still running");
-                            pbar.setVisibility(VISIBLE);
-                            photo_recyc_view.setVisibility(GONE);
+                            if(photos_data.isEmpty()) {
+                                pbar.setVisibility(VISIBLE);
+                                photo_recyc_view.setVisibility(GONE);
+                            }
+                            else{
+                                showing();
+                            }
                         }
                         if (fetchAsyncP.getStatus().toString().equals("FINISHED")) {   /** fetchAsyncP complete*/
                             Log.v("fetchAync--->","finished");
@@ -573,8 +577,11 @@ public class PhotosFrag extends Fragment{
         if(fetchAsyncP!=null) {
             if (fetchAsyncP.getStatus().toString().equals("RUNNING")) {
                 outState.putBoolean("Incomplete", true);
-                /*if(!photos_data.isEmpty())*/
-                    
+                if(!photos_data.isEmpty()) {
+                    Bundle photoBundle = new Bundle();
+                    photoBundle.putSerializable("photos", photos_data);
+                    outState.putBundle(PHOTO_BUNDLE, photoBundle);
+                }
             }
             else if(fetchAsyncP.getStatus().toString().equals("FINISHED")) {
                 Bundle photoBundle = new Bundle();

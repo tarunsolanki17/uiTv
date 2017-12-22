@@ -4,7 +4,8 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/lilay2">
+    android:id="@+id/lilay2"
+    >
 
     <!--TODO >>> ADD ICONS WITH TEXTS IN TABS -->
     <android.support.design.widget.TabLayout
@@ -12,6 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         app:tabMode="scrollable"
+
         />
     <android.support.v4.view.ViewPager
         android:layout_width="match_parent"
