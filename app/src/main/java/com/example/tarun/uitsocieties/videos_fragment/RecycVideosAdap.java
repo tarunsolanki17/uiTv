@@ -23,10 +23,12 @@ import static com.example.tarun.uitsocieties.R.id.descp;
  * Created by Tarun on 28-Oct-17.
  */
 
-public class RecycVideosAdap extends RecyclerView.Adapter<RecycVideosAdap.VideoViewHolder> {
+public class RecycVideosAdap extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     ArrayList<VideoParcel> video_data;
     Context context;
+    public static final int TYPE_ITEM = 1;
+    public static final int TYPE_FOOTER = 2;
 
     public RecycVideosAdap(ArrayList<VideoParcel> data, Context con) {
         video_data = data;
@@ -34,38 +36,57 @@ public class RecycVideosAdap extends RecyclerView.Adapter<RecycVideosAdap.VideoV
     }
 
     @Override
-    public VideoViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
-        LayoutInflater inflater = LayoutInflater.from(context);
-        View videoView = inflater.inflate(R.layout.video_recyc_layout, parent, false);
-        RecycVideosAdap.VideoViewHolder viewHolder = new RecycVideosAdap.VideoViewHolder(videoView);
-        return viewHolder;
+        if(viewType == TYPE_ITEM) {
+            LayoutInflater inflater = LayoutInflater.from(context);
+            View videoView = inflater.inflate(R.layout.video_recyc_layout, parent, false);
+            return new RecycVideosAdap.VideoViewHolder(videoView);
+        }
+        else if(viewType == TYPE_FOOTER){
+            View footer = LayoutInflater.from(context).inflate(R.layout.footer, parent, false);
+            return new RecycVideosAdap.FooterViewHolder(footer);
+        }
+        else
+            throw new RuntimeException("No view with defined types was found");
     }
 
     @Override
-    public void onBindViewHolder(VideoViewHolder holder, int position) {
-        VideoParcel curr_video = video_data.get(position);
-//        holder.descp.setText(curr_video.getDescp());
-        ImageView imageView = holder.thumb;
-        Glide.with(context)
-                .load(curr_video.getThumbnail_url())
-                .apply(new RequestOptions().placeholder(R.drawable.color_gray_place))
-                .into(imageView);
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        if(holder instanceof VideoViewHolder) {
+
+            VideoParcel curr_video = video_data.get(position);
+            ImageView imageView = ((VideoViewHolder) holder).thumb;
+            Glide.with(context)
+                    .load(curr_video.getThumbnail_url())
+                    .apply(new RequestOptions().placeholder(R.drawable.color_gray_place))
+                    .into(imageView);
+        }
+        else if(holder instanceof FooterViewHolder){
+            //  DO NOTHING
+        }
     }
 
     @Override
     public int getItemCount() {
-        return video_data.size();
+        return (video_data.size() + 1);
     }
 
-    class VideoViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    @Override
+    public int getItemViewType(int position) {
+        if(position==video_data.size())
+            return TYPE_FOOTER;
+        else
+            return TYPE_ITEM;
+    }
+
+    private class VideoViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
 //        TextView descp;
         ImageView thumb;
 
         public VideoViewHolder(View itemView) {
             super(itemView);
-//            descp = itemView.findViewById(R.id.descp_v);
             thumb = itemView.findViewById(R.id.thumb_v);
             //  TODO --> SET CORRECT HEIGHT
 //            thumb.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,350));
@@ -82,6 +103,13 @@ public class RecycVideosAdap extends RecyclerView.Adapter<RecycVideosAdap.VideoV
                 video_intent.putExtra("position",position);
                 context.startActivity(video_intent);
             }
+        }
+    }
+
+    private class FooterViewHolder extends RecyclerView.ViewHolder{
+
+        public FooterViewHolder(View itemView) {
+            super(itemView);
         }
     }
 }

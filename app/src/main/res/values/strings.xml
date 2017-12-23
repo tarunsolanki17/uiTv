@@ -6,4 +6,27 @@
     <string name="fb_login_protocol_scheme">fb265291573980397</string>
     <string name="no_internet_toast">Please check your Internet Connectivity and then try again.</string>
     <string name="title_activity_photo_data">PhotoData</string>
+
+    <string-array name="societies">
+        <item>ACM</item>
+        <item>Coherent</item>
+        <item>E-cell</item>
+        <item>Green Army</item>
+        <item>Hackerearth</item>
+        <item>In-sync</item>
+        <item>ISpeakaalay</item>
+        <item>Mahasangraam</item>
+        <item>Phoenix</item>
+        <item>Shankhanaad</item>
+        <item>Sundarban</item>
+        <item>Technophilic</item>
+        <item>TEDx</item>
+
+    </string-array>
+    <string name="contact">CONTACT NUMBER:</string>
+    <string name="email">EMAIL:</string>
+    <string name="fbpage">FACEBOOK PAGE:</string>
+    <string name="website">WEBSITE:</string>
+    <string name="mission">MISSION</string>
+    <string name="about">ABOUT</string>
 </resources>

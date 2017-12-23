@@ -20,6 +20,8 @@ import com.example.tarun.uitsocieties.updates_fragment.UpdateParcel;
 import com.example.tarun.uitsocieties.videos_fragment.VideoParcel;
 import com.facebook.AccessToken;
 import com.facebook.FacebookSdk;
+import com.inmobi.ads.InMobiBanner;
+import com.inmobi.sdk.InMobiSdk;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -50,6 +52,8 @@ public class InClub extends AppCompatActivity {
     public static boolean started1=false, started2=false, list_item=false;
     public static int albumNo,data_len,album_len,album_len_max_index;
     public static RecycPhotosAdap recycAdapter;
+    public static int position;
+    public InMobiBanner banner;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -63,6 +67,10 @@ public class InClub extends AppCompatActivity {
 
         albumNo = 0;    /**     TO START FROM THE FIRST ALBUM   */
 
+        banner = (InMobiBanner) findViewById(R.id.banner1);
+        banner.load();
+        InMobiSdk.setLogLevel(InMobiSdk.LogLevel.DEBUG);
+
 //        getActionBar().setDisplayHomeAsUpEnabled(true);
 //        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 //        getSupportActionBar().setHomeButtonEnabled(true);
@@ -73,7 +81,7 @@ public class InClub extends AppCompatActivity {
         login_checker();
 
         Intent in2 = getIntent();
-        int position=0;
+        position=0;
 
         position = in2.getFlags();
 

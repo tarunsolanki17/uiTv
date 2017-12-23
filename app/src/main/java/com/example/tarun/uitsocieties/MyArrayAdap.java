@@ -48,7 +48,6 @@ public class MyArrayAdap extends RecyclerView.Adapter<MyArrayAdap.MyViewHolder> 
     ArrayList<Data1> club_data;
     int layout;
 
-
     public MyArrayAdap(Context context, ArrayList<Data1> data, int layout) {
         con = context;
         club_data = data;

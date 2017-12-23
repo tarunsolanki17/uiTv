@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_content"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#000000"
+    xmlns:ads="http://schemas.android.com/apk/lib/com.inmobi.ads"
     >
 
     <android.support.v4.view.ViewPager
@@ -23,4 +25,15 @@
 
         />
 
-</android.support.design.widget.CoordinatorLayout>
+    <com.inmobi.ads.InMobiBanner
+        android:layout_width="300dp"
+        android:layout_height="50dp"
+        android:id="@+id/banner2"
+        ads:placementId="1513736310373"
+        ads:refreshInterval="60"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+
+        />
+
+</RelativeLayout>

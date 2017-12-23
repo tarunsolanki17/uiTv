@@ -15,7 +15,10 @@ import android.widget.TextView;
 
 import com.afollestad.easyvideoplayer.EasyVideoCallback;
 import com.afollestad.easyvideoplayer.EasyVideoPlayer;
+import com.example.tarun.uitsocieties.MainActivity;
 import com.example.tarun.uitsocieties.R;
+import com.inmobi.ads.InMobiBanner;
+import com.inmobi.sdk.InMobiSdk;
 
 import java.util.ArrayList;
 
@@ -30,6 +33,7 @@ public class VideosDetail extends AppCompatActivity implements EasyVideoCallback
     int pos;
     TextView error;
     Toolbar toolbar;
+    InMobiBanner banner3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +42,11 @@ public class VideosDetail extends AppCompatActivity implements EasyVideoCallback
 
         toolbar = (Toolbar) findViewById(R.id.detail_toolbar_v);
         setSupportActionBar(toolbar);
+
+        InMobiSdk.init(VideosDetail.this, "6c2ca29688614264bd77f77cc38cd923");
+        banner3 = (InMobiBanner) findViewById(R.id.banner3);
+        banner3.load();
+        InMobiSdk.setLogLevel(InMobiSdk.LogLevel.DEBUG);
 
 //      TODO -> ADD AUDIO FOCUS
 

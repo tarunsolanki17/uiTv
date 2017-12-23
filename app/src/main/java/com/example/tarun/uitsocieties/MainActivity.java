@@ -25,6 +25,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 import com.facebook.AccessToken;
+import com.inmobi.sdk.InMobiSdk;
 
 import static com.example.tarun.uitsocieties.ClubContract.ACM_RGPV;
 import static com.example.tarun.uitsocieties.ClubContract.COHERENT;
@@ -57,6 +58,9 @@ public class MainActivity extends AppCompatActivity implements Runnable{
         setTheme(R.style.AppTheme);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        InMobiSdk.init(MainActivity.this, "6c2ca29688614264bd77f77cc38cd923");
+        InMobiSdk.setLogLevel(InMobiSdk.LogLevel.DEBUG);
 
         new MyWidthThread().start();
 

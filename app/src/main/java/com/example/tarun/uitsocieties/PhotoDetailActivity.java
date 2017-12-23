@@ -40,6 +40,8 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.example.tarun.uitsocieties.photos_fragment.PhotoData;
 import com.example.tarun.uitsocieties.photos_fragment.Photo_Serial;
+import com.inmobi.ads.InMobiBanner;
+import com.inmobi.sdk.InMobiSdk;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
@@ -83,6 +85,7 @@ public class PhotoDetailActivity extends AppCompatActivity {
     SectionsPagerAdapter mSectionsPagerAdapter;
     private ViewPager viewPager;
     public transient Context con;
+    InMobiBanner banner2;
     /*private RelativeLayout detail_layout;
     private TextView caption_view;*/
 
@@ -95,6 +98,11 @@ public class PhotoDetailActivity extends AppCompatActivity {
 
         toolbar = (Toolbar) findViewById(R.id.detail_toolbar);
         setSupportActionBar(toolbar);
+
+        InMobiSdk.init(PhotoDetailActivity.this,"6c2ca29688614264bd77f77cc38cd923");
+        banner2 = (InMobiBanner) findViewById(R.id.banner2);
+        banner2.load();
+
 //        getSupportActionBar().setHomeButtonEnabled(true);
 //        getSupportActionBar().setDefaultDisplayHomeAsUpEnabled(true);
 

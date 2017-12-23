@@ -22,8 +22,10 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -46,7 +48,9 @@ import static android.R.attr.data;
 import static android.R.attr.end;
 import static android.R.attr.finishOnCloseSystemDialogs;
 import static android.R.attr.switchMinWidth;
+import static android.icu.lang.UCharacter.GraphemeClusterBreak.V;
 import static android.view.View.GONE;
+import static android.view.View.OVER_SCROLL_ALWAYS;
 import static android.view.View.VISIBLE;
 import static com.example.tarun.uitsocieties.ClubContract.CLUB_NAMES;
 import static com.example.tarun.uitsocieties.ClubContract.CLUB_NAMES_VISIBLE;
@@ -75,6 +79,7 @@ import static com.example.tarun.uitsocieties.R.id.date_time;
 import static com.example.tarun.uitsocieties.R.id.photo_recyc_view;
 import static com.example.tarun.uitsocieties.updates_fragment.UpdatesFrag.getClubIndex;
 import static com.facebook.login.widget.ProfilePictureView.TAG;
+import static com.inmobi.rendering.InMobiAdActivity.f;
 import static java.util.Objects.isNull;
 
 import com.example.tarun.uitsocieties.ClubContract.EventsConstants;
@@ -93,6 +98,7 @@ public class EventsFrag extends Fragment {
     TextView no_internet;
     TextView no_data;
     SwipeRefreshLayout swipe;
+    View footer;
     boolean isConnected;
     Context con;
 //    AsyncTask fetchAsync;
@@ -115,6 +121,14 @@ public class EventsFrag extends Fragment {
         no_internet = events_view.findViewById(R.id.no_internet);
         no_data = events_view.findViewById(R.id.no_data);
         swipe = events_view.findViewById(R.id.swipe);
+
+        View footer = new View(getActivity());
+        footer.setFocusable(false);
+        footer.setFocusableInTouchMode(false);
+        footer.setClickable(false);
+        footer.setEnabled(false);
+        footer.setLayoutParams(new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,150));
+        listView.addFooterView(footer);
 
         swipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
