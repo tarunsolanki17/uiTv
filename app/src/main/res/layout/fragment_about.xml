@@ -1,201 +1,218 @@
+<?xml version="1.0" encoding="utf-8"?>
 <ScrollView
     android:layout_height="match_parent"
     android:layout_width="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    android:scrollbars="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@drawable/theme">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
     <RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="20dp"
-        android:paddingTop="20dp"
-        android:paddingRight="20dp"
-        android:paddingLeft="20dp"
-        android:overScrollMode="always"
-        android:scrollbars="vertical"
-        android:scrollbarStyle="insideOverlay"
-        tools:context="com.example.tarun.uitsocieties.about_fragment.AboutFrag">
+        android:layout_marginBottom="15dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="15dp">
 
         <ImageView
             android:id="@+id/society_logo"
-            android:layout_width="180dp"
-            android:layout_height="120dp"
-            android:layout_marginTop="10dp"
-            android:layout_centerHorizontal="true"
-            />
+            android:layout_width="130dp"
+            android:layout_height="140dp"
+            android:layout_centerHorizontal="true" />
 
         <TextView
+            android:id="@+id/society_name"
             android:layout_width="match_parent"
+            android:textSize="28sp"
+            android:textColor="@color/black"
             android:layout_height="wrap_content"
-            android:layout_marginTop="18dp"
-            android:layout_below="@+id/society_logo"
-            android:layout_alignLeft="@+id/society_logo"
-            android:layout_centerHorizontal="true"
-            android:layout_marginLeft="20dp"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:textAllCaps="true"
-            android:textAppearance="@color/colorPrimaryDark"
+            android:layout_below="@id/society_logo"
             android:textAlignment="center"
-            android:id="@+id/society_name"/>
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="15dp" />
 
-
-
-
-        <TextView
+        <LinearLayout
+            android:id="@+id/mission_layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:textSize="15sp"
-            android:visibility="visible"
-            android:layout_marginRight="20dp"
-            android:layout_below="@+id/society_name"
-            android:textAppearance="@color/colorPrimaryDark"
-            android:id="@+id/objective" />
-
-        <!--About-->
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
             android:layout_marginTop="15dp"
-            android:textSize="15sp"
-            android:layout_marginRight="20dp"
-            android:layout_below="@+id/objective"
-            android:visibility="visible"
-            android:id="@+id/about"
-            android:textAppearance="@color/colorPrimaryDark" />
+            android:layout_below="@id/society_name"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true">
 
-        <!--contact number-->
 
-        <TextView
+            <ImageView
+                android:id="@+id/mission_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:src="@drawable/ic_grade_black_24dp" />
+
+            <TextView
+                android:id="@+id/objective"
+                android:layout_width="match_parent"
+                android:layout_marginLeft="15dp"
+                android:layout_marginStart="15dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:textColor="@color/black"
+                />
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textAppearance="@color/colorPrimaryDark"
-            android:layout_marginTop="10dp"
-            android:textSize="15sp"
-            android:id="@+id/contact"
-            android:visibility="visible"
-            android:layout_marginLeft="20dp"
-            android:layout_below="@+id/about"
-            android:layout_marginRight="20dp"
-            android:text="@string/contact"/>
+            android:id="@+id/about_layout"
+            android:layout_below="@+id/mission_layout"
+            android:layout_marginTop="15dp"
+            android:orientation="horizontal">
 
-        <TextView
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_info_black_24dp"
+                android:layout_gravity="top"
+                android:layout_marginTop="1dp"
+                android:id="@+id/about_image" />
+
+            <TextView
+                android:id="@+id/about"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:layout_gravity="bottom"
+                android:layout_marginLeft="15dp"
+                android:layout_marginStart="15dp"
+                android:textColor="@color/black" />
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="15sp"
-            android:id="@+id/contact_number"
-            android:layout_marginLeft="20dp"
-            android:layout_alignLeft="@+id/contact"
-            android:layout_marginRight="20dp"
-            android:layout_marginTop="10dp"
-            android:layout_below="@+id/contact"
-            android:visibility="visible"
-            android:textAppearance="@color/colorPrimaryDark"/>
+            android:orientation="horizontal"
+            android:layout_marginTop="15dp"
+            android:id="@+id/contact_layout"
+            android:layout_below="@+id/about_layout"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            >
 
-        <!--E-mail-->
+            <ImageView
+                android:id="@+id/contact"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="1dp"
+                android:src="@drawable/ic_call_black_24dp" />
 
-        <TextView
+            <TextView
+                android:id="@+id/contact_number"
+                android:layout_width="340dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:layout_marginLeft="20dp"
+                android:textIsSelectable="true"
+                android:layout_marginStart="18dp"
+                android:textColor="@color/colorPrimaryDark"
+                android:textStyle="italic" />
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textAppearance="@color/colorPrimaryDark"
-            android:layout_marginTop="10dp"
-            android:id="@+id/email"
-            android:layout_marginLeft="20dp"
-            android:textSize="15sp"
-            android:layout_below="@+id/contact_number"
-            android:visibility="visible"
-            android:layout_marginRight="20dp"
-            android:text="@string/email"/>
+            android:id="@+id/mail_layout"
+            android:layout_below="@+id/contact_layout"
+            android:orientation="horizontal"
+            android:layout_marginTop="15dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true">
 
+            <ImageView
+                android:id="@+id/mail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:src="@drawable/ic_mail_outline_black_24dp" />
 
-        <TextView
+            <TextView
+                android:id="@+id/e_mail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorPrimaryDark"
+                android:layout_gravity="bottom"
+                android:layout_marginLeft="15dp"
+                android:layout_marginStart="15dp"
+                android:textIsSelectable="true"
+                android:textStyle="italic"
+                 />
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="15sp"
-            android:id="@+id/mail"
-            android:layout_marginLeft="20dp"
-            android:visibility="visible"
-            android:layout_marginRight="20dp"
-            android:layout_marginTop="10dp"
-            android:layout_alignLeft="@+id/email"
-            android:layout_below="@+id/email"
-            android:textAppearance="@color/colorPrimaryDark"
-            android:textColor="#330099"
-            android:clickable="true"
-            android:focusableInTouchMode="true" />
+            android:orientation="horizontal"
+            android:id="@+id/fb_layout"
+            android:layout_marginTop="15dp"
+            android:layout_below="@id/mail_layout">
 
-        <!--Facebook page-->
+            <ImageView
+                android:id="@+id/fbpage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_person_black_24dp"
+                android:layout_marginTop="15dp"/>
 
-        <TextView
+            <TextView
+                android:id="@+id/fblink"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:layout_marginLeft="15dp"
+                android:layout_marginStart="15dp"
+                android:textStyle="italic"
+                android:textColor="@color/colorPrimaryDark"
+                android:textIsSelectable="true"
+                />
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textAppearance="@color/colorPrimaryDark"
-            android:textSize="15sp"
-            android:layout_marginTop="10dp"
-            android:id="@+id/fbpage"
-            android:layout_marginLeft="20dp"
-            android:layout_below="@+id/mail"
-            android:layout_marginRight="20dp"
-            android:visibility="visible"
-            android:text="@string/fbpage"/>
+            android:id="@+id/webpage_layout"
+            android:layout_marginTop="15dp"
+            android:layout_below="@+id/fb_layout"
+            >
 
+            <ImageView
+                android:id="@+id/webpage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:src="@drawable/ic_language_black_24dp" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/fbpage"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:textSize="15sp"
-            android:textColor="#330099"
-            android:visibility="visible"
-            android:layout_marginTop="10dp"
-            android:layout_alignLeft="@+id/fbpage"
-            android:textAppearance="@color/colorPrimaryDark"
-            android:id="@+id/fblink"
-            android:clickable="true"/>
+            <TextView
+                android:id="@+id/website"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:layout_marginLeft="15dp"
+                android:layout_marginStart="15dp"
+                android:textColor="@color/colorPrimaryDark"
+                android:textStyle="italic"
+                android:textIsSelectable="true"/>
+        </LinearLayout>
 
-        <!--Website-->
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAppearance="@color/colorPrimaryDark"
-            android:layout_marginTop="10dp"
-            android:id="@+id/webpage"
-            android:textSize="15sp"
-            android:visibility="visible"
-            android:layout_marginLeft="20dp"
-            android:layout_below="@+id/fblink"
-            android:layout_marginRight="20dp"
-            android:text="@string/website"/>
-
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="18dp"
-            android:layout_marginRight="18dp"
-            android:textSize="15sp"
-            android:textColor="#330099"
-            android:visibility="visible"
-            android:textAppearance="@color/colorPrimaryDark"
-            android:id="@+id/website"
-            android:layout_marginTop="10dp"
-            android:layout_alignLeft="@+id/webpage"
-            android:layout_below="@+id/webpage" />
     </RelativeLayout>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="70dp"/>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="100dp"/>
 
     </LinearLayout>
 </ScrollView>

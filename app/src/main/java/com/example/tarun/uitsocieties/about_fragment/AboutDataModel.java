@@ -62,10 +62,10 @@ public class AboutDataModel {
 
     public static final AboutDataModel[] details = {
             new AboutDataModel("ACM: ASSOCIATION FOR COMPUTING MACHINERY RGPV", "", "ABOUT\n\nThe Association for Computing Machinery is an international learned society for computing. It was founded in 1947 and is the world's largest scientific and educational computing society. It is a not-for-profit professional membership group.", "", "", "https://www.facebook.com/acmrgpv/","", R.drawable.acm),
-            new AboutDataModel("COHERENT", "MISSION: Believe in Openness, Innovation and Creativity", "We are the open source enthusiasts from Bhopal contributing in various Mozilla projects to make internet better and accessible to all.\n Awarded by Club of the month in November 2015 for the month Oct 2015", "", "", "https://www.facebook.com/Coherentatuit/", "\n" +
+            new AboutDataModel("MOZILLA CLUB COHERENT", "MISSION: Believe in Openness, Innovation and Creativity", "We are the open source enthusiasts from Bhopal contributing in various Mozilla projects to make internet better and accessible to all.\n Awarded by Club of the month in November 2015 for the month Oct 2015", "", "", "https://www.facebook.com/Coherentatuit/", "\n" +
                     "https://wiki.mozilla.org/Coherent_@_UIT\n", R.drawable.coherent),
-            new AboutDataModel("e-ENTREPRENEURSHIP CELL RGPV", "", "ABOUT\n\nFounded on May 9, 2016\n The e-Entrepreneurship Cell of RGPV is a Non - Profit Organization.", "088279 70446", "contact@ecellrgpv.in", "Facebook page: https://www.facebook.com/ECellRGPV/", "\n" +
-                    "WEBSITE: http://www.ecellrgpv.in", R.drawable.ecell),
+            new AboutDataModel("e-ENTREPRENEURSHIP CELL RGPV", "", "ABOUT\n\nFounded on May 9, 2016\n The e-Entrepreneurship Cell of RGPV is a Non - Profit Organization.", "088279 70446", "contact@ecellrgpv.in", "https://www.facebook.com/ECellRGPV/", "\n" +
+                    "http://www.ecellrgpv.in", R.drawable.ecell),
             new AboutDataModel("GREEN ARMY", "MISSION\n\n\"Creating endless ripples every day\"", "ABOUT\n\nThe Green army was founded in 2011 by Yuvraj Puri, Tayyab Zafar,Umar M Khan and Varsha Dange.\nTHE GREEN ARMY has been amplified to ' The Dream Box Foundation ' - a social reforming society, prioritizing environment, health and education.\n", "096857 41401\n", "\n" +
                     "greenarmyrgpv@gmail.com", "https://www.facebook.com/TheGreenArmyUIT/", "" +
                     "http://thedreambox.in", R.drawable.green_army),

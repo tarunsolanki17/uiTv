@@ -1,22 +1,30 @@
 package com.example.tarun.uitsocieties;
 
-import android.content.ClipData;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.ApplicationInfo;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
+import android.support.design.widget.NavigationView;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.view.menu.ActionMenuItemView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.WindowManager;
-import android.widget.GridView;
+import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -24,7 +32,11 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 
+import com.example.tarun.uitsocieties.drawer.AboutTheDevelopers;
+import com.example.tarun.uitsocieties.drawer.App_info;
 import com.facebook.AccessToken;
+import com.facebook.Profile;
+import com.facebook.login.LoginManager;
 import com.inmobi.sdk.InMobiSdk;
 
 import static com.example.tarun.uitsocieties.ClubContract.ACM_RGPV;
@@ -40,9 +52,10 @@ import static com.example.tarun.uitsocieties.ClubContract.SHANKHNAAD;
 import static com.example.tarun.uitsocieties.ClubContract.SUNDARBAN;
 import static com.example.tarun.uitsocieties.ClubContract.TECHNOPHILIC;
 import static com.example.tarun.uitsocieties.ClubContract.TEDX_RGPV;
-import static java.security.AccessController.getContext;
+import static com.example.tarun.uitsocieties.InClub.login;
+import static com.example.tarun.uitsocieties.InClub.login_checker;
 
-public class MainActivity extends AppCompatActivity implements Runnable{
+public class MainActivity extends AppCompatActivity implements Runnable, NavigationView.OnNavigationItemSelectedListener{
 
     /**********************  GLOBAL VARIABLES  ********************************/
 
@@ -52,15 +65,27 @@ public class MainActivity extends AppCompatActivity implements Runnable{
     RecyclerView.LayoutManager L_layoutManager,G_layoutManager;
     MyArrayAdap mainAdap;
     MenuItem icon;
+    Toolbar main_toolbar;
+    Toast toast;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        setTheme(R.style.AppTheme);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         InMobiSdk.init(MainActivity.this, "6c2ca29688614264bd77f77cc38cd923");
         InMobiSdk.setLogLevel(InMobiSdk.LogLevel.DEBUG);
+
+        main_toolbar = (Toolbar) findViewById(R.id.toolbar_main);
+        setSupportActionBar(main_toolbar);
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, main_toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
 
         new MyWidthThread().start();
 
@@ -184,5 +209,122 @@ public class MainActivity extends AppCompatActivity implements Runnable{
             return false;
         else
             return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+    public boolean onSupportNavigateUp(){
+        finish();
+        return true;
+    }
+
+    @SuppressWarnings("StatementWithEmptyBody")
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+
+        int id = item.getItemId();
+
+        if (id == R.id.about_the_developers) {
+            Intent intent = new Intent(this,AboutTheDevelopers.class);
+            startActivity(intent);
+
+        } else if (id == R.id.app_info) {
+            Intent intent = new Intent(this,App_info.class);
+            startActivity(intent);
+
+        } /*else if (id == R.id.settings) {
+            Intent intent=new Intent(this,Settings.class);
+            startActivity(intent);
+        }*/
+        /*else if (id == R.id.share_app) {
+            ApplicationInfo app = getApplicationContext().getApplicationInfo();
+            String filePath = app.sourceDir;
+
+            Intent intent = new Intent(Intent.ACTION_SEND);*/
+            //intent.setType("**/*//*");
+            /*intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(new File(filePath)));
+            startActivity(Intent.createChooser(intent, "Share app via"));
+        }*/
+
+
+        else if (id == R.id.log_out) {
+            if (isConnectedStatic(getApplicationContext())) {
+                login_checker();
+                if(!login){
+                    if (toast != null)
+                        toast.cancel();
+                    toast = Toast.makeText(getApplicationContext(), "You are not logged in.", Toast.LENGTH_SHORT);
+                    toast.show();
+                }
+                else {
+                    String logout = getResources().getString(com.facebook.R.string.com_facebook_loginview_log_out_action);
+                    String cancel = getResources().getString(com.facebook.R.string.com_facebook_loginview_cancel_action);
+                    String message;
+                    Profile profile = Profile.getCurrentProfile();
+                    if (profile != null && profile.getName() != null) {
+                        message = getResources().getString(com.facebook.R.string.com_facebook_loginview_logged_in_as, profile.getName());
+                        Log.v("Profile!=null----", message);
+                    } else {
+                        message = getResources().getString(com.facebook.R.string.com_facebook_loginview_logged_in_using_facebook);
+                    }
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                    builder.setMessage(message)
+                            .setCancelable(true)
+                            .setPositiveButton(logout, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    LoginManager.getInstance().logOut();
+                                    Toast.makeText(getApplicationContext(), "Logged out", Toast.LENGTH_SHORT).show();
+                                    login_checker();
+//                                viewpgr.getAdapter().notifyDataSetChanged();
+                                }
+                            })
+                            .setNegativeButton(cancel, null);
+                    builder.create().show();
+                }
+            }
+            else{
+                if (toast != null)
+                    toast.cancel();
+                toast = Toast.makeText(getApplicationContext(), R.string.no_internet_toast, Toast.LENGTH_LONG);
+                toast.show();
+            }
+        }
+
+
+        else if (id == R.id.feedback) {
+            Intent intent = new Intent(Intent.ACTION_SENDTO);
+            intent.setData(Uri.parse("mailto:techpursuiters@gmail.com"));
+            startActivity(intent);
+
+        }
+        /*else if (id == R.id.rate_it) {
+            final String appPackageName = getPackageName(); // getPackageName() from Context or Activity object
+            try {
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
+            } catch (android.content.ActivityNotFoundException anfe) {
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
+            }
+
+        }*/
+        /*else if (id == R.id.update) {
+            Intent intent = new Intent(this,Updates.class);
+            startActivity(intent);
+        }*/
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+
+        return true;
     }
 }

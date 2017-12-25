@@ -348,22 +348,38 @@ public class FetchingJobService extends JobService {
             try {
                 JSONArray data = response.getJSONArray("data");
 
+                String event_id;
+                String event_name;
+                String start_date;
+                String end_date;
+                String year;
+                String month;
+                String date;
+                String day;
+                String time;
+                String place_name;
+                String city;
+                Double latitude ;
+                Double longitude ;
+                String descp;
+                String cover_source;
+
                 for (int i = 0; i <= 1; i++) {
-                    String event_id;
-                    String event_name = "";
-                    String start_date = "";
-                    String end_date = "";
-                    String year = "";
-                    String month = "";
-                    String date = "";
-                    String day = "";
-                    String time = "";
-                    String place_name = "";
-                    String city = "";
-                    Double latitude = -1d;
-                    Double longitude = -1d;
-                    String descp = "";
-                    String cover_source = "";
+                    event_id = "";
+                    event_name = "";
+                    start_date = "";
+                    end_date = "";
+                    year = "";
+                    month = "";
+                    date = "";
+                    day = "";
+                    time = "";
+                    place_name = "";
+                    city = "";
+                    latitude = -1d;
+                    longitude = -1d;
+                    descp = "";
+                    cover_source = "";
 
                     JSONObject curr_event = data.getJSONObject(i);
 
@@ -710,22 +726,38 @@ public class FetchingJobService extends JobService {
             try {
                 JSONArray data = response.getJSONArray("data");
 
+                String id;
+                String caption;
+                String created_time;
+                String description;
+                String link;
+                String message;
+                String name;
+                String permalink_url;
+                String picture;
+                String full_picture;
+                String place_name;
+                String city;
+                String source;
+                String status_type;
+                String type;
+
                 for (int i = 0; i <= 0; i++) {
-                    String id = "";
-                    String caption = "";
-                    String created_time = "";
-                    String description = "";
-                    String link = "";
-                    String message = "";
-                    String name = "";
-                    String permalink_url = "";
-                    String picture = "";
-                    String full_picture = "";
-                    String place_name = "";
-                    String city = "";
-                    String source = "";
-                    String status_type = "";
-                    String type = "";
+                    id = "";
+                    caption = "";
+                    created_time = "";
+                    description = "";
+                    link = "";
+                    message = "";
+                    name = "";
+                    permalink_url = "";
+                    picture = "";
+                    full_picture = "";
+                    place_name = "";
+                    city = "";
+                    source = "";
+                    status_type = "";
+                    type = "";
 
                     JSONObject curr_update = data.getJSONObject(i);
 

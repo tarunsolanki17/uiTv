@@ -24,6 +24,8 @@ import java.util.ArrayList;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
+import static com.example.tarun.uitsocieties.ClubContract.UpdatesConstants.UPDATE_VIDEO;
+import static com.example.tarun.uitsocieties.ClubContract.UpdatesConstants.UPDATE_VIDEO_URL;
 
 public class VideosDetail extends AppCompatActivity implements EasyVideoCallback {
 
@@ -50,11 +52,18 @@ public class VideosDetail extends AppCompatActivity implements EasyVideoCallback
 
 //      TODO -> ADD AUDIO FOCUS
 
+        String source_url;
         Intent in = getIntent();
         //  TODO --> HANDLE pos = -1
-        pos = in.getIntExtra("position",-1);
-        videoParcel = in.getParcelableArrayListExtra("video_parcel");
-        curr_video = videoParcel.get(pos);
+        if(in.getBooleanExtra(UPDATE_VIDEO,false)){
+            source_url = in.getStringExtra(UPDATE_VIDEO_URL);
+        }
+        else {
+            pos = in.getIntExtra("position", -1);
+            videoParcel = in.getParcelableArrayListExtra("video_parcel");
+            curr_video = videoParcel.get(pos);
+            source_url = curr_video.getSource_url();
+        }
 
         error = (TextView) findViewById(R.id.easy_player_error);
         error.setVisibility(GONE);
@@ -63,7 +72,7 @@ public class VideosDetail extends AppCompatActivity implements EasyVideoCallback
         easyVideoPlayer.setAutoFullscreen(true);
 
         easyVideoPlayer.setCallback(this);
-        easyVideoPlayer.setSource(Uri.parse(curr_video.getSource_url()));
+        easyVideoPlayer.setSource(Uri.parse(source_url));
         easyVideoPlayer.setAutoPlay(true);
     }
 

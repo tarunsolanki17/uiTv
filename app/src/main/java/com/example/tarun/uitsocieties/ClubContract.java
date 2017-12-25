@@ -19,19 +19,19 @@ public class ClubContract  {
     public static final String NOTIF_EVENT = "Notif_Intent_Event";
     public static final String PHOTO_DATA = "photo_data";
 
-    public static final String ACM_RGPV = "120674037988973";//"1356583771115130";
+    public static final String ACM_RGPV = "1356583771115130";
     public static final String COHERENT = "493932347436578";
     public static final String E_CELL = "1756876974557988";
     public static final String GREEN_ARMY = "339750026115267";
     public static final String HACKER_EARTH = "106829536670133";
-    public static final String INSYNC = "270979900087022";//"581644598564495";
+    public static final String INSYNC = "581644598564495";
     public static final String I_SPEAK_AALAY = "542097419297226";
-    public static final String MAHASANGRAM = "146505212039213";//"115089709174856";
+    public static final String MAHASANGRAM = "115089709174856";
     public static final String PHOENIX = "562423343851594";
     public static final String SHANKHNAAD = "1488226447936457";
     public static final String SUNDARBAN = "1014248005370111";
     public static final String TECHNOPHILIC = "738646856321850";
-    public static final String TEDX_RGPV = "456183947829955";//"117643995501901";
+    public static final String TEDX_RGPV = "117643995501901";
 
     public static final String[] CLUB_NAMES = {"ACM_RGPV","COHERENT","E_CELL","GREEN_ARMY","HACKER_EARTH","INSYNC","I_SPEAK_AALAY","MAHASANGRAM","PHOENIX","SHANKHNAAD","SUNDARBAN","TECHNOPHILIC","TEDX_RGPV"};
     public static final String[] CLUB_NAMES_VISIBLE = {"ACM-Student Chapter RGPV","Coherent","E-Cell","Green Army","Hacker Earth","Insync","I Speak Aalay ","Mahasangram","Phoenix","शंखनाद","Sundarban","Technophilic","TEDx RGPV"};
@@ -61,6 +61,11 @@ public class ClubContract  {
         public static final String UP_EVENT = "event";
         public static final String UP_PHOTO = "photo";
         public static final String UP_VIDEO = "video";
+
+        public static final String STATUS_DATA = "status_data";
+        public static final String UPDATE_PHOTO_URL = "cover_url";
+        public static final String UPDATE_VIDEO_URL = "source_url";
+        public static final String UPDATE_VIDEO = "update";
 
 
 

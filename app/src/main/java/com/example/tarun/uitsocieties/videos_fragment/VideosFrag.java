@@ -15,6 +15,8 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -49,8 +51,6 @@ import static com.example.tarun.uitsocieties.InClub.fetchAsyncV;
 import static com.example.tarun.uitsocieties.InClub.login_checker;
 import static com.example.tarun.uitsocieties.InClub.login;
 import static com.example.tarun.uitsocieties.InClub.videos_data;
-import static com.example.tarun.uitsocieties.R.id.photo_recyc_view;
-
 
 /**
  * A simple {@link Fragment} subclass.
@@ -61,14 +61,13 @@ public class VideosFrag extends Fragment {
 
     RecyclerView video_recyclerView;
     ProgressBar pbar;
-    TextView no_internet;
-    TextView no_data;
     SwipeRefreshLayout swipe;
     boolean isConnected;
     Context con;
     int data_len;
     RecycVideosAdap recycAdapter;
-//    AsyncTask fetchAsync;
+    LinearLayout no_internet,no_data;
+    ImageView swipe_text;
 
     public VideosFrag() {
         // Required empty public constructor
@@ -87,6 +86,7 @@ public class VideosFrag extends Fragment {
         no_internet = video_view.findViewById(R.id.no_internet_v);
         no_data = video_view.findViewById(R.id.no_data_v);
         swipe = video_view.findViewById(R.id.swipe_v);
+        swipe_text = video_view.findViewById(R.id.swipe_text_v);
 
         swipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -132,53 +132,18 @@ public class VideosFrag extends Fragment {
                         }
                         if (fetchAsyncV.getStatus().toString().equals("FINISHED")) {   /** fetchAsyncV complete*/
                             Log.v("fetchAync---=","finished");
-                            if (videos_data != null)
-                                if (videos_data.isEmpty()) {
-                                    pbar.setVisibility(GONE);
-                                    video_recyclerView.setVisibility(GONE);
-                                    no_data.setVisibility(VISIBLE);
-                                } else {
-                                    data_len = videos_data.size();
-                                    pbar.setVisibility(GONE);
-                                    no_data.setVisibility(GONE);
-                                    video_recyclerView.setVisibility(VISIBLE);
-                                    onDataFetched();
-                                }
+                            showing();
                         }
                     } else {
                         Log.v("fetchAync---=","is null");
-
                         Log.v("videosdata---=",String.valueOf(videos_data.size()));
-
-                        if (videos_data != null)
-                            if (videos_data.isEmpty()) {
-                                pbar.setVisibility(GONE);
-                                video_recyclerView.setVisibility(GONE);
-                                no_data.setVisibility(VISIBLE);
-                            } else {
-                                data_len = videos_data.size();
-                                pbar.setVisibility(GONE);
-                                no_data.setVisibility(GONE);
-                                video_recyclerView.setVisibility(VISIBLE);
-                                onDataFetched();
-                            }
+                        showing();
                     }
                 }
                 else {
                     Log.v("fetchAync---=","had already finished");
                     videos_data = savedInstanceState.getParcelableArrayList("videos_parcel");
-                    if (videos_data != null)
-                        if (videos_data.isEmpty()) {
-                            pbar.setVisibility(GONE);
-                            video_recyclerView.setVisibility(GONE);
-                            no_data.setVisibility(VISIBLE);
-                        } else {
-                            data_len = videos_data.size();
-                            pbar.setVisibility(GONE);
-                            no_data.setVisibility(GONE);
-                            video_recyclerView.setVisibility(VISIBLE);
-                            onDataFetched();
-                        }
+                    showing();
                 }
             }
             else {
@@ -190,6 +155,23 @@ public class VideosFrag extends Fragment {
         }
 
         return video_view;
+    }
+
+    private void showing(){
+        if (videos_data != null)
+            if (videos_data.isEmpty()) {
+                pbar.setVisibility(GONE);
+                video_recyclerView.setVisibility(GONE);
+                no_data.setVisibility(VISIBLE);
+                swipe_text.setVisibility(VISIBLE);
+            } else {
+                data_len = videos_data.size();
+                pbar.setVisibility(GONE);
+                no_data.setVisibility(GONE);
+                video_recyclerView.setVisibility(VISIBLE);
+                swipe_text.setVisibility(GONE);
+                onDataFetched();
+            }
     }
 
     public void videoJSONReq(){
@@ -251,16 +233,25 @@ public class VideosFrag extends Fragment {
                 Log.v("No of videos---",String.valueOf(data.length()));
                 Log.v("videos data---",data.toString());
 
+                String id;
+                String created_time;
+                String description;
+                int length;
+                String picture;
+                String source_url;
+                boolean is_preferred;
+                String thumb_url;
+
                 for (int i = 0; i < data.length(); i++) {
 
-                    String id = "";
-                    String created_time = "";
-                    String description = "";
-                    int length = -1;
-                    String picture = "";
-                    String source_url = "";
-                    boolean is_preferred = false;
-                    String thumb_url = "";
+                    id = "";
+                    created_time = "";
+                    description = "";
+                    length = -1;
+                    picture = "";
+                    source_url = "";
+                    is_preferred = false;
+                    thumb_url = "";
 
                     JSONObject curr_video = data.getJSONObject(i);
 
@@ -323,12 +314,14 @@ public class VideosFrag extends Fragment {
             pbar.setVisibility(GONE);
             video_recyclerView.setVisibility(GONE);
             no_data.setVisibility(VISIBLE);
+            swipe_text.setVisibility(VISIBLE);
         }
         else{
             no_internet.setVisibility(GONE);
             pbar.setVisibility(GONE);
             no_data.setVisibility(GONE);
             video_recyclerView.setVisibility(VISIBLE);
+            swipe_text.setVisibility(GONE);
 
             RecyclerView.LayoutManager layoutManager = new GridLayoutManager(con,2);
             video_recyclerView.setHasFixedSize(true);
@@ -349,11 +342,13 @@ public class VideosFrag extends Fragment {
             no_data.setVisibility(GONE);
             video_recyclerView.setVisibility(GONE);
             no_internet.setVisibility(VISIBLE);
+            swipe_text.setVisibility(VISIBLE);
             return false;
         }
         else {
             no_internet.setVisibility(GONE);
             no_data.setVisibility(GONE);
+            swipe_text.setVisibility(GONE);
             return true;
         }
     }

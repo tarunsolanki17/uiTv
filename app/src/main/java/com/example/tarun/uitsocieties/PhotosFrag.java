@@ -3,6 +3,7 @@ package com.example.tarun.uitsocieties;
 
 import android.content.Context;
 import android.content.Intent;
+import android.media.Image;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -19,6 +20,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -83,17 +86,15 @@ import static com.example.tarun.uitsocieties.InClub.recycAdapter;
  */
 public class PhotosFrag extends Fragment{
 
-    TextView no_internet, no_data;
     RecyclerView photo_recyc_view;
     ProgressBar pbar;
     SwipeRefreshLayout swipe;
     boolean isConnected;
     RecyclerView.LayoutManager layoutManager;
-    public int FIRST_SCAN = 45;
-    int reqAlbums = 0;
     int k;
     Toast t;
-
+    LinearLayout no_internet,no_data;
+    ImageView swipe_text;
 
     public PhotosFrag() {
         // Required empty public constructor
@@ -110,6 +111,7 @@ public class PhotosFrag extends Fragment{
         photo_recyc_view = view.findViewById(R.id.photo_recyc_view);
         pbar = view.findViewById(R.id.progress_bar_photos);
         swipe = view.findViewById(R.id.swipe);
+        swipe_text = view.findViewById(R.id.swipe_text_p);
 
         layoutManager = new GridLayoutManager(getContext(),3);
         photo_recyc_view.setHasFixedSize(true);
@@ -128,11 +130,6 @@ public class PhotosFrag extends Fragment{
                 if(recycAdapter!=null)
                 if(!photo_recyc_view.canScrollVertically(1)) {
                     if (albumNo >= album_len_max_index) {
-                        if(t!=null) {
-                            t.cancel();
-                        }
-                        t = Toast.makeText(getActivity(), "No more Photos", Toast.LENGTH_SHORT);
-                        t.show();
                     }
                     else {
                         if(t!=null) {
@@ -154,7 +151,6 @@ public class PhotosFrag extends Fragment{
                 albumNo = 0;
                 recycAdapter = null;
                 if(isConnectedFunc()) {
-//                    TODO --> WHEN REFRESHING TOO MUCH, WRONG DATA IS BEING WITHHELD
                     if(fetchAsyncP!=null) {
                         fetchAsyncP.cancel(true);
                     }
@@ -231,11 +227,13 @@ public class PhotosFrag extends Fragment{
                 pbar.setVisibility(GONE);
                 photo_recyc_view.setVisibility(GONE);
                 no_data.setVisibility(VISIBLE);
+                swipe_text.setVisibility(VISIBLE);
             } else {
                 data_len = photos_data.size();
                 pbar.setVisibility(GONE);
                 no_data.setVisibility(GONE);
                 photo_recyc_view.setVisibility(VISIBLE);
+                swipe_text.setVisibility(GONE);
                 onDataFetched();
             }
     }
@@ -338,22 +336,21 @@ public class PhotosFrag extends Fragment{
                     i=albumNo;
 
                 Log.v("i---=",String.valueOf(i));
-                /*for (int i = reqAlbums; i < reqAlbums+1*//*data.length()*//*; i++)*/
+
+                String album_name = "";
+                int photo_count = -1;
+                String caption = "";
+                String created_time = "";
+                String facebook_link = "";
+                String place = "";
+                String height = "";
+                String width = "";
+                String thumb_link = "";
+                String image_link = "";
+                String big_image_link = "";
+                boolean next = false;
 
                 for(i=i;i<=albumNo;i++){
-
-                    String album_name = "";
-                    int photo_count = -1;
-                    String caption = "";
-                    String created_time = "";
-                    String facebook_link = "";
-                    String place = "";
-                    String height = "";
-                    String width = "";
-                    String thumb_link = "";
-                    String image_link = "";
-                    String big_image_link = "";
-                    boolean next = false;
 
                     JSONObject curr_album = data.getJSONObject(i);
 
@@ -489,20 +486,31 @@ public class PhotosFrag extends Fragment{
     }
 
     public void fetchNextPhotosData(String nextPhotoString, String album_name, int photo_count){
-        String caption = "";
-        String created_time = "";
-        String facebook_link = "";
-        String place = "";
-        String height = "";
-        String width = "";
-        String thumb_link = "";
-        String image_link = "";
-        String big_image_link = "";
+        String caption;
+        String created_time;
+        String facebook_link;
+        String place;
+        String height;
+        String width;
+        String thumb_link;
+        String image_link;
+        String big_image_link;
         try {
             JSONObject nextObj = new JSONObject(nextPhotoString);
             JSONArray new_array = nextObj.getJSONArray("data");
 
             for(int k=0;k<new_array.length();k++) {
+
+                caption = "";
+                created_time = "";
+                facebook_link = "";
+                place = "";
+                height = "";
+                width = "";
+                thumb_link = "";
+                image_link = "";
+                big_image_link = "";
+
                 JSONObject curr_image_next = new_array.getJSONObject(k);
 
                 if(curr_image_next.has(PHOTO_NAME)&&!curr_image_next.isNull(PHOTO_NAME)) {
@@ -604,23 +612,21 @@ public class PhotosFrag extends Fragment{
             pbar.setVisibility(GONE);
             photo_recyc_view.setVisibility(GONE);
             no_data.setVisibility(VISIBLE);
+            swipe_text.setVisibility(VISIBLE);
         }
         else{
             no_internet.setVisibility(GONE);
             pbar.setVisibility(GONE);
             no_data.setVisibility(GONE);
             photo_recyc_view.setVisibility(VISIBLE);
+            swipe_text.setVisibility(GONE);
 
             layoutManager = new GridLayoutManager(getContext(),3);
             photo_recyc_view.setHasFixedSize(true);
             photo_recyc_view.setLayoutManager(layoutManager);
-            //  TODO --> SET A LISTENER WHICH RUNS WHEN THE LIST COMES TO END.
-
 
             recycAdapter = new RecycPhotosAdap(photos_data,getActivity());
             photo_recyc_view.setAdapter(recycAdapter);
-
-//            Toast.makeText(getActivity(),photos_data.size()+" photos fetched",Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -630,16 +636,17 @@ public class PhotosFrag extends Fragment{
         isConnected = ninfo != null && ninfo.isConnectedOrConnecting();
 
         if(!isConnected){
-//            TODO --> IMAGE WITH TEXT IN NO INTERNET
             pbar.setVisibility(GONE);
             no_data.setVisibility(GONE);
             photo_recyc_view.setVisibility(GONE);
             no_internet.setVisibility(VISIBLE);
+            swipe_text.setVisibility(VISIBLE);
             return false;
         }
         else {
             no_internet.setVisibility(GONE);
             no_data.setVisibility(GONE);
+            swipe_text.setVisibility(GONE);
             return true;
         }
     }

@@ -35,8 +35,6 @@ import static com.example.tarun.uitsocieties.InClub.videos_data;
 import static com.example.tarun.uitsocieties.InClub.viewpgr;
 import static com.example.tarun.uitsocieties.MainActivity.isConnectedStatic;
 import static com.example.tarun.uitsocieties.R.id.loginbutt2;
-import static com.example.tarun.uitsocieties.R.id.no_data;
-import static com.example.tarun.uitsocieties.R.id.no_internet;
 
 
 /**

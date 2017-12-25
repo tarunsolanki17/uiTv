@@ -20,9 +20,6 @@ import static android.R.attr.value;
 import static android.icu.lang.UCharacter.GraphemeClusterBreak.V;
 import static android.view.View.VISIBLE;
 import static com.example.tarun.uitsocieties.InClub.club_id;
-import static com.example.tarun.uitsocieties.InClub.list_item;
-import static com.example.tarun.uitsocieties.InClub.started1;
-import static com.example.tarun.uitsocieties.InClub.started2;
 import static com.example.tarun.uitsocieties.R.id.event_item;
 
 /**

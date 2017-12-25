@@ -6,14 +6,9 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.Window;
 
 import com.example.tarun.uitsocieties.photos_fragment.Photo_Serial;
 import com.example.tarun.uitsocieties.updates_fragment.UpdateParcel;
@@ -44,12 +39,9 @@ public class InClub extends AppCompatActivity {
     public static ArrayList<Photo_Serial> photos_data;
     public static ArrayList<VideoParcel> videos_data;
     public static boolean login;
-    static FragmentTransaction ft;
     public static ViewPager viewpgr;
     public static String club_id;
-    public static boolean event_detail=false;
     public static AsyncTask fetchAsyncU, fetchAsyncE, fetchAsyncP, fetchAsyncV;
-    public static boolean started1=false, started2=false, list_item=false;
     public static int albumNo,data_len,album_len,album_len_max_index;
     public static RecycPhotosAdap recycAdapter;
     public static int position;
@@ -124,29 +116,6 @@ public class InClub extends AppCompatActivity {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.inclub_menu,menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId()==R.id.settings_button){
-            Intent settings_intent = new Intent(getApplicationContext(),Settings.class);
-            startActivity(settings_intent);
-        }
-        if(item.getItemId()==android.R.id.home){
-            finish();
-        }
-        return true;
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
-    @Override
     protected void onDestroy() {
         super.onDestroy();
         Log.v("onDestroy inclub---","Running");
@@ -184,10 +153,6 @@ public class InClub extends AppCompatActivity {
             videos_data.clear();
         }
 
-        started1 = false;
-        started2 = false;
-        list_item = false;
-
         File photoFile = new File(getApplicationContext().getFilesDir(),PHOTO_FILE);
         if(photoFile.exists()){
             boolean deleted = photoFile.delete();
@@ -199,5 +164,7 @@ public class InClub extends AppCompatActivity {
         album_len_max_index = 0;
         data_len = 0;
         recycAdapter = null;
+
+        Runtime.getRuntime().gc();
     }
 }

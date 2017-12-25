@@ -26,6 +26,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -70,11 +72,8 @@ import static com.example.tarun.uitsocieties.ClubContract.NOTIF_EVENT;
 import static com.example.tarun.uitsocieties.InClub.club_id;
 import static com.example.tarun.uitsocieties.InClub.events_data;
 import static com.example.tarun.uitsocieties.InClub.fetchAsyncE;
-import static com.example.tarun.uitsocieties.InClub.list_item;
 import static com.example.tarun.uitsocieties.InClub.login;
 import static com.example.tarun.uitsocieties.InClub.login_checker;
-import static com.example.tarun.uitsocieties.InClub.started1;
-import static com.example.tarun.uitsocieties.InClub.started2;
 import static com.example.tarun.uitsocieties.R.id.date_time;
 import static com.example.tarun.uitsocieties.R.id.photo_recyc_view;
 import static com.example.tarun.uitsocieties.updates_fragment.UpdatesFrag.getClubIndex;
@@ -95,14 +94,12 @@ public class EventsFrag extends Fragment {
     EventsListAdapter eventsAdapter;
     ListView listView;
     ProgressBar pbar;
-    TextView no_internet;
-    TextView no_data;
     SwipeRefreshLayout swipe;
-    View footer;
     boolean isConnected;
     Context con;
-//    AsyncTask fetchAsync;
     int data_len;
+    LinearLayout no_internet,no_data;
+    ImageView swipe_text;
 
     public EventsFrag() {
         // Required empty public constructor
@@ -117,10 +114,11 @@ public class EventsFrag extends Fragment {
         con = events_view.getContext();
 
         listView = events_view.findViewById(R.id.listview);
-        pbar = events_view.findViewById(R.id.progress_bar);
-        no_internet = events_view.findViewById(R.id.no_internet);
-        no_data = events_view.findViewById(R.id.no_data);
+        pbar = events_view.findViewById(R.id.progress_bar_e);
+        no_internet = events_view.findViewById(R.id.no_internet_e);
+        no_data = events_view.findViewById(R.id.no_data_e);
         swipe = events_view.findViewById(R.id.swipe);
+        swipe_text = events_view.findViewById(R.id.swipe_text_e);
 
         View footer = new View(getActivity());
         footer.setFocusable(false);
@@ -133,9 +131,6 @@ public class EventsFrag extends Fragment {
         swipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                started1 = false;
-                started2 = false;
-                list_item = false;
                 swipe.setRefreshing(true);
                 if(isConnectedFunc()) {
                     if(fetchAsyncE!=null) {
@@ -206,11 +201,13 @@ public class EventsFrag extends Fragment {
                 pbar.setVisibility(GONE);
                 listView.setVisibility(GONE);
                 no_data.setVisibility(VISIBLE);
+                swipe_text.setVisibility(VISIBLE);
             } else {
                 data_len = events_data.size();
                 pbar.setVisibility(GONE);
                 no_data.setVisibility(GONE);
                 listView.setVisibility(VISIBLE);
+                swipe_text.setVisibility(GONE);
                 onDataFetched();
             }
     }
@@ -269,21 +266,35 @@ public class EventsFrag extends Fragment {
         if(response!=null&&response.length()>0){
             try{
                 JSONArray data = response.getJSONArray("data");
+                String event_name;
+                String start_date;
+                String end_date;
+                String year;
+                String month;
+                String date;
+                String day;
+                String time;
+                String place_name;
+                String city;
+                Double latitude ;
+                Double longitude ;
+                String descp;
+                String cover_source;
                 for(int i=0;i<data.length();i++){
-                    String event_name = "";
-                    String start_date = "";
-                    String end_date = "";
-                    String year = "";
-                    String month = "";
-                    String date = "";
-                    String day = "";
-                    String time = "";
-                    String place_name = "";
-                    String city = "";
-                    Double latitude = -1d;
-                    Double longitude = -1d;
-                    String descp = "";
-                    String cover_source = "";
+                    event_name = "";
+                    start_date = "";
+                    end_date = "";
+                    year = "";
+                    month = "";
+                    date = "";
+                    day = "";
+                    time = "";
+                    place_name = "";
+                    city = "";
+                    latitude = -1d;
+                    longitude = -1d;
+                    descp = "";
+                    cover_source = "";
 
                     JSONObject curr_event = data.getJSONObject(i);
 
@@ -365,16 +376,17 @@ public class EventsFrag extends Fragment {
         isConnected = ninfo != null && ninfo.isConnected();
 
         if(!isConnected){
-//            TODO --> IMAGE WITH TEXT IN NO INTERNET
             pbar.setVisibility(GONE);
             no_data.setVisibility(GONE);
             listView.setVisibility(GONE);
             no_internet.setVisibility(VISIBLE);
+            swipe_text.setVisibility(VISIBLE);
             return false;
         }
         else {
             no_internet.setVisibility(GONE);
             no_data.setVisibility(GONE);
+            swipe_text.setVisibility(GONE);
             return true;
         }
     }
@@ -403,12 +415,14 @@ public class EventsFrag extends Fragment {
             pbar.setVisibility(GONE);
             listView.setVisibility(GONE);
             no_data.setVisibility(VISIBLE);
+            swipe_text.setVisibility(VISIBLE);
         }
         else {
             no_internet.setVisibility(GONE);
             pbar.setVisibility(GONE);
             no_data.setVisibility(GONE);
             listView.setVisibility(VISIBLE);
+            swipe_text.setVisibility(GONE);
 
             eventsAdapter = new EventsListAdapter(con, events_data);
             listView.setAdapter(eventsAdapter);
@@ -447,15 +461,10 @@ public class EventsFrag extends Fragment {
             if(image!=null)
             builder.setStyle(new NotificationCompat.BigPictureStyle().bigPicture(image));
         }
-        //  TODO --> PROVIDE INDIVIDUAL NOTIFICATIONS FOR EACH CLUB IF NEW EVENTS OF MORE THAN TWO CLUBS ARISE
-        //  TODO --> CREATE A SMALL ICON
-        //  TODO --> CREATE A LARGE ICON
 
         if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.JELLY_BEAN){
             builder.setPriority(Notification.PRIORITY_HIGH);
         }
-
-
 
         NotificationManager notificationManager = (NotificationManager) con.getSystemService(con.NOTIFICATION_SERVICE);
         Log.v("Notification---:","Issue");
@@ -483,17 +492,6 @@ public class EventsFrag extends Fragment {
         stackBuilder.addNextIntent(eventsFrag);
         stackBuilder.addNextIntent(detailedEvent);
 
-//
-//        Intent in = new Intent(con,EventsDetailedActivity.class);
-//        //  TODO --> SET CORRECT FLAGS AND IDS FOR CORRECT CLUB
-//        //  TODO --> ADD THE BACKSTACK
-//        in.putExtra("CLUB_ID",clubID);
-//        in.putExtra("Notification",true);
-//        in.putExtra("New Event Parcel",new_event);
-//        Bundle new_event_data = new Bundle();
-//        new_event_data.putParcelable("new_event",new_event);
-//        in.putExtra("new_event_model",new_event);
-//        PendingIntent pendingIntent = PendingIntent.getActivity(con,index,in,PendingIntent.FLAG_ONE_SHOT);
         PendingIntent pendingIntent = stackBuilder.getPendingIntent(index,PendingIntent.FLAG_UPDATE_CURRENT);
         return pendingIntent;
     }

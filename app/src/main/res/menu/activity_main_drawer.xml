@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+
+        <item android:id="@+id/about_the_developers"
+            android:title="About the Developers"
+            android:icon="@drawable/ic_code_black_18dp"/>
+
+        <item android:id="@+id/app_info"
+            android:title="About the App"
+            android:icon="@drawable/ic_info_outline_black_24dp"/>
+
+        <!--<item android:id="@+id/settings"
+            android:title="Settings"
+            android:icon="@drawable/ic_settings_black_24dp"/>-->
+
+        <item android:id="@+id/feedback"
+            android:title="Feedback"
+            android:icon="@drawable/ic_feedback_black_24dp"/>
+
+        <!--<item android:id="@+id/share_app"
+            android:title="Suggest to friends"
+            android:icon="@drawable/ic_send_black_18dp"/>
+
+        <item android:id="@+id/rate_it"
+            android:title="Rate it here!"
+            android:icon="@drawable/ic_star_rate_black_18dp"/>-->
+
+
+
+        <!--<item android:id="@+id/update"
+            android:title="Update"
+            android:icon="@drawable/ic_update_black_18dp"/>-->
+
+        <item android:id="@+id/log_out"
+            android:title="Logout"
+            android:icon="@drawable/ic_power_settings_new_black_24dp"/>
+
+    </group>
+</menu>

@@ -32,7 +32,6 @@ import java.util.List;
 
 import static android.R.attr.data;
 import static android.os.Build.VERSION_CODES.M;
-import static com.example.tarun.uitsocieties.InClub.event_detail;
 import static com.example.tarun.uitsocieties.MainActivity.width;
 
 /**
@@ -70,8 +69,7 @@ public class MyArrayAdap extends RecyclerView.Adapter<MyArrayAdap.MyViewHolder> 
 
         Glide.with(con)
                 .load(curr_club.getImg_res_Id())
-                .apply(new RequestOptions()
-                        .placeholder(R.drawable.color_gray_place))
+                .apply(new RequestOptions().placeholder(R.drawable.color_gray_place))
                 .into(imageView);
 
         TextView name = holder.club_name;
@@ -101,7 +99,6 @@ public class MyArrayAdap extends RecyclerView.Adapter<MyArrayAdap.MyViewHolder> 
         public void onClick(View view) {
             Intent in = new Intent(con,InClub.class);
             in.setFlags(getAdapterPosition());
-            event_detail = false;
             con.startActivity(in);
         }
     }

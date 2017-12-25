@@ -1,18 +1,52 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="match_parent"
+    android:paddingBottom="20dp"
+    android:paddingTop="20dp"
+    android:paddingLeft="20dp"
+    android:background="@drawable/theme"
+    android:paddingRight="20dp"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    tools:context=".Settings">
+
     <TextView
-        android:id="@+id/logout_butt"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:text="LogOut"
-        android:textSize="22sp"
-        android:gravity="center_vertical"
-        android:paddingLeft="16dp"
-        android:textColor="#0a00bf"
-        android:background="#ff7b00"
-        />
-</LinearLayout>
+        android:layout_height="wrap_content"
+        android:id="@+id/text"
+        android:layout_marginLeft="20dp"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:text="Download media:"/>
+
+    <RadioGroup
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:id="@+id/radio_group"
+        android:checkedButton="@+id/cellular"
+        android:layout_below="@+id/text"
+        android:orientation="vertical"
+        >
+
+        <RadioButton
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Over Wi-fi only"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:id="@+id/wifi"/>
+
+        <RadioButton
+            android:id="@+id/cellular"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="Over Wi-fi or Cellular data"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+    </RadioGroup>
+
+</RelativeLayout>

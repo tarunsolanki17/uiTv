@@ -3,6 +3,7 @@ package com.example.tarun.uitsocieties;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.text.Layout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +21,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 
 import static com.example.tarun.uitsocieties.ClubContract.PHOTO_FILE;
+import static com.example.tarun.uitsocieties.MainActivity.width;
 import static com.example.tarun.uitsocieties.R.id.photo_view;
 
 /**
@@ -40,6 +42,7 @@ public class RecycPhotosAdap extends RecyclerView.Adapter<RecycPhotosAdap.PhotoV
     public RecycPhotosAdap.PhotoViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
         LayoutInflater inflater = LayoutInflater.from(context);
+
         View photoView = inflater.inflate(R.layout.photo_recyc_layout, parent, false);
         RecycPhotosAdap.PhotoViewHolder viewHolder = new RecycPhotosAdap.PhotoViewHolder(photoView);
         return viewHolder;
@@ -50,6 +53,7 @@ public class RecycPhotosAdap extends RecyclerView.Adapter<RecycPhotosAdap.PhotoV
     public void onBindViewHolder(RecycPhotosAdap.PhotoViewHolder holder, int position) {
         Photo_Serial curr_photo = photos_data.get(position);
         ImageView imageView = holder.photo_img_view;
+        imageView.getLayoutParams().height = width/3;
         Glide.with(context)
                 .load(curr_photo.getImage_link())
                 .apply(new RequestOptions().placeholder(R.drawable.color_gray_place))

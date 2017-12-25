@@ -21,7 +21,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -90,13 +92,12 @@ public class UpdatesFrag extends Fragment {
     UpdatesListAdapter updatesAdapter;
     ListView listView;
     ProgressBar pbar;
-    TextView no_internet;
-    TextView no_data, swipe_text;
     SwipeRefreshLayout swipe;
     boolean isConnected;
     Context con;
     int data_len;
-    ImageView down_arrow;
+    LinearLayout no_internet,no_data;
+    ImageView swipe_text;
 
     public UpdatesFrag() {
         // Required empty public constructor
@@ -115,8 +116,15 @@ public class UpdatesFrag extends Fragment {
         no_internet = updates_view.findViewById(R.id.no_internet_u);
         no_data = updates_view.findViewById(R.id.no_data_u);
         swipe = updates_view.findViewById(R.id.swipe_u);
-        swipe_text = updates_view.findViewById(R.id.swipe_text);
-        down_arrow = updates_view.findViewById(R.id.down_arrow);
+        swipe_text = updates_view.findViewById(R.id.swipe_text_u);
+
+        View footer = new View(getActivity());
+        footer.setFocusable(false);
+        footer.setFocusableInTouchMode(false);
+        footer.setClickable(false);
+        footer.setEnabled(false);
+        footer.setLayoutParams(new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,150));
+        listView.addFooterView(footer);
 
         swipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -186,13 +194,11 @@ public class UpdatesFrag extends Fragment {
                 listView.setVisibility(GONE);
                 no_data.setVisibility(VISIBLE);
                 swipe_text.setVisibility(VISIBLE);
-                down_arrow.setVisibility(VISIBLE);
             } else {
                 data_len = updates_data.size();
                 pbar.setVisibility(GONE);
                 no_data.setVisibility(GONE);
                 swipe_text.setVisibility(GONE);
-                down_arrow.setVisibility(GONE);
                 listView.setVisibility(VISIBLE);
                 onDataFetched();
             }
@@ -203,7 +209,7 @@ public class UpdatesFrag extends Fragment {
 
         final Bundle parameters = new Bundle();
         parameters.putString("fields", "id,caption,created_time,description,link,message,name,permalink_url,picture,full_picture,place,properties,source,status_type,type");
-        parameters.putString("limit","10");
+        parameters.putString("limit","25");
 
         final GraphRequest.Callback graphCallback = new GraphRequest.Callback(){
             @Override
@@ -242,22 +248,38 @@ public class UpdatesFrag extends Fragment {
             try {
                 JSONArray data = response.getJSONArray("data");
 
+                String id;
+                String caption;
+                String created_time;
+                String description;
+                String link;
+                String message;
+                String name;
+                String permalink_url;
+                String picture;
+                String full_picture;
+                String place_name;
+                String city;
+                String source;
+                String status_type;
+                String type;
+
                 for(int i=0;i<data.length();i++){
-                    String id = "";
-                    String caption = "";
-                    String created_time = "";
-                    String description = "";
-                    String link = "";
-                    String message = "";
-                    String name = "";
-                    String permalink_url = "";
-                    String picture = "";
-                    String full_picture = "";
-                    String place_name = "";
-                    String city = "";
-                    String source = "";
-                    String status_type = "";
-                    String type = "";
+                    id = "";
+                    caption = "";
+                    created_time = "";
+                    description = "";
+                    link = "";
+                    message = "";
+                    name = "";
+                    permalink_url = "";
+                    picture = "";
+                    full_picture = "";
+                    place_name = "";
+                    city = "";
+                    source = "";
+                    status_type = "";
+                    type = "";
 
                     JSONObject curr_update = data.getJSONObject(i);
 
@@ -344,14 +366,12 @@ public class UpdatesFrag extends Fragment {
             listView.setVisibility(GONE);
             no_data.setVisibility(VISIBLE);
             swipe_text.setVisibility(VISIBLE);
-            down_arrow.setVisibility(VISIBLE);
         }
         else {
             no_internet.setVisibility(GONE);
             pbar.setVisibility(GONE);
             no_data.setVisibility(GONE);
             swipe_text.setVisibility(GONE);
-            down_arrow.setVisibility(GONE);
             listView.setVisibility(VISIBLE);
 
             updatesAdapter = new UpdatesListAdapter(con, updates_data);
@@ -370,7 +390,6 @@ public class UpdatesFrag extends Fragment {
             no_data.setVisibility(GONE);
             listView.setVisibility(GONE);
             swipe_text.setVisibility(VISIBLE);
-            down_arrow.setVisibility(VISIBLE);
             no_internet.setVisibility(VISIBLE);
             return false;
         }
@@ -378,7 +397,6 @@ public class UpdatesFrag extends Fragment {
             no_internet.setVisibility(GONE);
             no_data.setVisibility(GONE);
             swipe_text.setVisibility(GONE);
-            down_arrow.setVisibility(GONE);
             return true;
         }
     }

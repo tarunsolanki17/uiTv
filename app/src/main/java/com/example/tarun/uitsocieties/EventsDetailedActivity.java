@@ -22,14 +22,16 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.tarun.uitsocieties.events_fragment.EventsDeatiledPhotoActivity;
+import com.example.tarun.uitsocieties.updates_fragment.UpdateParcel;
 
 import org.w3c.dom.Text;
 
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import static android.view.View.GONE;
-import static com.example.tarun.uitsocieties.InClub.event_detail;
 import static com.example.tarun.uitsocieties.InClub.viewpgr;
 
 /**
@@ -55,6 +57,12 @@ public class EventsDetailedActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.events_detailed);
 
+        cover = (ImageView) findViewById(R.id.cover);
+        name = (TextView) findViewById(R.id.event_name);
+        date_time = (TextView) findViewById(R.id.date_time);
+        venue = (TextView) findViewById(R.id.venue);
+        descp = (TextView) findViewById(R.id.descp);
+
         Intent receivedIntent = getIntent();
         boolean notif = false;
         if(receivedIntent.getBooleanExtra("Notification",notif)){
@@ -70,15 +78,10 @@ public class EventsDetailedActivity extends AppCompatActivity {
             curr_event = detailedInfo.get(position);
         }
 
-        cover = (ImageView) findViewById(R.id.cover);
-        name = (TextView) findViewById(R.id.event_name);
-        date_time = (TextView) findViewById(R.id.date_time);
-        venue = (TextView) findViewById(R.id.venue);
-        descp = (TextView) findViewById(R.id.descp);
-//        button = (Button) findViewById(R.id.map);
 
         if(curr_event.getCover_url().isEmpty())
             cover.setVisibility(GONE);
+        else
         Glide.with(getApplicationContext())
                 .load(curr_event.getCover_url())
                 .into(cover);
