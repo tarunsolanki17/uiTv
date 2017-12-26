@@ -21,19 +21,17 @@
             android:title="Feedback"
             android:icon="@drawable/ic_feedback_black_24dp"/>
 
-        <!--<item android:id="@+id/share_app"
+        <item android:id="@+id/share_app"
             android:title="Suggest to friends"
             android:icon="@drawable/ic_send_black_18dp"/>
 
         <item android:id="@+id/rate_it"
             android:title="Rate it here!"
-            android:icon="@drawable/ic_star_rate_black_18dp"/>-->
+            android:icon="@drawable/ic_star_rate_black_18dp"/>
 
-
-
-        <!--<item android:id="@+id/update"
+        <item android:id="@+id/update"
             android:title="Update"
-            android:icon="@drawable/ic_update_black_18dp"/>-->
+            android:icon="@drawable/ic_update_black_18dp"/>
 
         <item android:id="@+id/log_out"
             android:title="Logout"

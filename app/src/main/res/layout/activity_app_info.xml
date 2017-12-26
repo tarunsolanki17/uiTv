@@ -6,7 +6,8 @@
     android:paddingTop="20dp"
     android:paddingBottom="20dp"
     android:layout_height="match_parent"
-    tools:context="com.example.tarun.uitsocieties.drawer.App_info">
+    tools:context="com.example.tarun.uitsocieties.tech.example.tarun.uitsocieties.drawer.App_info"
+    android:background="@drawable/theme">
 
     <RelativeLayout
         android:layout_width="match_parent"

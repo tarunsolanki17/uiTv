@@ -4,7 +4,7 @@ android {
     compileSdkVersion 26
     buildToolsVersion "25.0.2"
     defaultConfig {
-        applicationId "com.example.tarun.uitsocieties"
+        applicationId "tech.pursuiters.techpursuiters.uitsocieties"
         minSdkVersion 16
         targetSdkVersion 26
         versionCode 1
@@ -14,7 +14,7 @@ android {
     }
     buildTypes {
         release {
-            minifyEnabled true
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -34,14 +34,19 @@ dependencies {
     exclude group: 'com.google.android.gms'}
     compile 'com.android.support:recyclerview-v7:26.0.+'
     compile 'com.github.bumptech.glide:glide:4.1.1'
-    compile 'com.firebase:firebase-jobdispatcher:0.5.0'
+//    compile 'com.firebase:firebase-jobdispatcher:0.5.0'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile 'com.afollestad:easyvideoplayer:0.3.0'
     compile 'it.sephiroth.android.library.imagezoom:imagezoom:+'
     compile 'com.squareup.picasso:picasso:2.5.2'
     testCompile 'junit:junit:4.12'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.1.1'
-//    compile 'com.google.android.gms:play-services:11.0.2'
+    compile 'com.google.android.gms:play-services:11.0.2'
+//    compile 'com.google.android.gms:play-services-gcm'
+    compile 'com.firebase:firebase-jobdispatcher-with-gcm-dep:0.7.0'
+    /*compile ("com.firebase:firebase-jobdispatcher-with-gcm-dep:0.6.0") {
+        exclude module: "play-services-gcm"
+    }*/
 
     compile 'com.android.support:multidex:1.0.1'
     compile 'com.inmobi.monetization:inmobi-ads:7.0.1'

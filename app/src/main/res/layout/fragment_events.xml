@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.tarun.uitsocieties.EventsFrag">
+    tools:context="com.example.tarun.uitsocieties.tech.example.tarun.uitsocieties.EventsFrag">
 
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/swipe"

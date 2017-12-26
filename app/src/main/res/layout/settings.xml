@@ -7,7 +7,7 @@
     android:background="@drawable/theme"
     android:paddingRight="20dp"
     android:layout_width="match_parent"
-    tools:context=".Settings">
+    tools:context="tech.pursuiters.techpursuiters.uitsocieties.Settings">
 
     <TextView
         android:layout_width="match_parent"

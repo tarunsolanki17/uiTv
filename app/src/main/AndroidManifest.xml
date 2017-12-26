@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.example.tarun.uitsocieties">
+    package="tech.pursuiters.techpursuiters.uitsocieties">
 
     <!-- ***************************** PERMISSIONS *********************************** -->
 
@@ -23,7 +23,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme.Launcher">
         <activity
-            android:name=".MainActivity"
+            android:name="tech.pursuiters.techpursuiters.uitsocieties.MainActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.Launcher.NoActionBar">
             <intent-filter>
@@ -33,79 +33,79 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".InClub"
-            android:parentActivityName=".MainActivity"
+            android:name="tech.pursuiters.techpursuiters.uitsocieties.InClub"
+            android:parentActivityName="tech.pursuiters.techpursuiters.uitsocieties.MainActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
+                android:value="tech.pursuiters.techpursuiters.uitsocieties.MainActivity" />
         </activity>
         <activity
-            android:name=".Settings"
+            android:name="tech.pursuiters.techpursuiters.uitsocieties.Settings"
             android:label="Settings"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".EventsDetailedActivity"
+            android:name="tech.pursuiters.techpursuiters.uitsocieties.EventsDetailedActivity"
             android:label="Details"
-            android:parentActivityName=".InClub"
+            android:parentActivityName="tech.pursuiters.techpursuiters.uitsocieties.InClub"
             android:theme="@style/AppTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".InClub" />
+                android:value="tech.pursuiters.techpursuiters.uitsocieties.InClub" />
         </activity>
         <activity
-            android:name=".PhotoDetailActivity"
+            android:name="tech.pursuiters.techpursuiters.uitsocieties.PhotoDetailActivity"
             android:label=""
-            android:parentActivityName=".InClub"
+            android:parentActivityName="tech.pursuiters.techpursuiters.uitsocieties.InClub"
             android:theme="@style/PhotoDetailTheme2">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".InClub" />
+                android:value="tech.pursuiters.techpursuiters.uitsocieties.InClub" />
         </activity>
         <activity
-            android:name=".videos_fragment.VideosDetail"
+            android:name="tech.pursuiters.techpursuiters.uitsocieties.videos_fragment.VideosDetail"
             android:configChanges="orientation|keyboardHidden|screenLayout|screenSize"
             android:label=""
             android:theme="@style/VideoDetail">
         </activity>
         <activity
-            android:name=".events_fragment.EventsDeatiledPhotoActivity"
+            android:name="tech.pursuiters.techpursuiters.uitsocieties.events_fragment.EventsDeatiledPhotoActivity"
             android:label=""
-            android:parentActivityName=".EventsDetailedActivity"
+            android:parentActivityName="tech.pursuiters.techpursuiters.uitsocieties.EventsDetailedActivity"
             android:theme="@style/PhotoDetailTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".EventsDetailedActivity" />
+                android:value="tech.pursuiters.techpursuiters.uitsocieties.EventsDetailedActivity" />
         </activity>
         <activity
-            android:name=".videos_fragment.VideosData"
+            android:name="tech.pursuiters.techpursuiters.uitsocieties.videos_fragment.VideosData"
             android:label="Details"
-            android:parentActivityName=".videos_fragment.VideosDetail"
+            android:parentActivityName="tech.pursuiters.techpursuiters.uitsocieties.videos_fragment.VideosDetail"
             android:theme="@style/AppTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".videos_fragment.VideosDetail" />
+                android:value="tech.pursuiters.techpursuiters.uitsocieties.videos_fragment.VideosDetail" />
         </activity>
 
         <activity
-            android:name=".photos_fragment.PhotoData"
+            android:name="tech.pursuiters.techpursuiters.uitsocieties.photos_fragment.PhotoData"
             android:label="Details"
-            android:parentActivityName=".PhotoDetailActivity"
+            android:parentActivityName="tech.pursuiters.techpursuiters.uitsocieties.PhotoDetailActivity"
             android:theme="@style/AppTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".PhotoDetailActivity" />
+                android:value="tech.pursuiters.techpursuiters.uitsocieties.PhotoDetailActivity" />
         </activity>
 
-        <activity android:name=".drawer.AboutTheDevelopers"
+        <activity android:name="tech.pursuiters.techpursuiters.uitsocieties.drawer.AboutTheDevelopers"
             android:label="About the Developers"
             android:theme="@style/AppTheme">
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
-        <activity android:name=".drawer.App_info"
+        <activity android:name="tech.pursuiters.techpursuiters.uitsocieties.drawer.App_info"
             android:label="About the App"
             android:theme="@style/AppTheme">
             <intent-filter>
@@ -113,13 +113,13 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".updates_fragment.StatusDetail"
+        <activity android:name="tech.pursuiters.techpursuiters.uitsocieties.updates_fragment.StatusDetail"
             android:label="Details"
-            android:parentActivityName=".InClub"
+            android:parentActivityName="tech.pursuiters.techpursuiters.uitsocieties.InClub"
             android:theme="@style/AppTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".InClub"/>
+                android:value="tech.pursuiters.techpursuiters.uitsocieties.InClub"/>
         </activity>
 
 
@@ -157,7 +157,7 @@
 
         <!-- *******************JobService**************************** -->
         <service
-            android:name=".FetchingJobService"
+            android:name="tech.pursuiters.techpursuiters.uitsocieties.FetchingJobService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE" />
@@ -165,7 +165,7 @@
         </service>
         <!-- ******************Static Broadcast Receiver********************* -->
         <receiver
-            android:name=".EventsFrag$NotificationBroadCastReceiver"
+            android:name="tech.pursuiters.techpursuiters.uitsocieties.EventsFrag$NotificationBroadCastReceiver"
             android:enabled="true">
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
@@ -174,9 +174,9 @@
             </intent-filter>
         </receiver>
 
-        <!--<meta-data
+        <meta-data
             android:name="com.google.android.gms.version"
-            android:value="@integer/google_play_services_version" />-->
+            android:value="@integer/google_play_services_version" />
     </application>
 
 </manifest>
