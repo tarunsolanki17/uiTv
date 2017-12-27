@@ -27,10 +27,20 @@ import java.util.Calendar;
 import java.util.Date;
 
 
+import static tech.pursuiters.techpursuiters.uitsocieties.ClubContract.CLUB_NAMES;
+import static tech.pursuiters.techpursuiters.uitsocieties.ClubContract.EventsConstants.COVER;
+import static tech.pursuiters.techpursuiters.uitsocieties.ClubContract.EventsConstants.DESCRIPTION;
+import static tech.pursuiters.techpursuiters.uitsocieties.ClubContract.EventsConstants.END_TIME;
+import static tech.pursuiters.techpursuiters.uitsocieties.ClubContract.EventsConstants.ID;
+import static tech.pursuiters.techpursuiters.uitsocieties.ClubContract.EventsConstants.NAME;
+import static tech.pursuiters.techpursuiters.uitsocieties.ClubContract.EventsConstants.PLACE;
+import static tech.pursuiters.techpursuiters.uitsocieties.ClubContract.EventsConstants.SOURCE_URL;
+import static tech.pursuiters.techpursuiters.uitsocieties.ClubContract.EventsConstants.START_TIME;
 import static tech.pursuiters.techpursuiters.uitsocieties.EventsFrag.eventNotification;
 
 import static tech.pursuiters.techpursuiters.uitsocieties.updates_fragment.UpdatesFrag.updateNotification;
-
+import tech.pursuiters.techpursuiters.uitsocieties.ClubContract.EventsConstants;
+import tech.pursuiters.techpursuiters.uitsocieties.ClubContract.UpdatesConstants;
 
 /**
  * Created by Tarun on 05-Oct-17.
@@ -66,14 +76,32 @@ public class FetchingJobService extends JobService {
                         e.printStackTrace();
                     }
                 }
+                /*else{
+                    ArrayList<DoubleStrings> existing_ids = new ArrayList<>();
+                    File old_ids_file = new File("event_ids_file");
+                    InputStream inStream;
+                    try {
+                        inStream = openFileInput(old_ids_file.getName());
+                        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inStream));
+                        String line;
+                        while ((line = bufferedReader.readLine()) != null) {
+                            String[] old_data = line.split(" ");
+                            existing_ids.add(new DoubleStrings(old_data[0], old_data[1]));
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }*/
+
                 if (file_created || events_ids.length() == 0) {
                     for (int i = 0; i < ClubContract.CLUB_IDS.length; i++) {
-                        Log.v("First Loop---", String.valueOf(i));
-                        eventIDJSONRequest(ClubContract.CLUB_IDS[i], ClubContract.CLUB_NAMES[i], true, i);
+                        Log.v("New file created---", String.valueOf(i));
+                        eventIDJSONRequest(ClubContract.CLUB_IDS[i], CLUB_NAMES[i], true, i);
                     }
                 } else if (events_ids.exists() && events_ids.length() > 0) {
                     for (int i = 0; i < ClubContract.CLUB_IDS.length; i++) {
-                        eventIDJSONRequest(ClubContract.CLUB_IDS[i], ClubContract.CLUB_NAMES[i], false, i);
+                        Log.v("File Exists---", String.valueOf(i));
+                        eventIDJSONRequest(ClubContract.CLUB_IDS[i], CLUB_NAMES[i], false, i);
                     }
                 }
 
@@ -117,12 +145,12 @@ public class FetchingJobService extends JobService {
                         if (new_file) {
                             Log.v("eventIDJSONReq---", String.valueOf(index));
                             readNewID(response.getJSONObject(), index);
-                            if (fresh_event_ids.size() == ClubContract.CLUB_NAMES.length) {
+                            if (fresh_event_ids.size() == CLUB_NAMES.length) {
                                 writeFile();
                             }
                         } else {
                             readNewID(response.getJSONObject(), index);
-                            if (fresh_event_ids.size() == ClubContract.CLUB_NAMES.length) {
+                            if (fresh_event_ids.size() == CLUB_NAMES.length) {
                                 compareIDs();
                             }
                         }
@@ -140,19 +168,19 @@ public class FetchingJobService extends JobService {
             try {
                 JSONArray data = response.getJSONArray("data");
                 if (data.length() > 0) {
-                    JSONObject topmost_event = data.getJSONObject(0);
+                    JSONObject topmost_event = data.getJSONObject(0);   /** FETCHING ONLY THE TOPMOST EVENT */
 
-                    if (topmost_event.has(ClubContract.EventsConstants.ID) && !topmost_event.isNull(ClubContract.EventsConstants.ID)) {
-                        String id = topmost_event.getString(ClubContract.EventsConstants.ID);
-                        String lineToBeAdded = ClubContract.CLUB_NAMES[index] + " " + id;
-                        boolean added = fresh_event_ids.add(new DoubleStrings(ClubContract.CLUB_NAMES[index], id));
+                    if (topmost_event.has(ID) && !topmost_event.isNull(ID)) {
+                        String id = topmost_event.getString(ID);
+                        String lineToBeAdded = CLUB_NAMES[index] + " " + id;
+                        boolean added = fresh_event_ids.add(new DoubleStrings(CLUB_NAMES[index], id));
                         if (added) {
                             Log.v("Added---", lineToBeAdded);
                         }
                     }
                 } else {
-                    fresh_event_ids.add(new DoubleStrings(ClubContract.CLUB_NAMES[index], "-1"));
-                    Log.v("Added---", ClubContract.CLUB_NAMES[index] + " " + "-1");
+                    fresh_event_ids.add(new DoubleStrings(CLUB_NAMES[index], "-1"));
+                    Log.v("Added---", CLUB_NAMES[index] + " " + "-1");
                 }
             } catch (Exception e) {
                 Log.v("Exception---", e.toString());
@@ -246,7 +274,7 @@ public class FetchingJobService extends JobService {
         }
 
         Log.v("Size----", "Existing: " + existing_ids.size() + "  Fresh: " + fresh_event_ids.size());
-        if (existing_ids.size() == fresh_event_ids.size()) {
+        /*if (existing_ids.size() == fresh_event_ids.size())*/ {
             for (int x = 0; x < existing_ids.size(); x++) {
                 for (int y = 0; y < fresh_event_ids.size(); y++) {
                     if (existing_ids.get(x).getName().equals(fresh_event_ids.get(y).getName())) {
@@ -273,8 +301,8 @@ public class FetchingJobService extends JobService {
 
     private String sendClubID(String clubName) {
 
-        for (int k = 0; k < ClubContract.CLUB_NAMES.length; k++) {
-            if (clubName.equals(ClubContract.CLUB_NAMES[k])) {
+        for (int k = 0; k < CLUB_NAMES.length; k++) {
+            if (clubName.equals(CLUB_NAMES[k])) {
                 return ClubContract.CLUB_IDS[k];
             }
         }
@@ -344,36 +372,37 @@ public class FetchingJobService extends JobService {
                     longitude = -1d;
                     descp = "";
                     cover_source = "";
+                    Date event_date = new Date();
 
                     JSONObject curr_event = data.getJSONObject(i);
 
-                    if (curr_event.has(ClubContract.EventsConstants.ID) && !curr_event.isNull(ClubContract.EventsConstants.ID)) {
-                        event_id = curr_event.getString(ClubContract.EventsConstants.ID);
+                    if (curr_event.has(ID) && !curr_event.isNull(ID)) {
+                        event_id = curr_event.getString(ID);
                         if (event_id.equals(existing_old_id))
                             no_notif = true;
                     }
                     if (no_notif)
                         break;
 
-                    if (curr_event.has(ClubContract.EventsConstants.NAME) && !curr_event.isNull(ClubContract.EventsConstants.NAME)) {
-                        event_name = curr_event.getString(ClubContract.EventsConstants.NAME);
+                    if (curr_event.has(NAME) && !curr_event.isNull(NAME)) {
+                        event_name = curr_event.getString(NAME);
                     }
-                    if (curr_event.has(ClubContract.EventsConstants.START_TIME) && !curr_event.isNull(ClubContract.EventsConstants.START_TIME)) {
-                        start_date = curr_event.getString(ClubContract.EventsConstants.START_TIME);
+                    if (curr_event.has(START_TIME) && !curr_event.isNull(START_TIME)) {
+                        start_date = curr_event.getString(START_TIME);
 
                         SimpleDateFormat incoming = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
-                        Date d = incoming.parse(start_date);
+                        event_date = incoming.parse(start_date);
 
-                        start_date = new SimpleDateFormat(" EEEE, dd MMMM yyyy", java.util.Locale.getDefault()).format(d);
-                        year = new SimpleDateFormat("yyyy").format(d);
-                        month = new SimpleDateFormat("MMM").format(d);
-                        date = new SimpleDateFormat("dd").format(d);
-                        day = new SimpleDateFormat("EEE").format(d);
-                        time = new SimpleDateFormat("h:mm a").format(d);
+                        start_date = new SimpleDateFormat(" EEEE, dd MMMM yyyy", java.util.Locale.getDefault()).format(event_date);
+                        year = new SimpleDateFormat("yyyy").format(event_date);
+                        month = new SimpleDateFormat("MMM").format(event_date);
+                        date = new SimpleDateFormat("dd").format(event_date);
+                        day = new SimpleDateFormat("EEE").format(event_date);
+                        time = new SimpleDateFormat("h:mm a").format(event_date);
 
                     }
-                    if (curr_event.has(ClubContract.EventsConstants.END_TIME) && !curr_event.isNull(ClubContract.EventsConstants.END_TIME)) {
-                        end_date = curr_event.getString(ClubContract.EventsConstants.END_TIME);
+                    if (curr_event.has(END_TIME) && !curr_event.isNull(END_TIME)) {
+                        end_date = curr_event.getString(END_TIME);
 
                         SimpleDateFormat incoming = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
                         Date d = incoming.parse(end_date);
@@ -382,11 +411,11 @@ public class FetchingJobService extends JobService {
                     }
                     Log.v("name---", event_name);
 
-                    if (curr_event.has(ClubContract.EventsConstants.PLACE) && !curr_event.isNull(ClubContract.EventsConstants.PLACE)) {
-                        JSONObject place_obj = curr_event.getJSONObject(ClubContract.EventsConstants.PLACE);
+                    if (curr_event.has(PLACE) && !curr_event.isNull(PLACE)) {
+                        JSONObject place_obj = curr_event.getJSONObject(PLACE);
 
-                        if (place_obj.has(ClubContract.EventsConstants.NAME) && !place_obj.isNull(ClubContract.EventsConstants.NAME)) {
-                            place_name = place_obj.getString(ClubContract.EventsConstants.NAME);
+                        if (place_obj.has(NAME) && !place_obj.isNull(NAME)) {
+                            place_name = place_obj.getString(NAME);
                         }
 
                         if (place_obj.has(ClubContract.EventsConstants.LOCATION) && !place_obj.isNull(ClubContract.EventsConstants.LOCATION)) {
@@ -403,15 +432,15 @@ public class FetchingJobService extends JobService {
                             }
                         }
                     }
-                    if (curr_event.has(ClubContract.EventsConstants.DESCRIPTION) && !curr_event.isNull(ClubContract.EventsConstants.DESCRIPTION)) {
-                        descp = curr_event.getString(ClubContract.EventsConstants.DESCRIPTION);
+                    if (curr_event.has(DESCRIPTION) && !curr_event.isNull(DESCRIPTION)) {
+                        descp = curr_event.getString(DESCRIPTION);
                     }
 
-                    if (curr_event.has(ClubContract.EventsConstants.COVER) && !curr_event.isNull(ClubContract.EventsConstants.COVER)) {
-                        JSONObject cover_obj = curr_event.getJSONObject(ClubContract.EventsConstants.COVER);
+                    if (curr_event.has(COVER) && !curr_event.isNull(COVER)) {
+                        JSONObject cover_obj = curr_event.getJSONObject(COVER);
 
-                        if (cover_obj.has(ClubContract.EventsConstants.SOURCE_URL) && !cover_obj.isNull(ClubContract.EventsConstants.SOURCE_URL)) {
-                            cover_source = cover_obj.getString(ClubContract.EventsConstants.SOURCE_URL);
+                        if (cover_obj.has(SOURCE_URL) && !cover_obj.isNull(SOURCE_URL)) {
+                            cover_source = cover_obj.getString(SOURCE_URL);
                         }
                     }
 
@@ -419,13 +448,11 @@ public class FetchingJobService extends JobService {
 
                     if (new_events != null) {
                         Log.v("New Event---", "Sent");
-//                        TODO --> ADD A CONDITION THAT THE NOTIFICATION SHOULD ONLY BE GENERATED WHEN THE EVENT IS ONLY A WEEK OR TWO OLD
-                        /*Date today = new Date();
-                        SimpleDateFormat incoming = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
-                        Date event_date = incoming.parse(start_date);
+                        Date today = new Date();
+
                         Log.v("Compare to---",String.valueOf(event_date.compareTo(today)));
 
-                        if (event_date.compareTo(today) > 0)*/ {
+                        if (event_date.compareTo(today) > 0) {      /**     0 if the argument Date is equal to this Date; a value less than 0 if this Date is before the Date argument; and a value greater than 0 if this Date is after the Date argument. */
                             Log.v("New Event---", "Sent2");
                             eventNotification(getApplicationContext(), new_events, club_name, clubID, i);
                         }
@@ -511,11 +538,11 @@ public class FetchingJobService extends JobService {
         if (file_created || update_ids.length() == 0) {
             for (int i = 0; i < ClubContract.CLUB_IDS.length; i++) {
                 Log.v("First Loop Update---", String.valueOf(i));
-                updateIDJSONRequest(ClubContract.CLUB_IDS[i], ClubContract.CLUB_NAMES[i], true, i);
+                updateIDJSONRequest(ClubContract.CLUB_IDS[i], CLUB_NAMES[i], true, i);
             }
         } else if (update_ids.exists() && update_ids.length() > 0) {
             for (int i = 0; i < ClubContract.CLUB_IDS.length; i++) {
-                updateIDJSONRequest(ClubContract.CLUB_IDS[i], ClubContract.CLUB_NAMES[i], false, i);
+                updateIDJSONRequest(ClubContract.CLUB_IDS[i], CLUB_NAMES[i], false, i);
             }
         }
 
@@ -531,13 +558,13 @@ public class FetchingJobService extends JobService {
                         if (new_file) {
                             Log.v("updateIDJSONReq---", String.valueOf(index));
                             readNewUpdateID(response.getJSONObject(), index);
-                            if (fresh_update_ids.size() == ClubContract.CLUB_NAMES.length) {
+                            if (fresh_update_ids.size() == CLUB_NAMES.length) {
                                 writeUpdateFile();
                             }
                         }
                         else {
                                 readNewUpdateID(response.getJSONObject(), index);
-                                if (fresh_update_ids.size() == ClubContract.CLUB_NAMES.length) {
+                                if (fresh_update_ids.size() == CLUB_NAMES.length) {
                                     compareUpdateIDs();
                                 }
                             }
@@ -558,17 +585,17 @@ public class FetchingJobService extends JobService {
                 if (data.length() > 0) {
                     JSONObject topmost_update = data.getJSONObject(0);
 
-                    if (topmost_update.has(ClubContract.EventsConstants.ID) && !topmost_update.isNull(ClubContract.EventsConstants.ID)) {
-                        String id = topmost_update.getString(ClubContract.EventsConstants.ID);
-                        String lineToBeAdded = ClubContract.CLUB_NAMES[index] + " " + id;
-                        boolean added = fresh_update_ids.add(new DoubleStrings(ClubContract.CLUB_NAMES[index], id));
+                    if (topmost_update.has(ID) && !topmost_update.isNull(ID)) {
+                        String id = topmost_update.getString(ID);
+                        String lineToBeAdded = CLUB_NAMES[index] + " " + id;
+                        boolean added = fresh_update_ids.add(new DoubleStrings(CLUB_NAMES[index], id));
                         if (added) {
                             Log.v("Added---", lineToBeAdded);
                         }
                     }
                 } else {
-                    fresh_update_ids.add(new DoubleStrings(ClubContract.CLUB_NAMES[index], "-1"));
-                    Log.v("Added---", ClubContract.CLUB_NAMES[index] + " " + "-1");
+                    fresh_update_ids.add(new DoubleStrings(CLUB_NAMES[index], "-1"));
+                    Log.v("Added---", CLUB_NAMES[index] + " " + "-1");
                 }
             } catch (Exception e) {
                 Log.v("Exception---", e.toString());
@@ -640,7 +667,7 @@ public class FetchingJobService extends JobService {
         }
 
         Log.v("Size----", "Existing: " + existing_ids.size() + "  Fresh: " + fresh_update_ids.size());
-        if (existing_ids.size() == fresh_update_ids.size()) {
+        /*if (existing_ids.size() == fresh_update_ids.size())*/ {
             for (int x = 0; x < existing_ids.size(); x++) {
                 for (int y = 0; y < fresh_update_ids.size(); y++) {
                     if (existing_ids.get(x).getName().equals(fresh_update_ids.get(y).getName())) {
@@ -725,8 +752,8 @@ public class FetchingJobService extends JobService {
 
                     JSONObject curr_update = data.getJSONObject(i);
 
-                    if (curr_update.has(ClubContract.EventsConstants.ID) && !curr_update.isNull(ClubContract.EventsConstants.ID)) {
-                        id = curr_update.getString(ClubContract.EventsConstants.ID);
+                    if (curr_update.has(ID) && !curr_update.isNull(ID)) {
+                        id = curr_update.getString(ID);
                     }
                     if (curr_update.has(ClubContract.UpdatesConstants.CAPTION) && !curr_update.isNull(ClubContract.UpdatesConstants.CAPTION)) {
                         caption = curr_update.getString(ClubContract.UpdatesConstants.CAPTION);
@@ -734,8 +761,8 @@ public class FetchingJobService extends JobService {
                     if (curr_update.has(ClubContract.UpdatesConstants.CREATED_TIME) && !curr_update.isNull(ClubContract.UpdatesConstants.CREATED_TIME)) {
                         created_time = curr_update.getString(ClubContract.UpdatesConstants.CREATED_TIME);
                     }
-                    if (curr_update.has(ClubContract.EventsConstants.DESCRIPTION) && !curr_update.isNull(ClubContract.EventsConstants.DESCRIPTION)) {
-                        description = curr_update.getString(ClubContract.EventsConstants.DESCRIPTION);
+                    if (curr_update.has(DESCRIPTION) && !curr_update.isNull(DESCRIPTION)) {
+                        description = curr_update.getString(DESCRIPTION);
                     }
                     if (curr_update.has(ClubContract.UpdatesConstants.LINK) && !curr_update.isNull(ClubContract.UpdatesConstants.LINK)) {
                         link = curr_update.getString(ClubContract.UpdatesConstants.LINK);
@@ -743,8 +770,8 @@ public class FetchingJobService extends JobService {
                     if (curr_update.has(ClubContract.UpdatesConstants.MESSAGE) && !curr_update.isNull(ClubContract.UpdatesConstants.MESSAGE)) {
                         message = curr_update.getString(ClubContract.UpdatesConstants.MESSAGE);
                     }
-                    if (curr_update.has(ClubContract.EventsConstants.NAME) && !curr_update.isNull(ClubContract.EventsConstants.NAME)) {
-                        name = curr_update.getString(ClubContract.EventsConstants.NAME);
+                    if (curr_update.has(NAME) && !curr_update.isNull(NAME)) {
+                        name = curr_update.getString(NAME);
                     }
                     if (curr_update.has(ClubContract.UpdatesConstants.PERMA_LINK) && !curr_update.isNull(ClubContract.UpdatesConstants.PERMA_LINK)) {
                         permalink_url = curr_update.getString(ClubContract.UpdatesConstants.PERMA_LINK);
@@ -756,11 +783,11 @@ public class FetchingJobService extends JobService {
                         full_picture = curr_update.getString(ClubContract.UpdatesConstants.FULL_PICTURE);
                     }
 
-                    if (curr_update.has(ClubContract.EventsConstants.PLACE) && !curr_update.isNull(ClubContract.EventsConstants.PLACE)) {
-                        JSONObject place_obj = curr_update.getJSONObject(ClubContract.EventsConstants.PLACE);
+                    if (curr_update.has(PLACE) && !curr_update.isNull(PLACE)) {
+                        JSONObject place_obj = curr_update.getJSONObject(PLACE);
 
-                        if (place_obj.has(ClubContract.EventsConstants.NAME) && !place_obj.isNull(ClubContract.EventsConstants.NAME)) {
-                            place_name = place_obj.getString(ClubContract.EventsConstants.NAME);
+                        if (place_obj.has(NAME) && !place_obj.isNull(NAME)) {
+                            place_name = place_obj.getString(NAME);
                         }
 
                         if (place_obj.has(ClubContract.EventsConstants.LOCATION) && !place_obj.isNull(ClubContract.EventsConstants.LOCATION)) {

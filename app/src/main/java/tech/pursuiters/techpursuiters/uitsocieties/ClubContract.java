@@ -13,8 +13,10 @@ public class ClubContract  {
     public static final String NOTIF_EVENT = "Notif_Intent_Event";
     public static final String PHOTO_DATA = "photo_data";
 
+    public static final String AAVAHAN = "1706949069322058";
     public static final String ACM_RGPV = "1356583771115130";
     public static final String COHERENT = "493932347436578";
+//    public static final String DISHANJALI = "1406845922941085";
     public static final String E_CELL = "1756876974557988";
     public static final String GREEN_ARMY = "339750026115267";
     public static final String HACKER_EARTH = "106829536670133";
@@ -28,9 +30,9 @@ public class ClubContract  {
     public static final String TECHNOPHILIC = "738646856321850";
     public static final String TEDX_RGPV = "117643995501901";
 
-    public static final String[] CLUB_NAMES = {"ACM_RGPV","COHERENT","E_CELL","GREEN_ARMY","HACKER_EARTH","INSYNC","I_SPEAK_AALAY","MAHASANGRAM","PHOENIX","SHANKHNAAD","SRIJAN", "SUNDARBAN","TECHNOPHILIC","TEDX_RGPV"};
-    public static final String[] CLUB_NAMES_VISIBLE = {"ACM-Student Chapter RGPV","Coherent","E-Cell","Green Army","Hacker Earth","Insync","I Speak Aalay ","Mahasangram","Phoenix","शंखनाद","Srijan","Sundarban","Technophilic","TEDx RGPV"};
-    public static final String[] CLUB_IDS = {ACM_RGPV,COHERENT,E_CELL,GREEN_ARMY,HACKER_EARTH,INSYNC,I_SPEAK_AALAY,MAHASANGRAM,PHOENIX,SHANKHNAAD,SRIJAN,SUNDARBAN,TECHNOPHILIC,TEDX_RGPV};
+    public static final String[] CLUB_NAMES = {"AAVAHAN","ACM_RGPV","COHERENT","E_CELL","GREEN_ARMY","HACKER_EARTH","INSYNC","I_SPEAK_AALAY","MAHASANGRAM","PHOENIX","SHANKHNAAD","SRIJAN", "SUNDARBAN","TECHNOPHILIC","TEDX_RGPV"};
+    public static final String[] CLUB_NAMES_VISIBLE = {"Aavahan","ACM-Student Chapter RGPV","Coherent","E-Cell","Green Army","Hacker Earth","Insync","I Speak Aalay ","Mahasangram","Phoenix","शंखनाद","Srijan","Sundarban","Technophilic","TEDx RGPV"};
+    public static final String[] CLUB_IDS = {AAVAHAN,ACM_RGPV,COHERENT,E_CELL,GREEN_ARMY,HACKER_EARTH,INSYNC,I_SPEAK_AALAY,MAHASANGRAM,PHOENIX,SHANKHNAAD,SRIJAN,SUNDARBAN,TECHNOPHILIC,TEDX_RGPV};
 
     public class UpdatesConstants{
         public static final String ID = "id";

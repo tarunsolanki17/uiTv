@@ -61,11 +61,19 @@ public class AboutDataModel {
     }
 
     public static final AboutDataModel[] details = {
+
+            new AboutDataModel("AAVAHAN","","ABOUT: \n\nA three day long cultural fest open for all the colleges of Madhya Pradesh.\nDates- 2nd-4th May'17\nVenue- UIT-RGPV campus","08989699289","aavahan.rgpv@gmail.com","https://www.facebook.com/aavahanrgpv/","http://www.aavahan.in",R.drawable.aavahan),
+
             new AboutDataModel("ACM: ASSOCIATION FOR COMPUTING MACHINERY RGPV", "", "ABOUT\n\nThe Association for Computing Machinery is an international learned society for computing. It was founded in 1947 and is the world's largest scientific and educational computing society. It is a not-for-profit professional membership group.", "", "", "https://www.facebook.com/acmrgpv/","", R.drawable.acm),
+
             new AboutDataModel("MOZILLA CLUB COHERENT", "MISSION: Believe in Openness, Innovation and Creativity", "We are the open source enthusiasts from Bhopal contributing in various Mozilla projects to make internet better and accessible to all.\n Awarded by Club of the month in November 2015 for the month Oct 2015", "", "", "https://www.facebook.com/Coherentatuit/", "\n" +
                     "https://wiki.mozilla.org/Coherent_@_UIT\n", R.drawable.coherent),
+
+            /*new AboutDataModel("DISHANJALI","MISSION\n\nINDIA WILL BE LEADER IN EDUCATION AND RESEARCH.\n\nNAV SHIKSHIT BHARAT MISSION","ABOUT\n\nFounded in July 2013\n\nEDUCATED INDIA\nLEADING INDIA\nDEVELOPED INDIA","09977555385","dishanjali.edu@gmail.com","https://www.facebook.com/NSBMDishanjali/","http://dishanjali.wix.com/nsbm",R.drawable.dishanjali),*/
+
             new AboutDataModel("e-ENTREPRENEURSHIP CELL RGPV", "", "ABOUT\n\nFounded on May 9, 2016\n The e-Entrepreneurship Cell of RGPV is a Non - Profit Organization.", "088279 70446", "contact@ecellrgpv.in", "https://www.facebook.com/ECellRGPV/", "\n" +
                     "http://www.ecellrgpv.in", R.drawable.ecell),
+
             new AboutDataModel("GREEN ARMY", "MISSION\n\n\"Creating endless ripples every day\"", "ABOUT\n\nThe Green army was founded in 2011 by Yuvraj Puri, Tayyab Zafar,Umar M Khan and Varsha Dange.\nTHE GREEN ARMY has been amplified to ' The Dream Box Foundation ' - a social reforming society, prioritizing environment, health and education.\n", "096857 41401\n", "\n" +
                     "greenarmyrgpv@gmail.com", "https://www.facebook.com/TheGreenArmyUIT/", "" +
                     "http://thedreambox.in", R.drawable.green_army),
@@ -73,6 +81,7 @@ public class AboutDataModel {
                     "So, Compete with our friends & college mates and portray your Programming Skills.\n" +
                     "Keep Coding!!\n", "",
                     "piyushpanjwani12@gmail.com", "https://www.facebook.com/HackerEarthUIT/","", R.drawable.hacker_earth),
+
             new AboutDataModel("IN-SYNC", "", "ABOUT\n\nInSync Cultural Society is a vibrant dynamic student body which serves as a platform for youth to show their Cultural skills. The foremost aims of the society are to promote the richness and diversity of the Indian subcontinents heritage, art and culture and to foster goodwill and harmony between different communities and cultures.\n" +
                     "\n" +
                     "InSync comprises of the five sections which take care of the varied fields of Cultural events :\n" +
@@ -92,14 +101,18 @@ public class AboutDataModel {
                     "\"Joining us\" leads to Progress ; \n" +
                     "\"Working together\" leads to Success.....!!!", "", "", "https://www.facebook.com/insync.uitrgpv/", "\n" +
                     "http://www.insyncatuit.cf", R.drawable.insync),
+
             new AboutDataModel("ISpeakaalay", "", "ISpeakAalay - The weekly magazine from the InSync Literary Club of UIT-RGTU.\n The magazine is a platform for all the students to explore the activities , share their brilliance , realize their creativity and get amazed with the amusing content to discover the incredible ! \n" +
                     "The magazine focuses on vivid and vibrant facets of the college life. It's an initiative to bring out the flair of each student by providing the platform to Speak.It also provides the coverage of various Cultural and Technical events of the colleges. \n", "", "", "https://www.facebook.com/ISpeakAalay/", "\n" +
                     "https://ispeakaalaymagazine.wordpress.com\n", R.drawable.ispeakaalay),
+
             new AboutDataModel("MAHASANGRAAM", "", "Sports Event", "", "", "https://www.facebook.com/mahasangram2k17/", "\n" +
                     "http://www.mahasangram2k17.blogspot.com\n", R.drawable.mahasangram),
+
             new AboutDataModel("PHOENIX", "MISSION\n Bridge the gap for students, between the inspiring ideas and their implementation.", "Phoenix is the oldest official society of UIT RGPV which strives towards the goal of development of students with its highly dedicated committee.\n", "", "\n" +
                     "contact@phoenixatuit.com", "https://www.facebook.com/convolution2018/", "\n" +
                     "http://phoenixatuit.com", R.drawable.phoenix),
+
             new AboutDataModel("SHANKHANAAD", "", "ABOUT\nराजीव गाँधी प्रौद्योगिकी विश्वविद्यालय का प्रथम हिंदी महोत्सव |", "", "\n" +
                     "shankhnaad.rgpv@gmail.com", "https://www.facebook.com/ShankhnaadRGPV/", "", R.drawable.shankhnaad),
 

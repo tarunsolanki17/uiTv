@@ -86,13 +86,14 @@ public class PhotoDetailActivity extends AppCompatActivity {
             FileInputStream fis = openFileInput(ClubContract.PHOTO_FILE);
             ObjectInputStream ois = new ObjectInputStream(fis);
             photos_data =(ArrayList<Photo_Serial>) ois.readObject();
+            Log.v("Photos Count---",String.valueOf(photos_data.size()));
             ois.close();
         }
         catch (Exception e){
             Log.v("PhotoDet Excep---",e.toString());
             e.printStackTrace();
         }
-        Log.v("Photos Count---",String.valueOf(photos_data.size()));
+
         pos = getIntent().getIntExtra("position",-1);
 
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(), photos_data);

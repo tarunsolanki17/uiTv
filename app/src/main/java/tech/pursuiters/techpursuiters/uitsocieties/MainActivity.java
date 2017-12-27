@@ -41,6 +41,7 @@ import com.facebook.Profile;
 import com.facebook.login.LoginManager;
 import com.inmobi.sdk.InMobiSdk;
 
+import static tech.pursuiters.techpursuiters.uitsocieties.ClubContract.AAVAHAN;
 import static tech.pursuiters.techpursuiters.uitsocieties.ClubContract.ACM_RGPV;
 import static tech.pursuiters.techpursuiters.uitsocieties.ClubContract.COHERENT;
 import static tech.pursuiters.techpursuiters.uitsocieties.ClubContract.E_CELL;
@@ -95,20 +96,24 @@ public class MainActivity extends AppCompatActivity implements Runnable, Navigat
         club_data = new ArrayList<>();
 
 //        TODO --> ADD THE PHOTOS WITH DIFFERENT DPIs
-        club_data.add(new Data1(R.drawable.acm,"ACM Student Chapter RGPV",ACM_RGPV,1));
-        club_data.add(new Data1(R.drawable.coherent,"Coherent",COHERENT,2));
-        club_data.add(new Data1(R.drawable.ecell,"E-Cell",E_CELL,3));
-        club_data.add(new Data1(R.drawable.green_army,"Green Army",GREEN_ARMY,4));
-        club_data.add(new Data1(R.drawable.hacker_earth,"Hacker Earth",HACKER_EARTH,5));
-        club_data.add(new Data1(R.drawable.insync,"Insync",INSYNC,6));
-        club_data.add(new Data1(R.drawable.ispeakaalay,"I Speak Aalay",I_SPEAK_AALAY,7));
-        club_data.add(new Data1(R.drawable.mahasangram,"Mahasangram",MAHASANGRAM,8));
-        club_data.add(new Data1(R.drawable.phoenix,"Phoenix",PHOENIX,9));
-        club_data.add(new Data1(R.drawable.shankhnaad,"शंखनाद",SHANKHNAAD,10));
-        club_data.add(new Data1(R.drawable.srijan,"Srijan",SRIJAN,11));
-        club_data.add(new Data1(R.drawable.sundarban,"Sundarban",SUNDARBAN,12));
-        club_data.add(new Data1(R.drawable.technophilic,"Technophilic",TECHNOPHILIC,13));
-        club_data.add(new Data1(R.drawable.tedxrgpv,"TEDx RGPV",TEDX_RGPV,14));
+        club_data.add(new Data1(R.drawable.aavahan,"Aavahan",AAVAHAN,1));
+        club_data.add(new Data1(R.drawable.acm,"ACM Student Chapter RGPV",ACM_RGPV,2));
+        club_data.add(new Data1(R.drawable.coherent,"Coherent",COHERENT,3));
+
+//        club_data.add(new Data1(R.drawable.dishanjali,"Dishanjali",DISHANJALI,4));
+
+        club_data.add(new Data1(R.drawable.ecell,"E-Cell",E_CELL,4));
+        club_data.add(new Data1(R.drawable.green_army,"Green Army",GREEN_ARMY,5));
+        club_data.add(new Data1(R.drawable.hacker_earth,"Hacker Earth",HACKER_EARTH,6));
+        club_data.add(new Data1(R.drawable.insync,"Insync",INSYNC,7));
+        club_data.add(new Data1(R.drawable.ispeakaalay,"I Speak Aalay",I_SPEAK_AALAY,8));
+        club_data.add(new Data1(R.drawable.mahasangram,"Mahasangram",MAHASANGRAM,9));
+        club_data.add(new Data1(R.drawable.phoenix,"Phoenix",PHOENIX,10));
+        club_data.add(new Data1(R.drawable.shankhnaad,"शंखनाद",SHANKHNAAD,11));
+        club_data.add(new Data1(R.drawable.srijan,"Srijan",SRIJAN,12));
+        club_data.add(new Data1(R.drawable.sundarban,"Sundarban",SUNDARBAN,13));
+        club_data.add(new Data1(R.drawable.technophilic,"Technophilic",TECHNOPHILIC,14));
+        club_data.add(new Data1(R.drawable.tedxrgpv,"TEDx RGPV",TEDX_RGPV,15));
 
         L_layoutManager = new LinearLayoutManager(this);
         G_layoutManager = new GridLayoutManager(this,3);
@@ -192,8 +197,7 @@ public class MainActivity extends AppCompatActivity implements Runnable, Navigat
             inStream.close();
         }
         catch (Exception e) {
-            Log.v("Exception---","Caught");
-            e.printStackTrace();
+            Log.v("Exception readFile",e.toString());
         }
     }
 
