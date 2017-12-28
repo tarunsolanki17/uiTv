@@ -20,7 +20,7 @@ public class ClubContract  {
     public static final String E_CELL = "1756876974557988";
     public static final String GREEN_ARMY = "339750026115267";
     public static final String HACKER_EARTH = "106829536670133";
-    public static final String INSYNC = "581644598564495";
+    public static final String INSYNC = "581644598564495";//"270979900087022";
     public static final String I_SPEAK_AALAY = "542097419297226";
     public static final String MAHASANGRAM = "115089709174856";
     public static final String PHOENIX = "562423343851594";
@@ -34,6 +34,10 @@ public class ClubContract  {
     public static final String[] CLUB_NAMES_VISIBLE = {"Aavahan","ACM-Student Chapter RGPV","Coherent","E-Cell","Green Army","Hacker Earth","Insync","I Speak Aalay ","Mahasangram","Phoenix","शंखनाद","Srijan","Sundarban","Technophilic","TEDx RGPV"};
     public static final String[] CLUB_IDS = {AAVAHAN,ACM_RGPV,COHERENT,E_CELL,GREEN_ARMY,HACKER_EARTH,INSYNC,I_SPEAK_AALAY,MAHASANGRAM,PHOENIX,SHANKHNAAD,SRIJAN,SUNDARBAN,TECHNOPHILIC,TEDX_RGPV};
 
+    public class UserData{
+        public static final String ID = "id";
+        public static final String EMAIL = "email";
+    }
     public class UpdatesConstants{
         public static final String ID = "id";
         public static final String CAPTION = "caption";      //  ACTUALLY AN EVENT NAME

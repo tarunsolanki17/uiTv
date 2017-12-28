@@ -48,7 +48,7 @@ import tech.pursuiters.techpursuiters.uitsocieties.ClubContract.UpdatesConstants
 
 public class FetchingJobService extends JobService {
 
-    private AsyncTask fetchAsyncTask, fetchAsyncUpdate;
+    private AsyncTask fetchAsyncTask;
     File events_ids, update_ids;
     public ArrayList<EventsDataModel> events_data_service;
     //    String id;
@@ -76,22 +76,6 @@ public class FetchingJobService extends JobService {
                         e.printStackTrace();
                     }
                 }
-                /*else{
-                    ArrayList<DoubleStrings> existing_ids = new ArrayList<>();
-                    File old_ids_file = new File("event_ids_file");
-                    InputStream inStream;
-                    try {
-                        inStream = openFileInput(old_ids_file.getName());
-                        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inStream));
-                        String line;
-                        while ((line = bufferedReader.readLine()) != null) {
-                            String[] old_data = line.split(" ");
-                            existing_ids.add(new DoubleStrings(old_data[0], old_data[1]));
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }*/
 
                 if (file_created || events_ids.length() == 0) {
                     for (int i = 0; i < ClubContract.CLUB_IDS.length; i++) {
@@ -124,13 +108,12 @@ public class FetchingJobService extends JobService {
         return false;
     }
 
+
     @Override
     public boolean onStopJob(JobParameters jobParameters) {
         Log.v("onStopJob---", "Called");
         if (fetchAsyncTask != null)
             fetchAsyncTask.cancel(true);
-        if (fetchAsyncUpdate != null)
-            fetchAsyncUpdate.cancel(true);
         return true;
     }
 

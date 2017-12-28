@@ -13,11 +13,13 @@ import tech.pursuiters.techpursuiters.uitsocieties.photos_fragment.Photo_Serial;
 import tech.pursuiters.techpursuiters.uitsocieties.updates_fragment.UpdateParcel;
 import tech.pursuiters.techpursuiters.uitsocieties.videos_fragment.VideoParcel;
 import com.facebook.AccessToken;
+import com.inmobi.ads.InMobiAdRequestStatus;
 import com.inmobi.ads.InMobiBanner;
 import com.inmobi.sdk.InMobiSdk;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Map;
 
 /**
  * Created by Tarun on 17-Aug-17.
@@ -50,16 +52,46 @@ public class InClub extends AppCompatActivity {
 
         albumNo = 0;    /**     TO START FROM THE FIRST ALBUM   */
 
+        InMobiSdk.init(InClub.this, "6c2ca29688614264bd77f77cc38cd923");
         banner = (InMobiBanner) findViewById(R.id.banner1);
+        banner.setListener(new InMobiBanner.BannerAdListener() {
+            @Override
+            public void onAdLoadSucceeded(InMobiBanner inMobiBanner) {
+
+            }
+
+            @Override
+            public void onAdLoadFailed(InMobiBanner inMobiBanner, InMobiAdRequestStatus inMobiAdRequestStatus) {
+                Log.d("ad fail reason---",inMobiAdRequestStatus.toString());
+            }
+
+            @Override
+            public void onAdDisplayed(InMobiBanner inMobiBanner) {
+
+            }
+
+            @Override
+            public void onAdDismissed(InMobiBanner inMobiBanner) {
+
+            }
+
+            @Override
+            public void onAdInteraction(InMobiBanner inMobiBanner, Map<Object, Object> map) {
+
+            }
+
+            @Override
+            public void onUserLeftApplication(InMobiBanner inMobiBanner) {
+
+            }
+
+            @Override
+            public void onAdRewardActionCompleted(InMobiBanner inMobiBanner, Map<Object, Object> map) {
+
+            }
+        });
         banner.load();
         InMobiSdk.setLogLevel(InMobiSdk.LogLevel.DEBUG);
-
-//        getActionBar().setDisplayHomeAsUpEnabled(true);
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-//        getSupportActionBar().setHomeButtonEnabled(true);
-//        getSupportActionBar().setHideOnContentScrollEnabled(true);
-//        Log.v("Action Bar---",String.valueOf(getSupportActionBar().isHideOnContentScrollEnabled()));
-
 
         login_checker();
 

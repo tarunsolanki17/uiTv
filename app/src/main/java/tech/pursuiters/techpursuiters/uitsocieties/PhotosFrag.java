@@ -307,18 +307,17 @@ public class PhotosFrag extends Fragment{
 
                 Log.v("i---=",String.valueOf(i));
 
-                String album_name = "";
-                int photo_count = -1;
-                String caption = "";
-                String created_time = "";
-                String facebook_link = "";
-                String place = "";
-                String height = "";
-                String width = "";
-                String thumb_link = "";
-                String image_link = "";
-                String big_image_link = "";
-                boolean next = false;
+                String album_name;
+                int photo_count;
+                String caption;
+                String created_time;
+                String facebook_link;
+                String place;
+                String height;
+                String width;
+                String thumb_link;
+                String image_link;
+                String big_image_link;
 
                 for(i=i;i<=albumNo;i++){
 

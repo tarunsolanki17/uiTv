@@ -15,13 +15,21 @@ import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
 import com.facebook.Profile;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.Arrays;
 
+import static android.R.attr.data;
 import static android.widget.Toast.makeText;
+import static tech.pursuiters.techpursuiters.uitsocieties.ClubContract.UserData.EMAIL;
+import static tech.pursuiters.techpursuiters.uitsocieties.R.string.email;
 
 
 /**
@@ -32,6 +40,7 @@ public class LoginFrag extends Fragment {
     CallbackManager callbackManager;
     LoginManager loginManager;
     Toast toast;
+    Bundle dataBundle;
 
     public LoginFrag() {
         // Required empty public constructor
@@ -85,6 +94,7 @@ public class LoginFrag extends Fragment {
                 Toast.makeText(getActivity(),"There was an error logging in. Please try again later.",Toast.LENGTH_SHORT).show();
                 Log.v("Login Error---",error.toString());
             }
+
         };
 
         callbackManager = CallbackManager.Factory.create();

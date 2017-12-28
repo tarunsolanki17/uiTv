@@ -2,6 +2,7 @@ package tech.pursuiters.techpursuiters.uitsocieties;
 
 import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.firebase.jobdispatcher.Driver;
 import com.firebase.jobdispatcher.FirebaseJobDispatcher;
@@ -18,7 +19,7 @@ import java.util.concurrent.TimeUnit;
 
 public class FetchJobScheduler {
 
-    public static int HOURS = 5;
+    public static int HOURS = 1;
     public static int SECONDS = (int) TimeUnit.HOURS.toSeconds(HOURS);
     public static String TAG = "JobTag";
     public static FirebaseJobDispatcher dispatcher;
@@ -28,8 +29,10 @@ public class FetchJobScheduler {
     synchronized public static void scheduleFetching(Context con){
         Log.v("Running---","SCHEDULAR");
 
-        if(sInitialized)
+        if(sInitialized) {
+            Log.v("Schedular---"," Already Init");
             return;
+        }
         Driver driver = new GooglePlayDriver(con);
         dispatcher = new FirebaseJobDispatcher(driver);
         Job fetchingJob = dispatcher.newJobBuilder()

@@ -8,6 +8,7 @@ import android.content.pm.ApplicationInfo;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.support.design.widget.NavigationView;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
@@ -21,8 +22,10 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.WindowManager;
 import android.widget.Toast;
 
@@ -37,9 +40,14 @@ import tech.pursuiters.techpursuiters.uitsocieties.drawer.App_info;
 
 import  tech.pursuiters.techpursuiters.uitsocieties.R;
 import com.facebook.AccessToken;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
 import com.facebook.Profile;
 import com.facebook.login.LoginManager;
 import com.inmobi.sdk.InMobiSdk;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import static tech.pursuiters.techpursuiters.uitsocieties.ClubContract.AAVAHAN;
 import static tech.pursuiters.techpursuiters.uitsocieties.ClubContract.ACM_RGPV;
@@ -56,6 +64,7 @@ import static tech.pursuiters.techpursuiters.uitsocieties.ClubContract.SRIJAN;
 import static tech.pursuiters.techpursuiters.uitsocieties.ClubContract.SUNDARBAN;
 import static tech.pursuiters.techpursuiters.uitsocieties.ClubContract.TECHNOPHILIC;
 import static tech.pursuiters.techpursuiters.uitsocieties.ClubContract.TEDX_RGPV;
+import static tech.pursuiters.techpursuiters.uitsocieties.ClubContract.UserData.EMAIL;
 import static tech.pursuiters.techpursuiters.uitsocieties.InClub.login;
 import static tech.pursuiters.techpursuiters.uitsocieties.InClub.login_checker;
 
@@ -125,7 +134,91 @@ public class MainActivity extends AppCompatActivity implements Runnable, Navigat
         mainAdap = new MyArrayAdap(this,club_data,R.layout.main_image_layout_grid);
         mainRecyclerView.setAdapter(mainAdap);
 
+        ecellDialog();
+
         readFile();
+    }
+
+    private void ecellDialog(){
+
+        AlertDialog.Builder ecellDialog = new AlertDialog.Builder(MainActivity.this);
+        LayoutInflater inflater = LayoutInflater.from(MainActivity.this);
+        final View poster = inflater.inflate(R.layout.ecell_image,null);
+        ecellDialog.setView(poster);
+        ecellDialog.setPositiveButton("Get Promo Code", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                login_checker();
+                if(login){
+                    emailGraphRequest(AccessToken.getCurrentAccessToken());
+                }
+                else{
+
+                }
+                Toast.makeText(MainActivity.this,"Registering",Toast.LENGTH_SHORT).show();
+            }
+        });
+        ecellDialog.setNegativeButton("Close", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                Toast.makeText(MainActivity.this,"Closing",Toast.LENGTH_SHORT).show();
+            }
+        });
+        ecellDialog.show();
+    }
+
+    void emailGraphRequest(final AccessToken currAccessToken){
+        Bundle parameters = new Bundle();
+        parameters.putString("fields", "id, first_name, last_name, email,gender, birthday, location");
+
+        GraphRequest request = GraphRequest.newMeRequest(currAccessToken,new GraphRequest.GraphJSONObjectCallback(){
+            @Override
+            public void onCompleted(JSONObject object, GraphResponse response) {
+                saveData(response.getJSONObject());
+            }
+
+        });
+
+        request.setParameters(parameters);
+        request.executeAndWait();
+
+        /*AsyncTask register = new AsyncTask() {
+            @Override
+            protected Object doInBackground(Object[] objects) {
+                new GraphRequest.newMeRequest(currAccessToken,new GraphRequest.GraphJSONObjectCallback(){
+                    @Override
+                    public void onCompleted(JSONObject object, GraphResponse response) {
+                        saveData(response.getJSONObject());
+                    }
+
+                });
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Object o) {
+                super.onPostExecute(o);
+            }
+        };
+
+        register.execute();*/
+    }
+
+    private void saveData(JSONObject dataObject){
+        String email, referralURL;
+        try {
+            if(dataObject.has(EMAIL)&&!dataObject.isNull(EMAIL)) {
+                email = dataObject.getString(EMAIL);
+                Log.v("email---",email);
+//                ADD REFERRAL CODE
+//                referralURL = getReferralURL();
+            }
+            else{
+                Log.v("email---","no email");
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

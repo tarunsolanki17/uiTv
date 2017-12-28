@@ -43,7 +43,7 @@ public class VideosDetail extends AppCompatActivity implements EasyVideoCallback
         InMobiSdk.init(VideosDetail.this, "6c2ca29688614264bd77f77cc38cd923");
         banner3 = (InMobiBanner) findViewById(R.id.banner3);
         banner3.load();
-        InMobiSdk.setLogLevel(InMobiSdk.LogLevel.DEBUG);
+//        InMobiSdk.setLogLevel(InMobiSdk.LogLevel.DEBUG);
 
 //      TODO -> ADD AUDIO FOCUS
 
