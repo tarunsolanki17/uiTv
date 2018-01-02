@@ -12,10 +12,11 @@ import android.util.Log;
 import tech.pursuiters.techpursuiters.uitsocieties.photos_fragment.Photo_Serial;
 import tech.pursuiters.techpursuiters.uitsocieties.updates_fragment.UpdateParcel;
 import tech.pursuiters.techpursuiters.uitsocieties.videos_fragment.VideoParcel;
+
+import com.appnext.banners.BannerAdRequest;
+import com.appnext.banners.BannerView;
+import com.appnext.base.Appnext;
 import com.facebook.AccessToken;
-import com.inmobi.ads.InMobiAdRequestStatus;
-import com.inmobi.ads.InMobiBanner;
-import com.inmobi.sdk.InMobiSdk;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -38,7 +39,7 @@ public class InClub extends AppCompatActivity {
     public static int albumNo,data_len,album_len,album_len_max_index;
     public static RecycPhotosAdap recycAdapter;
     public static int position;
-    public InMobiBanner banner;
+    public BannerView bannerView;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -52,46 +53,13 @@ public class InClub extends AppCompatActivity {
 
         albumNo = 0;    /**     TO START FROM THE FIRST ALBUM   */
 
-        InMobiSdk.init(InClub.this, "6c2ca29688614264bd77f77cc38cd923");
-        banner = (InMobiBanner) findViewById(R.id.banner1);
-        banner.setListener(new InMobiBanner.BannerAdListener() {
-            @Override
-            public void onAdLoadSucceeded(InMobiBanner inMobiBanner) {
+        Appnext.init(getApplicationContext());
+        bannerView = (BannerView) findViewById(R.id.banner1);
 
-            }
-
-            @Override
-            public void onAdLoadFailed(InMobiBanner inMobiBanner, InMobiAdRequestStatus inMobiAdRequestStatus) {
-                Log.d("ad fail reason---",inMobiAdRequestStatus.toString());
-            }
-
-            @Override
-            public void onAdDisplayed(InMobiBanner inMobiBanner) {
-
-            }
-
-            @Override
-            public void onAdDismissed(InMobiBanner inMobiBanner) {
-
-            }
-
-            @Override
-            public void onAdInteraction(InMobiBanner inMobiBanner, Map<Object, Object> map) {
-
-            }
-
-            @Override
-            public void onUserLeftApplication(InMobiBanner inMobiBanner) {
-
-            }
-
-            @Override
-            public void onAdRewardActionCompleted(InMobiBanner inMobiBanner, Map<Object, Object> map) {
-
-            }
-        });
-        banner.load();
-        InMobiSdk.setLogLevel(InMobiSdk.LogLevel.DEBUG);
+        BannerAdRequest banner_request = new BannerAdRequest();
+        banner_request
+                .setCategories("Action, Adventure, Racing");
+        bannerView.loadAd(banner_request);
 
         login_checker();
 
@@ -187,6 +155,8 @@ public class InClub extends AppCompatActivity {
         album_len_max_index = 0;
         data_len = 0;
         recycAdapter = null;
+
+        bannerView.destroy();
 
         Runtime.getRuntime().gc();
     }

@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.tarun.uitsocieties.tech.example.tarun.uitsocieties.MainActivity"
-    android:orientation="vertical">
+    tools:context="tech.pursuiters.techpursuiters.uitsocieties.MainActivity"
+    android:orientation="vertical"
+    >
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -17,6 +19,21 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             app:popupTheme="@style/AppTheme.PopupOverlay" />
+
+        <TextView
+            android:id="@+id/notification_count"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="-45dp"
+            android:background="@drawable/red_circle_background"
+            android:gravity="center"
+            android:textAlignment="center"
+            android:text="1"
+            android:textColor="@android:color/white"
+            android:visibility="visible"
+            android:layout_gravity="left"/>
 
     </android.support.design.widget.AppBarLayout>
 

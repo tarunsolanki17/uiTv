@@ -29,15 +29,15 @@
         android:textColor="#FFFFFF"
         android:textAlignment="center"/>
 
-    <com.inmobi.ads.InMobiBanner
-        android:layout_width="320dp"
-        android:layout_height="50dp"
+    <com.appnext.banners.BannerView
+        xmlns:ads="http://schemas.android.com/apk/res-auto"
         android:id="@+id/banner3"
-        ads:placementId="1515085596459"
-        ads:refreshInterval="60"
-        android:layout_alignParentTop="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        />
+        android:layout_alignParentTop="true"
+        ads:bannerSize="BANNER"
+        ads:placementId="5184f8d3-9084-4d98-a858-fe072b0aa60c"/>
 
 </RelativeLayout>
 

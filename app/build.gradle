@@ -7,14 +7,14 @@ android {
         applicationId "tech.pursuiters.techpursuiters.uitsocieties"
         minSdkVersion 16
         targetSdkVersion 26
-        versionCode 4
-        versionName "1.0.3"
+        versionCode 9
+        versionName "2.1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
     }
     buildTypes {
         release {
-            minifyEnabled true
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -25,13 +25,13 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-
     compile 'com.android.support:appcompat-v7:26.+'
     compile 'com.android.support:support-v4:26.+'
     compile 'com.android.support:design:26.0.0-alpha1'
     compile 'com.android.support:cardview-v7:26.0.0-alpha1'
-    compile ('com.facebook.android:facebook-android-sdk:[4,5)'){
-    exclude group: 'com.google.android.gms'}
+    compile('com.facebook.android:facebook-android-sdk:[4,5)') {
+        exclude group: 'com.google.android.gms'
+    }
     compile 'com.android.support:recyclerview-v7:26.0.+'
     compile 'com.github.bumptech.glide:glide:4.1.1'
     compile 'com.firebase:firebase-jobdispatcher:0.7.0'
@@ -41,16 +41,26 @@ dependencies {
     compile 'com.squareup.picasso:picasso:2.5.2'
     testCompile 'junit:junit:4.12'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.1.1'
-//    compile 'com.google.android.gms:play-services:11.0.2'
-//    compile 'com.google.android.gms:play-services-gcm'
-//    compile 'com.firebase:firebase-jobdispatcher-with-gcm-dep:0.7.0'
+    //    compile 'com.google.android.gms:play-services:11.0.2'
+    //    compile 'com.google.android.gms:play-services-gcm'
+    //    compile 'com.firebase:firebase-jobdispatcher-with-gcm-dep:0.7.0'
     /*compile ("com.firebase:firebase-jobdispatcher-with-gcm-dep:0.6.0") {
-        exclude module: "play-services-gcm"
-    }*/
-
+            exclude module: "play-services-gcm"
+        }*/
     compile 'com.android.support:multidex:1.0.1'
-    compile 'com.inmobi.monetization:inmobi-ads:7.0.1'
+
+    compile 'com.google.firebase:firebase-database:11.8.0'
+    compile 'com.google.firebase:firebase-messaging:11.8.0'
+
+    compile files('libs/activation.jar')
+
+    compile 'com.appnext.sdk:banners:2.+'
+    compile 'com.google.android.gms:play-services-basement:11.8.0' // Mandatory
+    compile 'com.google.android.gms:play-services-location:11.8.0' // Mandatory
 }
+
+apply plugin: 'com.google.gms.google-services'
+
 configurations.all {
     resolutionStrategy.eachDependency { DependencyResolveDetails details ->
         def requested = details.requested

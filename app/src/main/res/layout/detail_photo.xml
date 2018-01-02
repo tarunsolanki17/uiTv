@@ -25,15 +25,14 @@
 
         />
 
-    <com.inmobi.ads.InMobiBanner
-        android:layout_width="300dp"
-        android:layout_height="50dp"
+    <com.appnext.banners.BannerView
+        xmlns:ads="http://schemas.android.com/apk/res-auto"
         android:id="@+id/banner2"
-        ads:placementId="1513736310373"
-        ads:refreshInterval="60"
-        android:layout_alignParentBottom="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-
-        />
+        android:layout_alignParentBottom="true"
+        ads:bannerSize="BANNER"
+        ads:placementId="ce27d79a-daaa-418a-9a35-18f1c3941436"/>
 
 </RelativeLayout>

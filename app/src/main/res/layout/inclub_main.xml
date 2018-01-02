@@ -23,14 +23,15 @@
 
     </android.support.v4.view.ViewPager>
 
-    <com.inmobi.ads.InMobiBanner
-        android:layout_width="320dp"
-        android:layout_height="50dp"
+    <com.appnext.banners.BannerView
+        xmlns:ads="http://schemas.android.com/apk/res-auto"
         android:id="@+id/banner1"
-        ads:placementId="1511892456552"
-        ads:refreshInterval="60"
-        android:layout_alignParentBottom="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        />
+        android:layout_alignParentBottom="true"
+        ads:bannerSize="BANNER"
+        ads:placementId="fe758eb4-0b87-4f01-b248-63cdb260b2ad"/>
+
 
 </RelativeLayout>

@@ -23,14 +23,15 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.appnext.banners.BannerAdRequest;
+import com.appnext.banners.BannerView;
+import com.appnext.base.Appnext;
 import com.bumptech.glide.Glide;
 
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import tech.pursuiters.techpursuiters.uitsocieties.photos_fragment.PhotoData;
 import tech.pursuiters.techpursuiters.uitsocieties.photos_fragment.Photo_Serial;
-import com.inmobi.ads.InMobiBanner;
-import com.inmobi.sdk.InMobiSdk;
 
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
@@ -42,6 +43,7 @@ import it.sephiroth.android.library.imagezoom.ImageViewTouchBase;
 import static android.content.Intent.ACTION_VIEW;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
+import static tech.pursuiters.techpursuiters.uitsocieties.R.id.banner2;
 
 
 /**
@@ -58,7 +60,7 @@ public class PhotoDetailActivity extends AppCompatActivity {
     SectionsPagerAdapter mSectionsPagerAdapter;
     private ViewPager viewPager;
     public transient Context con;
-    InMobiBanner banner2;
+    BannerView bannerView;
     /*private RelativeLayout detail_layout;
     private TextView caption_view;*/
 
@@ -72,9 +74,12 @@ public class PhotoDetailActivity extends AppCompatActivity {
         toolbar = (Toolbar) findViewById(R.id.detail_toolbar);
         setSupportActionBar(toolbar);
 
-        InMobiSdk.init(PhotoDetailActivity.this,"6c2ca29688614264bd77f77cc38cd923");
-        banner2 = (InMobiBanner) findViewById(R.id.banner2);
-        banner2.load();
+        Appnext.init(getApplicationContext());
+        bannerView = (BannerView) findViewById(R.id.banner2);
+        BannerAdRequest banner_request = new BannerAdRequest();
+        banner_request
+                .setCategories("Action, Adventure, Racing");
+        bannerView.loadAd(banner_request);
 
 //        getSupportActionBar().setHomeButtonEnabled(true);
 //        getSupportActionBar().setDefaultDisplayHomeAsUpEnabled(true);
@@ -317,11 +322,11 @@ public class PhotoDetailActivity extends AppCompatActivity {
                 }
             };
             return target;
-        }
+        }*/
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
-    }*/
+        bannerView.destroy();
+    }
 }

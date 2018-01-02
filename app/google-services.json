@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "733327822300",
+    "firebase_url": "https://uitv-97c68.firebaseio.com",
+    "project_id": "uitv-97c68",
+    "storage_bucket": "uitv-97c68.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:733327822300:android:1b49e90bc9ea594a",
+        "android_client_info": {
+          "package_name": "tech.pursuiters.techpursuiters.uitsocieties"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "733327822300-fr5sb2qt5ebfjji0eqmg6ec6t04tdjsp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDYSHTR3p-Gi0ICAraHRb1jTfTV5wDeK1Q"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

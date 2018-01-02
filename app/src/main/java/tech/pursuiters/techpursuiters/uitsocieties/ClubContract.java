@@ -6,6 +6,8 @@ package tech.pursuiters.techpursuiters.uitsocieties;
 
 public class ClubContract  {
 
+    public static final String uiTv_LINK = "https://play.google.com/store/apps/details?id=tech.pursuiters.techpursuiters.uitsocieties&hl=en";
+
     public static final String PHOTOS_SERIAL = "photos_serial";
     public static final String PHOTO_FILE = "Photo_File";
     public static final String PHOTO_BUNDLE = "photo_bundle";
@@ -30,14 +32,20 @@ public class ClubContract  {
     public static final String TECHNOPHILIC = "738646856321850";
     public static final String TEDX_RGPV = "117643995501901";
 
+    public static final String TECH_PURSUITERS_EMAIL = "techpursuiters@gmail.com";
+    public static final String TECH_PURSUITERS_PASS = "souldopplegangers";
+
     public static final String[] CLUB_NAMES = {"AAVAHAN","ACM_RGPV","COHERENT","E_CELL","GREEN_ARMY","HACKER_EARTH","INSYNC","I_SPEAK_AALAY","MAHASANGRAM","PHOENIX","SHANKHNAAD","SRIJAN", "SUNDARBAN","TECHNOPHILIC","TEDX_RGPV"};
     public static final String[] CLUB_NAMES_VISIBLE = {"Aavahan","ACM-Student Chapter RGPV","Coherent","E-Cell","Green Army","Hacker Earth","Insync","I Speak Aalay ","Mahasangram","Phoenix","शंखनाद","Srijan","Sundarban","Technophilic","TEDx RGPV"};
     public static final String[] CLUB_IDS = {AAVAHAN,ACM_RGPV,COHERENT,E_CELL,GREEN_ARMY,HACKER_EARTH,INSYNC,I_SPEAK_AALAY,MAHASANGRAM,PHOENIX,SHANKHNAAD,SRIJAN,SUNDARBAN,TECHNOPHILIC,TEDX_RGPV};
+
+    public static final String[] REFERRAL_CODES = {"H4E7sI","oOn1ev","wbdvG1","WU7UWy","UpkGC4","uj2AYW","ASamdb","eOWkZz","TIMMvk","rC7RAY","3cS3Rf","IPKeco","80L8Sx","UXJ4mw","5z7xR6","wFTGp4","Y4AYcA","CNE99B","zJdeyM","bIv0Va","mxVdFF","1n4CqS","VhIM7g","VW0ewX","0yaLUB","n3mlq1","00QvQW","PIgVdk","9am9Qr","qwGl2W","VB2TTp","8zyOkj","f7UQ1A","YQ147e","84W2xj","iATfe5","rl9AO9","IlNp1R", "azll3c","kivM1n","y0vwD7","gj7AQg","ofEiO8","XMh0Jg","VzK1uX","ic0lQH","avv4hp","54SUqu","itqSXv","LGY0De","UCIhm3","MQ410Y","rpe5x0","I2BK11","Rvty1J","Z8UU8S","ajEJbl","SJ6w9I","bylL47","YpSwkl","BQzcfL","ABS66H","u5S4rV","PiTV7I","TlLMjH","uC4AD6","nB86nY","ywvQlW","rCJ6fS","OJTNl7"};
 
     public class UserData{
         public static final String ID = "id";
         public static final String EMAIL = "email";
     }
+
     public class UpdatesConstants{
         public static final String ID = "id";
         public static final String CAPTION = "caption";      //  ACTUALLY AN EVENT NAME

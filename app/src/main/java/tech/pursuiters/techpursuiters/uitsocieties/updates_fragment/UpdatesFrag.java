@@ -182,7 +182,6 @@ public class UpdatesFrag extends Fragment {
                 try {
                         parseJSONData(response.getJSONObject());
                         data_len = InClub.updates_data.size();
-                    //  TODO --> HANDLE RESPONSE CODES
                 }
                 catch (Exception e) {
                     Log.v("Excep* updatJSONReq---:",e.toString());
@@ -350,7 +349,6 @@ public class UpdatesFrag extends Fragment {
         isConnected = ninfo != null && ninfo.isConnected();
 
         if(!isConnected){
-//            TODO --> IMAGE WITH TEXT IN NO INTERNET
             pbar.setVisibility(GONE);
             no_data.setVisibility(GONE);
             listView.setVisibility(GONE);
@@ -417,7 +415,6 @@ public class UpdatesFrag extends Fragment {
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(con);
 
         Intent updatesFrag = new Intent(con,InClub.class);
-        //  TODO --> SET CORRECT FLAG FOR CLUBS
         updatesFrag.addFlags(EventsFrag.getFlags(clubName));
         updatesFrag.putExtra("CLUB_ID",clubID);
         updatesFrag.putExtra(ClubContract.NOTIF_UPDATE,true);

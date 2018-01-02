@@ -5,13 +5,16 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
+import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.NetworkOnMainThreadException;
 import android.support.design.widget.NavigationView;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -22,33 +25,46 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
 
 import tech.pursuiters.techpursuiters.uitsocieties.drawer.AboutTheDevelopers;
 import tech.pursuiters.techpursuiters.uitsocieties.drawer.App_info;
 
 import  tech.pursuiters.techpursuiters.uitsocieties.R;
+import tech.pursuiters.techpursuiters.uitsocieties.ecell.EcellDataModel;
+import tech.pursuiters.techpursuiters.uitsocieties.ecell.GMailSender;
+
 import com.facebook.AccessToken;
-import com.facebook.GraphRequest;
-import com.facebook.GraphResponse;
 import com.facebook.Profile;
 import com.facebook.login.LoginManager;
-import com.inmobi.sdk.InMobiSdk;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
-import org.json.JSONException;
-import org.json.JSONObject;
 
+import static android.icu.lang.UCharacter.GraphemeClusterBreak.T;
+import static android.view.View.GONE;
 import static tech.pursuiters.techpursuiters.uitsocieties.ClubContract.AAVAHAN;
 import static tech.pursuiters.techpursuiters.uitsocieties.ClubContract.ACM_RGPV;
 import static tech.pursuiters.techpursuiters.uitsocieties.ClubContract.COHERENT;
@@ -59,14 +75,20 @@ import static tech.pursuiters.techpursuiters.uitsocieties.ClubContract.INSYNC;
 import static tech.pursuiters.techpursuiters.uitsocieties.ClubContract.I_SPEAK_AALAY;
 import static tech.pursuiters.techpursuiters.uitsocieties.ClubContract.MAHASANGRAM;
 import static tech.pursuiters.techpursuiters.uitsocieties.ClubContract.PHOENIX;
+import static tech.pursuiters.techpursuiters.uitsocieties.ClubContract.REFERRAL_CODES;
 import static tech.pursuiters.techpursuiters.uitsocieties.ClubContract.SHANKHNAAD;
 import static tech.pursuiters.techpursuiters.uitsocieties.ClubContract.SRIJAN;
 import static tech.pursuiters.techpursuiters.uitsocieties.ClubContract.SUNDARBAN;
 import static tech.pursuiters.techpursuiters.uitsocieties.ClubContract.TECHNOPHILIC;
+import static tech.pursuiters.techpursuiters.uitsocieties.ClubContract.TECH_PURSUITERS_EMAIL;
+import static tech.pursuiters.techpursuiters.uitsocieties.ClubContract.TECH_PURSUITERS_PASS;
 import static tech.pursuiters.techpursuiters.uitsocieties.ClubContract.TEDX_RGPV;
 import static tech.pursuiters.techpursuiters.uitsocieties.ClubContract.UserData.EMAIL;
+import static tech.pursuiters.techpursuiters.uitsocieties.ClubContract.uiTv_LINK;
 import static tech.pursuiters.techpursuiters.uitsocieties.InClub.login;
 import static tech.pursuiters.techpursuiters.uitsocieties.InClub.login_checker;
+import static tech.pursuiters.techpursuiters.uitsocieties.R.id.update;
+import static tech.pursuiters.techpursuiters.uitsocieties.R.string.email;
 
 public class MainActivity extends AppCompatActivity implements Runnable, NavigationView.OnNavigationItemSelectedListener{
 
@@ -81,13 +103,35 @@ public class MainActivity extends AppCompatActivity implements Runnable, Navigat
     Toolbar main_toolbar;
     Toast toast;
 
+    /**     DRAWER VARIABLES    */
+    TextView promo_code;
+    TextView notification_count;
+    TextView version_name;
+    TextView version_number;
+
+    /**     ECELL VARIABLES     */
+    ArrayList<EcellDataModel> used_codes;
+    FirebaseDatabase firebaseDatabase;
+    DatabaseReference databaseReference;
+    String enteredEmail = "";
+    Date jan8th, today;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        InMobiSdk.init(MainActivity.this, "6c2ca29688614264bd77f77cc38cd923");
-        InMobiSdk.setLogLevel(InMobiSdk.LogLevel.DEBUG);
+        Bundle bundle = getIntent().getExtras();
+        if(bundle!=null)
+        if(bundle.containsKey("Update")) {
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setData(Uri.parse(uiTv_LINK));
+            if((intent.resolveActivity(getPackageManager())!=null)){
+               startActivity(intent);
+            }
+        }
+
+        readUsedCodes();
 
         main_toolbar = (Toolbar) findViewById(R.id.toolbar_main);
         setSupportActionBar(main_toolbar);
@@ -100,11 +144,28 @@ public class MainActivity extends AppCompatActivity implements Runnable, Navigat
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        notification_count=(TextView)findViewById(R.id.notification_count);
+        promo_code =(TextView) MenuItemCompat.getActionView(navigationView.getMenu().findItem(R.id.notification_event));
+        initializeCountDrawer();
+
+        if(fileChecker("r")) {
+            promo_code.setVisibility(GONE);
+            notification_count.setVisibility(GONE);
+        }
+
+
+        int versionNumber= BuildConfig.VERSION_CODE;
+        version_number = (TextView)findViewById(R.id.version_number);
+        version_number.setText("Current App Version : "+versionNumber);
+
+        String versionName = BuildConfig.VERSION_NAME;
+        version_name=(TextView)findViewById(R.id.version_name);
+        version_name.setText("Version Name : "+versionName);
+
         new MyWidthThread().start();
 
         club_data = new ArrayList<>();
 
-//        TODO --> ADD THE PHOTOS WITH DIFFERENT DPIs
         club_data.add(new Data1(R.drawable.aavahan,"Aavahan",AAVAHAN,1));
         club_data.add(new Data1(R.drawable.acm,"ACM Student Chapter RGPV",ACM_RGPV,2));
         club_data.add(new Data1(R.drawable.coherent,"Coherent",COHERENT,3));
@@ -134,92 +195,252 @@ public class MainActivity extends AppCompatActivity implements Runnable, Navigat
         mainAdap = new MyArrayAdap(this,club_data,R.layout.main_image_layout_grid);
         mainRecyclerView.setAdapter(mainAdap);
 
-        ecellDialog();
+
+        ecellPromo();
 
         readFile();
     }
 
-    private void ecellDialog(){
+    private void readUsedCodes(){
+        try {
+            jan8th  = new SimpleDateFormat("yyMMddHHmmssZ").parse("180108000000+0530");
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        today = new Date();
 
-        AlertDialog.Builder ecellDialog = new AlertDialog.Builder(MainActivity.this);
+        AsyncTask readDatabase = new AsyncTask() {
+            @Override
+            protected Object doInBackground(Object[] objects) {
+                if(used_codes!=null)
+                if(!used_codes.isEmpty())
+                    used_codes.clear();
+                firebaseDatabase = FirebaseDatabase.getInstance();
+                databaseReference = firebaseDatabase.getReference().child("used_referrals");
+
+                used_codes = new ArrayList<>();
+
+                ChildEventListener childEventListener = new ChildEventListener() {
+                    @Override
+                    public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                        used_codes.add(dataSnapshot.getValue(EcellDataModel.class));
+                        Log.v("Read1---",String.valueOf(used_codes.size()));
+                    }
+                    @Override
+                    public void onChildChanged(DataSnapshot dataSnapshot, String s) {}
+                    @Override
+                    public void onChildRemoved(DataSnapshot dataSnapshot) {}
+                    @Override
+                    public void onChildMoved(DataSnapshot dataSnapshot, String s) {}
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {}
+                };
+
+                databaseReference.addChildEventListener(childEventListener);
+
+
+                return null;
+            }
+        };
+        readDatabase.execute();
+    }
+
+    private void ecellPromo(){
+//        TODO --> CHANGE THE DATE
+        if(today.compareTo(jan8th)<0)
+            if(!fileChecker("r"))           /** IF YOU ARE REGISTERED*/
+                if(!fileChecker("2"))       /** IF YOU PRESSED CLOSE TWO TIMES*/
+                        ecellDialog();
+    }
+
+    private void ecellDialog(){
+        final AlertDialog.Builder ecellDialog = new AlertDialog.Builder(MainActivity.this);
         LayoutInflater inflater = LayoutInflater.from(MainActivity.this);
         final View poster = inflater.inflate(R.layout.ecell_image,null);
         ecellDialog.setView(poster);
         ecellDialog.setPositiveButton("Get Promo Code", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                login_checker();
-                if(login){
-                    emailGraphRequest(AccessToken.getCurrentAccessToken());
-                }
+                if(isConnectedStatic(getApplicationContext())) {
+                registration();
+            }
                 else{
+                Toast.makeText(getApplicationContext(),getString(R.string.no_internet_toast),Toast.LENGTH_SHORT).show();
+            }
 
+        }
+    });
+
+        String close;
+        if(fileChecker("1"))
+            close = "Don't show again";
+        else
+            close = "Close";
+
+        ecellDialog.setNegativeButton(close, new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialogInterface, int i) {
+            if(fileChecker("1")){
+                if(!fileChecker("2")){
+                    fileGenerator("2");
                 }
-                Toast.makeText(MainActivity.this,"Registering",Toast.LENGTH_SHORT).show();
             }
-        });
-        ecellDialog.setNegativeButton("Close", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                Toast.makeText(MainActivity.this,"Closing",Toast.LENGTH_SHORT).show();
+            else{
+                fileGenerator("1");
             }
-        });
+
+        }
+    });
         ecellDialog.show();
+
     }
 
-    void emailGraphRequest(final AccessToken currAccessToken){
-        Bundle parameters = new Bundle();
-        parameters.putString("fields", "id, first_name, last_name, email,gender, birthday, location");
-
-        GraphRequest request = GraphRequest.newMeRequest(currAccessToken,new GraphRequest.GraphJSONObjectCallback(){
-            @Override
-            public void onCompleted(JSONObject object, GraphResponse response) {
-                saveData(response.getJSONObject());
+    private void registration(){    /** CHECK FOR REFERRAL CODES */
+        int p,q;
+        for(p = 0; p < REFERRAL_CODES.length; p++){
+            for(q = 0; q < used_codes.size(); q++){
+                if(REFERRAL_CODES[p].equals(used_codes.get(q).getReferral())){
+                    break;
+                }
             }
+            if(q==used_codes.size()) {
+//                TODO --> REGISTER
+                sendEmail(REFERRAL_CODES[p]);
+                break;
+            }
+        }
+        if(p==REFERRAL_CODES.length){
+//            TODO --> NO CODES LEFT TOAST
+            Toast.makeText(getApplicationContext(),"Sorry, no more promo codes left",Toast.LENGTH_SHORT).show();
+        }
 
+        Log.v("got---",String.valueOf(used_codes.size()));
+
+    }
+
+    private void sendEmail(final String referralCode){  /** DIALOG BOX TO ENTER THE EMAIL */
+        AlertDialog.Builder editText = new AlertDialog.Builder(MainActivity.this);
+        LayoutInflater inflater = LayoutInflater.from(MainActivity.this);
+        final View poster = inflater.inflate(R.layout.ecell_get_email,null);
+        editText.setView(poster);
+
+        final EditText email = poster.findViewById(R.id.email_text);
+        email.setText(enteredEmail);
+        editText.setNegativeButton("DONE", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+//                TODO --> CHECK IF EMAIL EXISTS IN THE DATABASE
+                enteredEmail = email.getText().toString();
+                if(isEmailValid()){
+                    confirmEmail(referralCode);
+                }
+                else{
+                    Toast.makeText(getApplicationContext(),"Enter a valid Email-Address",Toast.LENGTH_LONG).show();
+                    sendEmail(referralCode);
+                }
+            }
         });
+        editText.show();
+    }
 
-        request.setParameters(parameters);
-        request.executeAndWait();
+    private void confirmEmail(final String referralcode){       /** CONFIRM THAT EMAIL ENTERED IS CORRECT */
+        AlertDialog.Builder confirmEmail = new AlertDialog.Builder(MainActivity.this);
+        confirmEmail.setMessage("Are you sure the email entered is correct: " + enteredEmail + "\n\nNote: You're allowed to register from this device only once.");
+        confirmEmail.setPositiveButton("SEND", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                    checkEmail(referralcode);
+            }
+        });
+        confirmEmail.setNegativeButton("CHANGE", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                sendEmail(referralcode);
+            }
+        });
+        confirmEmail.show();
+    }
 
-        /*AsyncTask register = new AsyncTask() {
+    private Boolean isEmailValid(){
+        return android.util.Patterns.EMAIL_ADDRESS.matcher(enteredEmail).matches();
+    }
+
+    private void checkEmail(String referralCode){  /** CHECK IF EMAIL ALREADY EXISTS */
+        Boolean emailExists = false;
+        for (int q = 0; q < used_codes.size(); q++) {
+            if (used_codes.get(q).getEmail().equals(enteredEmail)) {
+                Toast.makeText(getApplicationContext(), "Your email is already registered", Toast.LENGTH_LONG).show();
+                emailExists = true;
+                fileGenerator("2");
+                break;
+            }
+        }
+            if(!emailExists) {
+                sendInbuiltEmail(referralCode);
+                Toast.makeText(getApplicationContext(),"Your email is being sent...",Toast.LENGTH_SHORT).show();
+            }
+    }
+
+    Boolean error = false;
+
+    private void sendInbuiltEmail(final String referralCode){    /** SEND A NON USER INTERACTIVE EMAIL */
+
+        final String subject = "Discount Code - KeyNote Special With Tanmay Bakshi";
+        final String body = "Greetings from Team TechPursuiters\n\n" + "Thank You For requesting the Discount Code for Keynote Special With Tanmay Bakshi an Event by Entrepreneurship Cell RGPV\n\n" + "Your Discount Code is --> " + referralCode + "\n\n" + "How to use the Code:\n" + "Go to –   https://goo.gl/yrwW1Q\n" + "Click On Book Now\n" + "Select the Number of Tickets\n" + "Click an “ Got a Discount Code “ and enter the above-mentioned code\n" + "Get a Flat Discount of INR 50/- \n\n" + "Feel Free to contact us for any technical assistance\n" + "9174817068\n\n" + "Thank You";
+
+        AsyncTask sendEmail = new AsyncTask() {
             @Override
             protected Object doInBackground(Object[] objects) {
-                new GraphRequest.newMeRequest(currAccessToken,new GraphRequest.GraphJSONObjectCallback(){
-                    @Override
-                    public void onCompleted(JSONObject object, GraphResponse response) {
-                        saveData(response.getJSONObject());
-                    }
+                try {
+                    GMailSender sender = new GMailSender(TECH_PURSUITERS_EMAIL,TECH_PURSUITERS_PASS);
+                    sender.sendMail(subject,
+                            body,
+                            TECH_PURSUITERS_EMAIL,
+                            enteredEmail);
 
-                });
+                    databaseReference.push().setValue(new EcellDataModel(referralCode, enteredEmail));
+
+                } catch (Exception e) {
+                    error = true;
+                    Log.e("SendMail", e.getMessage(), e);
+                }
                 return null;
             }
 
             @Override
             protected void onPostExecute(Object o) {
-                super.onPostExecute(o);
+                if(!error) {
+                    AlertDialog.Builder emailSent = new AlertDialog.Builder(MainActivity.this);
+                    emailSent.setMessage("An email has been sent to your email ID with a Discount Code. Thank you for your interest in the event.");
+                    emailSent.setPositiveButton("CLOSE", null);
+                    emailSent.show();
+                    fileGenerator("2");
+                    fileGenerator("r");
+                }
+                else
+                    Toast.makeText(getApplicationContext(),"An error occurred. Please try again later",Toast.LENGTH_LONG).show();
             }
         };
+        sendEmail.execute();
 
-        register.execute();*/
     }
 
-    private void saveData(JSONObject dataObject){
-        String email, referralURL;
-        try {
-            if(dataObject.has(EMAIL)&&!dataObject.isNull(EMAIL)) {
-                email = dataObject.getString(EMAIL);
-                Log.v("email---",email);
-//                ADD REFERRAL CODE
-//                referralURL = getReferralURL();
+    private void fileGenerator(String flag){
+        File ecellFile = new File(getApplicationContext().getFilesDir(),"ecell_file"+flag);
+        if(!ecellFile.exists())
+            try {
+                ecellFile.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-            else{
-                Log.v("email---","no email");
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
     }
+
+    private Boolean fileChecker(String flag){
+        File ecellFile = new File(getApplicationContext().getFilesDir(),"ecell_file"+flag);
+        return ecellFile.exists();
+    }
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -341,8 +562,26 @@ public class MainActivity extends AppCompatActivity implements Runnable, Navigat
         } else if (id == R.id.app_info) {
             Intent intent = new Intent(this,App_info.class);
             startActivity(intent);
+        }
 
-        } /*else if (id == R.id.settings) {
+        else if (id== R.id.notification_event){
+            promo_code.setVisibility(GONE);
+            notification_count.setVisibility(GONE);
+            readUsedCodes();
+
+            if(today.compareTo(jan8th)<0) {
+                if (!fileChecker("r"))
+                    ecellDialog();
+                else {
+                    Toast.makeText(getApplicationContext(), "You have already registered", Toast.LENGTH_SHORT).show();
+                }
+            }
+            else {
+                Toast.makeText(getApplicationContext(), "Promo codes aren't available now", Toast.LENGTH_SHORT).show();
+            }
+
+        }
+        /*else if (id == R.id.settings) {
             Intent intent=new Intent(this,Settings.class);
             startActivity(intent);
         }*/
@@ -351,7 +590,7 @@ public class MainActivity extends AppCompatActivity implements Runnable, Navigat
             Intent intent = new Intent(Intent.ACTION_SEND);
             intent.setType("text/plain");
             intent.putExtra(Intent.EXTRA_SUBJECT,getString(R.string.share));
-            intent.putExtra(Intent.EXTRA_TEXT,"https://play.google.com/store/apps/details?id=tech.pursuiters.techpursuiters.uitsocieties&hl=en");
+            intent.putExtra(Intent.EXTRA_TEXT,uiTv_LINK);
             startActivity(Intent.createChooser(intent, "Share app via"));
             startActivity(Intent.createChooser(intent, "Share link!"));
         }
@@ -386,7 +625,6 @@ public class MainActivity extends AppCompatActivity implements Runnable, Navigat
                                     LoginManager.getInstance().logOut();
                                     Toast.makeText(getApplicationContext(), "Logged out", Toast.LENGTH_SHORT).show();
                                     login_checker();
-//                                viewpgr.getAdapter().notifyDataSetChanged();
                                 }
                             })
                             .setNegativeButton(cancel, null);
@@ -411,15 +649,15 @@ public class MainActivity extends AppCompatActivity implements Runnable, Navigat
 
         else if (id == R.id.rate_it) {
             Intent intent = new Intent(Intent.ACTION_VIEW);
-            intent.setData(Uri.parse("https://play.google.com/store/apps/details?id=tech.pursuiters.techpursuiters.uitsocieties&hl=en"));
+            intent.setData(Uri.parse(uiTv_LINK));
             if((intent.resolveActivity(getPackageManager())!=null)){
                 startActivity(intent);
             }
         }
 
-        else if (id == R.id.update) {
+        else if (id == update) {
             Intent intent = new Intent(Intent.ACTION_VIEW);
-            intent.setData(Uri.parse("https://play.google.com/store/apps/details?id=tech.pursuiters.techpursuiters.uitsocieties&hl=en"));
+            intent.setData(Uri.parse(uiTv_LINK));
             if((intent.resolveActivity(getPackageManager())!=null)){
                 startActivity(intent);
             }
@@ -429,5 +667,14 @@ public class MainActivity extends AppCompatActivity implements Runnable, Navigat
         drawer.closeDrawer(GravityCompat.START);
 
         return true;
+    }
+
+    private void initializeCountDrawer(){
+
+        promo_code.setTextColor(ContextCompat.getColor(getApplicationContext(),R.color.red));
+        promo_code.setText("Hurry up!");
+        promo_code.setTextSize(13);
+        promo_code.setGravity(Gravity.CENTER_VERTICAL);
+        promo_code.setTypeface(null, Typeface.BOLD);
     }
 }

@@ -6,14 +6,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 
 import com.afollestad.easyvideoplayer.EasyVideoCallback;
 import com.afollestad.easyvideoplayer.EasyVideoPlayer;
 
 import tech.pursuiters.techpursuiters.uitsocieties.R;
-import com.inmobi.ads.InMobiBanner;
-import com.inmobi.sdk.InMobiSdk;
+
+import com.appnext.banners.BannerAdRequest;
+import com.appnext.banners.BannerView;
+import com.appnext.base.Appnext;
 
 import java.util.ArrayList;
 
@@ -21,6 +24,7 @@ import tech.pursuiters.techpursuiters.uitsocieties.ClubContract;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
+import static tech.pursuiters.techpursuiters.uitsocieties.R.id.banner3;
 
 public class VideosDetail extends AppCompatActivity implements EasyVideoCallback {
 
@@ -30,7 +34,7 @@ public class VideosDetail extends AppCompatActivity implements EasyVideoCallback
     int pos;
     TextView error;
     Toolbar toolbar;
-    InMobiBanner banner3;
+    BannerView bannerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,11 +44,20 @@ public class VideosDetail extends AppCompatActivity implements EasyVideoCallback
         toolbar = (Toolbar) findViewById(R.id.detail_toolbar_v);
         setSupportActionBar(toolbar);
 
-        InMobiSdk.init(VideosDetail.this, "6c2ca29688614264bd77f77cc38cd923");
-        banner3 = (InMobiBanner) findViewById(R.id.banner3);
-        banner3.load();
-//        InMobiSdk.setLogLevel(InMobiSdk.LogLevel.DEBUG);
+        Appnext.init(getApplicationContext());
+        bannerView = (BannerView) findViewById(R.id.banner3);
+        BannerAdRequest banner_request = new BannerAdRequest();
+        banner_request
+                .setCategories("Action, Adventure, Racing");
+        bannerView.loadAd(banner_request);
 
+        bannerView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(easyVideoPlayer.isPlaying())
+                    easyVideoPlayer.stop();
+            }
+        });
 //      TODO -> ADD AUDIO FOCUS
 
         String source_url;
@@ -115,6 +128,12 @@ public class VideosDetail extends AppCompatActivity implements EasyVideoCallback
     @Override
     public void onSubmit(EasyVideoPlayer player, Uri source) {
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        bannerView.destroy();
     }
 
     /*@Override

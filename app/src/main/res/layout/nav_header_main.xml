@@ -17,7 +17,7 @@
         android:layout_height="wrap_content"
         android:text="EXPLORE.."
         android:layout_centerVertical="true"
-        android:textSize="24dp"
+        android:textSize="24sp"
         android:textStyle="bold"
         android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
 
