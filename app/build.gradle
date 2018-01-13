@@ -7,8 +7,8 @@ android {
         applicationId "tech.pursuiters.techpursuiters.uitsocieties"
         minSdkVersion 16
         targetSdkVersion 26
-        versionCode 9
-        versionName "2.1.0"
+        versionCode 10
+        versionName "2.1.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
     }

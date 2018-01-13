@@ -10,6 +10,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.os.NetworkOnMainThreadException;
 import android.support.design.widget.NavigationView;
 import android.support.v4.content.ContextCompat;
@@ -45,22 +46,16 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
+import java.util.concurrent.RunnableFuture;
 
 import tech.pursuiters.techpursuiters.uitsocieties.drawer.AboutTheDevelopers;
 import tech.pursuiters.techpursuiters.uitsocieties.drawer.App_info;
 
 import  tech.pursuiters.techpursuiters.uitsocieties.R;
-import tech.pursuiters.techpursuiters.uitsocieties.ecell.EcellDataModel;
-import tech.pursuiters.techpursuiters.uitsocieties.ecell.GMailSender;
 
 import com.facebook.AccessToken;
 import com.facebook.Profile;
 import com.facebook.login.LoginManager;
-import com.google.firebase.database.ChildEventListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 
 import static android.icu.lang.UCharacter.GraphemeClusterBreak.T;
@@ -75,7 +70,6 @@ import static tech.pursuiters.techpursuiters.uitsocieties.ClubContract.INSYNC;
 import static tech.pursuiters.techpursuiters.uitsocieties.ClubContract.I_SPEAK_AALAY;
 import static tech.pursuiters.techpursuiters.uitsocieties.ClubContract.MAHASANGRAM;
 import static tech.pursuiters.techpursuiters.uitsocieties.ClubContract.PHOENIX;
-import static tech.pursuiters.techpursuiters.uitsocieties.ClubContract.REFERRAL_CODES;
 import static tech.pursuiters.techpursuiters.uitsocieties.ClubContract.SHANKHNAAD;
 import static tech.pursuiters.techpursuiters.uitsocieties.ClubContract.SRIJAN;
 import static tech.pursuiters.techpursuiters.uitsocieties.ClubContract.SUNDARBAN;
@@ -104,17 +98,9 @@ public class MainActivity extends AppCompatActivity implements Runnable, Navigat
     Toast toast;
 
     /**     DRAWER VARIABLES    */
-    TextView promo_code;
-    TextView notification_count;
+    TextView contact_promo;
     TextView version_name;
     TextView version_number;
-
-    /**     ECELL VARIABLES     */
-    ArrayList<EcellDataModel> used_codes;
-    FirebaseDatabase firebaseDatabase;
-    DatabaseReference databaseReference;
-    String enteredEmail = "";
-    Date jan8th, today;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,16 +108,22 @@ public class MainActivity extends AppCompatActivity implements Runnable, Navigat
         setContentView(R.layout.activity_main);
 
         Bundle bundle = getIntent().getExtras();
-        if(bundle!=null)
-        if(bundle.containsKey("Update")) {
-            Intent intent = new Intent(Intent.ACTION_VIEW);
-            intent.setData(Uri.parse(uiTv_LINK));
-            if((intent.resolveActivity(getPackageManager())!=null)){
-               startActivity(intent);
+        if(bundle!=null) {
+            if (bundle.containsKey("Update")) {
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(Uri.parse(uiTv_LINK));
+                if ((intent.resolveActivity(getPackageManager()) != null)) {
+                    startActivity(intent);
+                }
+            } else if (bundle.containsKey("Link")){
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(Uri.parse(bundle.getString("Link")));
+                if ((intent.resolveActivity(getPackageManager()) != null)) {
+                    startActivity(intent);
+                }
             }
         }
 
-        readUsedCodes();
 
         main_toolbar = (Toolbar) findViewById(R.id.toolbar_main);
         setSupportActionBar(main_toolbar);
@@ -144,15 +136,8 @@ public class MainActivity extends AppCompatActivity implements Runnable, Navigat
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        notification_count=(TextView)findViewById(R.id.notification_count);
-        promo_code =(TextView) MenuItemCompat.getActionView(navigationView.getMenu().findItem(R.id.notification_event));
+        contact_promo = (TextView) MenuItemCompat.getActionView(navigationView.getMenu().findItem(R.id.contact_promo));
         initializeCountDrawer();
-
-        if(fileChecker("r")) {
-            promo_code.setVisibility(GONE);
-            notification_count.setVisibility(GONE);
-        }
-
 
         int versionNumber= BuildConfig.VERSION_CODE;
         version_number = (TextView)findViewById(R.id.version_number);
@@ -174,9 +159,9 @@ public class MainActivity extends AppCompatActivity implements Runnable, Navigat
 
         club_data.add(new Data1(R.drawable.ecell,"E-Cell",E_CELL,4));
         club_data.add(new Data1(R.drawable.green_army,"Green Army",GREEN_ARMY,5));
-        club_data.add(new Data1(R.drawable.hacker_earth,"Hacker Earth",HACKER_EARTH,6));
+        club_data.add(new Data1(R.drawable.hacker_earth,"HackerEarth",HACKER_EARTH,6));
         club_data.add(new Data1(R.drawable.insync,"Insync",INSYNC,7));
-        club_data.add(new Data1(R.drawable.ispeakaalay,"I Speak Aalay",I_SPEAK_AALAY,8));
+        club_data.add(new Data1(R.drawable.ispeakaalay,"ISpeakAalay",I_SPEAK_AALAY,8));
         club_data.add(new Data1(R.drawable.mahasangram,"Mahasangram",MAHASANGRAM,9));
         club_data.add(new Data1(R.drawable.phoenix,"Phoenix",PHOENIX,10));
         club_data.add(new Data1(R.drawable.shankhnaad,"शंखनाद",SHANKHNAAD,11));
@@ -195,252 +180,8 @@ public class MainActivity extends AppCompatActivity implements Runnable, Navigat
         mainAdap = new MyArrayAdap(this,club_data,R.layout.main_image_layout_grid);
         mainRecyclerView.setAdapter(mainAdap);
 
-
-        ecellPromo();
-
         readFile();
     }
-
-    private void readUsedCodes(){
-        try {
-            jan8th  = new SimpleDateFormat("yyMMddHHmmssZ").parse("180108000000+0530");
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        today = new Date();
-
-        AsyncTask readDatabase = new AsyncTask() {
-            @Override
-            protected Object doInBackground(Object[] objects) {
-                if(used_codes!=null)
-                if(!used_codes.isEmpty())
-                    used_codes.clear();
-                firebaseDatabase = FirebaseDatabase.getInstance();
-                databaseReference = firebaseDatabase.getReference().child("used_referrals");
-
-                used_codes = new ArrayList<>();
-
-                ChildEventListener childEventListener = new ChildEventListener() {
-                    @Override
-                    public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                        used_codes.add(dataSnapshot.getValue(EcellDataModel.class));
-                        Log.v("Read1---",String.valueOf(used_codes.size()));
-                    }
-                    @Override
-                    public void onChildChanged(DataSnapshot dataSnapshot, String s) {}
-                    @Override
-                    public void onChildRemoved(DataSnapshot dataSnapshot) {}
-                    @Override
-                    public void onChildMoved(DataSnapshot dataSnapshot, String s) {}
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {}
-                };
-
-                databaseReference.addChildEventListener(childEventListener);
-
-
-                return null;
-            }
-        };
-        readDatabase.execute();
-    }
-
-    private void ecellPromo(){
-//        TODO --> CHANGE THE DATE
-        if(today.compareTo(jan8th)<0)
-            if(!fileChecker("r"))           /** IF YOU ARE REGISTERED*/
-                if(!fileChecker("2"))       /** IF YOU PRESSED CLOSE TWO TIMES*/
-                        ecellDialog();
-    }
-
-    private void ecellDialog(){
-        final AlertDialog.Builder ecellDialog = new AlertDialog.Builder(MainActivity.this);
-        LayoutInflater inflater = LayoutInflater.from(MainActivity.this);
-        final View poster = inflater.inflate(R.layout.ecell_image,null);
-        ecellDialog.setView(poster);
-        ecellDialog.setPositiveButton("Get Promo Code", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                if(isConnectedStatic(getApplicationContext())) {
-                registration();
-            }
-                else{
-                Toast.makeText(getApplicationContext(),getString(R.string.no_internet_toast),Toast.LENGTH_SHORT).show();
-            }
-
-        }
-    });
-
-        String close;
-        if(fileChecker("1"))
-            close = "Don't show again";
-        else
-            close = "Close";
-
-        ecellDialog.setNegativeButton(close, new DialogInterface.OnClickListener() {
-        @Override
-        public void onClick(DialogInterface dialogInterface, int i) {
-            if(fileChecker("1")){
-                if(!fileChecker("2")){
-                    fileGenerator("2");
-                }
-            }
-            else{
-                fileGenerator("1");
-            }
-
-        }
-    });
-        ecellDialog.show();
-
-    }
-
-    private void registration(){    /** CHECK FOR REFERRAL CODES */
-        int p,q;
-        for(p = 0; p < REFERRAL_CODES.length; p++){
-            for(q = 0; q < used_codes.size(); q++){
-                if(REFERRAL_CODES[p].equals(used_codes.get(q).getReferral())){
-                    break;
-                }
-            }
-            if(q==used_codes.size()) {
-//                TODO --> REGISTER
-                sendEmail(REFERRAL_CODES[p]);
-                break;
-            }
-        }
-        if(p==REFERRAL_CODES.length){
-//            TODO --> NO CODES LEFT TOAST
-            Toast.makeText(getApplicationContext(),"Sorry, no more promo codes left",Toast.LENGTH_SHORT).show();
-        }
-
-        Log.v("got---",String.valueOf(used_codes.size()));
-
-    }
-
-    private void sendEmail(final String referralCode){  /** DIALOG BOX TO ENTER THE EMAIL */
-        AlertDialog.Builder editText = new AlertDialog.Builder(MainActivity.this);
-        LayoutInflater inflater = LayoutInflater.from(MainActivity.this);
-        final View poster = inflater.inflate(R.layout.ecell_get_email,null);
-        editText.setView(poster);
-
-        final EditText email = poster.findViewById(R.id.email_text);
-        email.setText(enteredEmail);
-        editText.setNegativeButton("DONE", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-//                TODO --> CHECK IF EMAIL EXISTS IN THE DATABASE
-                enteredEmail = email.getText().toString();
-                if(isEmailValid()){
-                    confirmEmail(referralCode);
-                }
-                else{
-                    Toast.makeText(getApplicationContext(),"Enter a valid Email-Address",Toast.LENGTH_LONG).show();
-                    sendEmail(referralCode);
-                }
-            }
-        });
-        editText.show();
-    }
-
-    private void confirmEmail(final String referralcode){       /** CONFIRM THAT EMAIL ENTERED IS CORRECT */
-        AlertDialog.Builder confirmEmail = new AlertDialog.Builder(MainActivity.this);
-        confirmEmail.setMessage("Are you sure the email entered is correct: " + enteredEmail + "\n\nNote: You're allowed to register from this device only once.");
-        confirmEmail.setPositiveButton("SEND", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                    checkEmail(referralcode);
-            }
-        });
-        confirmEmail.setNegativeButton("CHANGE", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                sendEmail(referralcode);
-            }
-        });
-        confirmEmail.show();
-    }
-
-    private Boolean isEmailValid(){
-        return android.util.Patterns.EMAIL_ADDRESS.matcher(enteredEmail).matches();
-    }
-
-    private void checkEmail(String referralCode){  /** CHECK IF EMAIL ALREADY EXISTS */
-        Boolean emailExists = false;
-        for (int q = 0; q < used_codes.size(); q++) {
-            if (used_codes.get(q).getEmail().equals(enteredEmail)) {
-                Toast.makeText(getApplicationContext(), "Your email is already registered", Toast.LENGTH_LONG).show();
-                emailExists = true;
-                fileGenerator("2");
-                break;
-            }
-        }
-            if(!emailExists) {
-                sendInbuiltEmail(referralCode);
-                Toast.makeText(getApplicationContext(),"Your email is being sent...",Toast.LENGTH_SHORT).show();
-            }
-    }
-
-    Boolean error = false;
-
-    private void sendInbuiltEmail(final String referralCode){    /** SEND A NON USER INTERACTIVE EMAIL */
-
-        final String subject = "Discount Code - KeyNote Special With Tanmay Bakshi";
-        final String body = "Greetings from Team TechPursuiters\n\n" + "Thank You For requesting the Discount Code for Keynote Special With Tanmay Bakshi an Event by Entrepreneurship Cell RGPV\n\n" + "Your Discount Code is --> " + referralCode + "\n\n" + "How to use the Code:\n" + "Go to –   https://goo.gl/yrwW1Q\n" + "Click On Book Now\n" + "Select the Number of Tickets\n" + "Click an “ Got a Discount Code “ and enter the above-mentioned code\n" + "Get a Flat Discount of INR 50/- \n\n" + "Feel Free to contact us for any technical assistance\n" + "9174817068\n\n" + "Thank You";
-
-        AsyncTask sendEmail = new AsyncTask() {
-            @Override
-            protected Object doInBackground(Object[] objects) {
-                try {
-                    GMailSender sender = new GMailSender(TECH_PURSUITERS_EMAIL,TECH_PURSUITERS_PASS);
-                    sender.sendMail(subject,
-                            body,
-                            TECH_PURSUITERS_EMAIL,
-                            enteredEmail);
-
-                    databaseReference.push().setValue(new EcellDataModel(referralCode, enteredEmail));
-
-                } catch (Exception e) {
-                    error = true;
-                    Log.e("SendMail", e.getMessage(), e);
-                }
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(Object o) {
-                if(!error) {
-                    AlertDialog.Builder emailSent = new AlertDialog.Builder(MainActivity.this);
-                    emailSent.setMessage("An email has been sent to your email ID with a Discount Code. Thank you for your interest in the event.");
-                    emailSent.setPositiveButton("CLOSE", null);
-                    emailSent.show();
-                    fileGenerator("2");
-                    fileGenerator("r");
-                }
-                else
-                    Toast.makeText(getApplicationContext(),"An error occurred. Please try again later",Toast.LENGTH_LONG).show();
-            }
-        };
-        sendEmail.execute();
-
-    }
-
-    private void fileGenerator(String flag){
-        File ecellFile = new File(getApplicationContext().getFilesDir(),"ecell_file"+flag);
-        if(!ecellFile.exists())
-            try {
-                ecellFile.createNewFile();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-    }
-
-    private Boolean fileChecker(String flag){
-        File ecellFile = new File(getApplicationContext().getFilesDir(),"ecell_file"+flag);
-        return ecellFile.exists();
-    }
-
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -533,13 +274,27 @@ public class MainActivity extends AppCompatActivity implements Runnable, Navigat
             return true;
     }
 
+    boolean doubleBack = false;
+
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
+            if(doubleBack) {
+                super.onBackPressed();
+                return;
+            }
+            doubleBack = true;
+            Toast.makeText(getApplicationContext(),"Press again to exit",Toast.LENGTH_SHORT).show();
+
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    doubleBack = false;
+                }
+            },2000);
         }
     }
 
@@ -564,27 +319,17 @@ public class MainActivity extends AppCompatActivity implements Runnable, Navigat
             startActivity(intent);
         }
 
-        else if (id== R.id.notification_event){
-            promo_code.setVisibility(GONE);
-            notification_count.setVisibility(GONE);
-            readUsedCodes();
-
-            if(today.compareTo(jan8th)<0) {
-                if (!fileChecker("r"))
-                    ecellDialog();
-                else {
-                    Toast.makeText(getApplicationContext(), "You have already registered", Toast.LENGTH_SHORT).show();
-                }
-            }
-            else {
-                Toast.makeText(getApplicationContext(), "Promo codes aren't available now", Toast.LENGTH_SHORT).show();
-            }
-
-        }
-        /*else if (id == R.id.settings) {
-            Intent intent=new Intent(this,Settings.class);
+        else if (id == R.id.contact_promo) {
+            Intent intent = new Intent(Intent.ACTION_SENDTO);
+            intent.setData(Uri.parse("mailto:techpursuiters@gmail.com"));
             startActivity(intent);
-        }*/
+        }
+
+        else if (id == R.id.feedback) {
+            Intent intent = new Intent(Intent.ACTION_SENDTO);
+            intent.setData(Uri.parse("mailto:techpursuiters@gmail.com"));
+            startActivity(intent);
+        }
 
         else if (id == R.id.share_app) {
             Intent intent = new Intent(Intent.ACTION_SEND);
@@ -592,7 +337,22 @@ public class MainActivity extends AppCompatActivity implements Runnable, Navigat
             intent.putExtra(Intent.EXTRA_SUBJECT,getString(R.string.share));
             intent.putExtra(Intent.EXTRA_TEXT,uiTv_LINK);
             startActivity(Intent.createChooser(intent, "Share app via"));
-            startActivity(Intent.createChooser(intent, "Share link!"));
+        }
+
+        else if (id == R.id.rate_it) {
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setData(Uri.parse(uiTv_LINK));
+            if((intent.resolveActivity(getPackageManager())!=null)){
+                startActivity(intent);
+            }
+        }
+
+        else if (id == update) {
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setData(Uri.parse(uiTv_LINK));
+            if((intent.resolveActivity(getPackageManager())!=null)){
+                startActivity(intent);
+            }
         }
 
         else if (id == R.id.log_out) {
@@ -640,29 +400,6 @@ public class MainActivity extends AppCompatActivity implements Runnable, Navigat
         }
 
 
-        else if (id == R.id.feedback) {
-            Intent intent = new Intent(Intent.ACTION_SENDTO);
-            intent.setData(Uri.parse("mailto:techpursuiters@gmail.com"));
-            startActivity(intent);
-
-        }
-
-        else if (id == R.id.rate_it) {
-            Intent intent = new Intent(Intent.ACTION_VIEW);
-            intent.setData(Uri.parse(uiTv_LINK));
-            if((intent.resolveActivity(getPackageManager())!=null)){
-                startActivity(intent);
-            }
-        }
-
-        else if (id == update) {
-            Intent intent = new Intent(Intent.ACTION_VIEW);
-            intent.setData(Uri.parse(uiTv_LINK));
-            if((intent.resolveActivity(getPackageManager())!=null)){
-                startActivity(intent);
-            }
-        }
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
 
@@ -670,11 +407,11 @@ public class MainActivity extends AppCompatActivity implements Runnable, Navigat
     }
 
     private void initializeCountDrawer(){
-
-        promo_code.setTextColor(ContextCompat.getColor(getApplicationContext(),R.color.red));
-        promo_code.setText("Hurry up!");
-        promo_code.setTextSize(13);
-        promo_code.setGravity(Gravity.CENTER_VERTICAL);
-        promo_code.setTypeface(null, Typeface.BOLD);
+        contact_promo.setTextColor(ContextCompat.getColor(getApplicationContext(),R.color.red));
+        contact_promo.setText("New");
+        contact_promo.setTextSize(13);
+        contact_promo.setGravity(Gravity.CENTER_VERTICAL);
+        contact_promo.setTypeface(null, Typeface.BOLD);
     }
+
 }

@@ -14,15 +14,11 @@
             android:title="About the App"
             android:icon="@drawable/ic_info_outline_black_24dp"/>
 
-        <item android:id="@+id/notification_event"
-            android:title="Get promo code here"
-            android:icon="@drawable/ic_card_giftcard_black_24dp"
+        <item android:id="@+id/contact_promo"
+            android:title="Contact for Promotions"
+            android:icon="@drawable/ic_contact_mail_black_24dp"
             app:actionViewClass= "android.widget.TextView"
             />
-
-        <!--<item android:id="@+id/settings"
-            android:title="Settings"
-            android:icon="@drawable/ic_settings_black_24dp"/>-->
 
         <item android:id="@+id/feedback"
             android:title="Feedback"

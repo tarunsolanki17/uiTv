@@ -8,12 +8,14 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.URLUtil;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import tech.pursuiters.techpursuiters.uitsocieties.InClub;
+import tech.pursuiters.techpursuiters.uitsocieties.R;
 
 import static com.facebook.FacebookSdk.getApplicationContext;
 
@@ -60,7 +62,7 @@ public class AboutFrag extends Fragment {
         final String theWebsite = website.getText().toString();
         final String theFbLink=fb_link.getText().toString();
 
-        LinearLayout mission_layout=(LinearLayout)view.findViewById(tech.pursuiters.techpursuiters.uitsocieties.R.id.mission_layout);
+        LinearLayout mission_layout=(LinearLayout)view.findViewById(R.id.mission_layout);
         LinearLayout about_layout=(LinearLayout)view.findViewById(tech.pursuiters.techpursuiters.uitsocieties.R.id.about_layout);
         LinearLayout contact_layout=(LinearLayout)view.findViewById(tech.pursuiters.techpursuiters.uitsocieties.R.id.contact_layout);
         LinearLayout mail_layout=(LinearLayout)view.findViewById(tech.pursuiters.techpursuiters.uitsocieties.R.id.mail_layout);
@@ -106,6 +108,7 @@ public class AboutFrag extends Fragment {
             @Override
             public void onClick(View view) {
                 Intent intent= new Intent(Intent.ACTION_VIEW,Uri.parse(theWebsite));
+                if(URLUtil.isValidUrl(theWebsite))
                 if((intent.resolveActivity(getActivity().getPackageManager())!=null))
                 {
                     startActivity(intent);

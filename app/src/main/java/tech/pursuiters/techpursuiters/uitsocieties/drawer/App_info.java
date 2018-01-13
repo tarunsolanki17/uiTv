@@ -12,6 +12,8 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import tech.pursuiters.techpursuiters.uitsocieties.R;
+
 public class App_info extends AppCompatActivity {
 
     @Override
@@ -30,6 +32,20 @@ public class App_info extends AppCompatActivity {
                 Intent intent = new Intent(Intent.ACTION_SENDTO);
                 intent.setData(Uri.parse("mailto:techpursuiters@gmail.com"));
                 startActivity(intent);
+            }
+        });
+
+        TextView privacy_poli = (TextView) findViewById(R.id.privacy_policy);
+        privacy_poli.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                String policy = getString(R.string.policy);
+                intent.setData(Uri.parse(policy));
+                if((intent.resolveActivity(getPackageManager())!=null)) {
+                    startActivity(intent);
+                    toast.show();
+                }
             }
         });
 

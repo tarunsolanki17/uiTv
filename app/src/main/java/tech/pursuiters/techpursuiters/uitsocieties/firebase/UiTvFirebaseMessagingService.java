@@ -43,6 +43,10 @@ public class UiTvFirebaseMessagingService extends FirebaseMessagingService{
                 intent = new Intent(Intent.ACTION_VIEW);
                 intent.setData(Uri.parse(uiTv_LINK));
             }
+            else if(received.containsKey("Link")){
+                intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(Uri.parse(received.get("Link")));
+            }
         }
         else {
             intent = new Intent(this, MainActivity.class);
